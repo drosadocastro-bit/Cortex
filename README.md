@@ -25,22 +25,39 @@ The initial framework provides:
   of accumulating redundant records.
 - Source trust, lineage, contamination, and corroboration engines for epistemic
   caution without automatic conclusions.
-- Tests proving duplicate memories merge.
+- Graph relationship models and an in-memory relationship graph for entities,
+  sources, claims, events, and contradictions.
+- A deterministic timeline engine that orders exact dates while preserving
+  approximate and unknown dates.
+- A claim matrix that separates support from contradiction and keeps repeated
+  lineage from inflating confidence.
+- Source independence scoring so semantic repetition is not treated as
+  corroboration.
+- An AI debt register documenting future risks around inference, provenance,
+  semantic similarity, temporal parsing, scoring, evaluation, and reporting.
+- Tests proving memory, source-trust, timeline, graph, and claim-matrix behavior.
 
 ## Project Layout
 
 ```text
 Roswell-uap-cortex/
   docs/
+    AI_DEBT.md
     MEMORY_MODEL.md
     PROBLEM_STATEMENT.md
   src/
     roswell_uap_cortex/
       __init__.py
+      claim_matrix.py
+      graph.py
+      independence.py
       models.py
       memory.py
+      timeline.py
   tests/
     test_memory_merge.py
+    test_phase2_evidence_trust.py
+    test_phase3_investigative_graph.py
   pyproject.toml
   README.md
 ```

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import date
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Any
@@ -33,6 +34,40 @@ class GraphNodeType(str, Enum):
     EVENT = "event"
     ENTITY = "entity"
     MEMORY = "memory"
+
+
+class RelationshipType(str, Enum):
+    """Deterministic relationship types in the investigative graph."""
+
+    MENTIONS = "mentions"
+    SUPPORTS = "supports"
+    CONTRADICTS = "contradicts"
+    REFERENCES = "references"
+    SAME_EVENT_CANDIDATE = "same_event_candidate"
+    TEMPORAL_BEFORE = "temporal_before"
+    TEMPORAL_AFTER = "temporal_after"
+    DERIVED_FROM = "derived_from"
+    DUPLICATE_OF = "duplicate_of"
+
+
+class TimelineDatePrecision(str, Enum):
+    """How precise an event date is known to be."""
+
+    EXACT = "exact"
+    MONTH = "month"
+    YEAR = "year"
+    APPROXIMATE = "approximate"
+    UNKNOWN = "unknown"
+
+
+class ClaimMatrixStatus(str, Enum):
+    """Claim matrix status labels that preserve unresolved uncertainty."""
+
+    UNSUPPORTED = "unsupported"
+    WEAKLY_SUPPORTED = "weakly_supported"
+    CONTESTED = "contested"
+    SUPPORTED = "supported"
+    UNRESOLVED = "unresolved"
 
 
 class EvidenceCategory(str, Enum):
@@ -73,6 +108,72 @@ class Claim:
     uncertainty_notes: str = ""
     created_at: datetime = field(default_factory=utc_now)
     updated_at: datetime = field(default_factory=utc_now)
+
+
+@dataclass(slots=True)
+class EntityNode:
+    """A person, organization, place, object, or concept mentioned by evidence."""
+
+    label: str
+    id: str = field(default_factory=lambda: str(uuid4()))
+    entity_type: str = "unknown"
+    aliases: set[str] = field(default_factory=set)
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
+class EventNode:
+    """A dated or undated event without fabricated chronology."""
+
+    label: str
+    id: str = field(default_factory=lambda: str(uuid4()))
+    event_date: date | None = None
+    earliest_possible_date: date | None = None
+    latest_possible_date: date | None = None
+    date_precision: TimelineDatePrecision = TimelineDatePrecision.UNKNOWN
+    date_note: str = ""
+    evidence_ids: set[str] = field(default_factory=set)
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
+class ClaimNode:
+    """A graph-ready claim separated from its supporting evidence."""
+
+    text: str
+    canonical_topic: str
+    id: str = field(default_factory=lambda: str(uuid4()))
+    evidence_ids: set[str] = field(default_factory=set)
+    status: ClaimMatrixStatus = ClaimMatrixStatus.UNSUPPORTED
+    confidence: float = 0.0
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
+class SourceNode:
+    """A source as a first-class graph node."""
+
+    source_id: str
+    label: str
+    id: str = field(default_factory=lambda: str(uuid4()))
+    source_type: str = "unknown"
+    trust_score: float = 0.5
+    lineage_id: str | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
+class RelationshipEdge:
+    """A provenance-carrying relationship between two graph nodes."""
+
+    from_node_id: str
+    to_node_id: str
+    relation: RelationshipType
+    source_id: str
+    confidence: float = 0.5
+    evidence_ids: set[str] = field(default_factory=set)
+    notes: str = ""
+    id: str = field(default_factory=lambda: str(uuid4()))
 
 
 @dataclass(slots=True)

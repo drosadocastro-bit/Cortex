@@ -86,6 +86,41 @@ and preserving uncertainty.
 Contradictions are not automatically resolved. Neither memory overwrites the
 other, and neither is deleted merely because conflict exists.
 
+## Graph Relationships
+
+`RelationshipGraphEngine` stores an in-memory investigative graph connecting
+entities, events, claims, sources, evidence, and contradictions. Edges carry a
+relationship type, source id, confidence, evidence ids, and notes so graph
+context remains provenance-backed.
+
+Supported edge types include `mentions`, `supports`, `contradicts`,
+`references`, `same_event_candidate`, `temporal_before`, `temporal_after`,
+`derived_from`, and `duplicate_of`.
+
+## Timeline Memory
+
+`TimelineEngine` treats events as first-class memory objects. Exact dates can be
+ordered chronologically. Approximate or partial dates keep their uncertainty
+through date ranges and notes. Unknown dates remain unknown and are not
+fabricated for ordering.
+
+## Claim Matrix
+
+`ClaimMatrixEngine` groups claim nodes by canonical topic while keeping evidence
+separate from the claim itself. It tracks supporting evidence, contradicting
+evidence, source trust contribution, bounded claim confidence, and unresolved
+status labels such as `unsupported`, `weakly_supported`, `contested`,
+`supported`, and `unresolved`.
+
+This preserves contradiction instead of forcing premature resolution.
+
+## Source Independence
+
+`IndependenceScorer` helps distinguish independent corroboration from repeated
+lineage. Same-lineage or same-source evidence contributes cautiously, while
+separate primary sources can increase confidence more. Unknown lineage remains
+medium-low because missing provenance is not confirmation.
+
 ## Retrieval Priority
 
 Vector similarity may later help locate candidates, but it remains secondary.
@@ -96,3 +131,13 @@ Investigation should prefer:
 3. Graph relationships.
 4. Explicit contradiction state.
 5. Vector similarity as an assistive index.
+
+## AI Debt
+
+Future AI-assisted features must preserve the same uncertainty constraints as
+the deterministic engines. `docs/AI_DEBT.md` tracks known risks around
+inference, provenance, semantic similarity, temporal parsing, scoring,
+evaluation, and reporting.
+
+New AI, ingestion, vector search, or generated-report features should address
+the relevant debt entries before they are treated as complete.

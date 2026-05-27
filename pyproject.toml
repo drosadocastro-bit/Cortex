@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Roswell-uap-cortex"
+version = "0.1.0"
+description = "Framework skeleton for uncertainty-preserving investigative memory."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "Roswell UAP Research Assistance" }
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-p no:cacheprovider"

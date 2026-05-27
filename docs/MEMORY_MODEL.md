@@ -62,6 +62,16 @@ Activation is bounded so repetition cannot create certainty.
 An archival memory may return to active status only when reactivation pushes its
 strength across a clear threshold.
 
+Phase 4 adds deterministic associative activation through
+`AssociativeRetrievalEngine` and `ActivationContextBuilder`. Retrieval can
+surface possible associations between memories, claims, evidence, and entities
+using lexical overlap, shared tags, shared entities, canonical topics, timeline
+proximity, source independence, and contradiction pressure.
+
+Association is not confirmation. Retrieved candidates are labeled as possible,
+weak, or contested associations, and no support relationship is created by
+retrieval.
+
 ## Memory Decay
 
 `MemoryDecayEngine` applies time-aware decay based on days since the last
@@ -120,6 +130,24 @@ This preserves contradiction instead of forcing premature resolution.
 lineage. Same-lineage or same-source evidence contributes cautiously, while
 separate primary sources can increase confidence more. Unknown lineage remains
 medium-low because missing provenance is not confirmation.
+
+## Correlation Guard
+
+`CorrelationGuard` keeps future retrieval and vector-correlation work from
+turning similarity into confirmation. It downgrades high lexical overlap when
+source independence is low, reduces association scores under contradiction
+pressure, and adds caution notes for unknown lineage.
+
+Weak associations remain available for review instead of being promoted to
+support. Contested associations remain visible so contradiction is not filtered
+out of activated context.
+
+## Vector-Ready Design
+
+The association score separates lexical, tag, entity, timeline, source
+independence, contradiction, and final activation signals. Future embeddings can
+be added as another retrieval signal, but vector similarity remains secondary to
+provenance, lineage, contradiction preservation, and source independence.
 
 ## Retrieval Priority
 

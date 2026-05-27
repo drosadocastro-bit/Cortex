@@ -70,6 +70,14 @@ class ClaimMatrixStatus(str, Enum):
     UNRESOLVED = "unresolved"
 
 
+class AssociationLabel(str, Enum):
+    """Association labels are retrieval hints, not relationship confirmations."""
+
+    POSSIBLE_ASSOCIATION = "possible_association"
+    WEAK_ASSOCIATION = "weak_association"
+    CONTESTED_ASSOCIATION = "contested_association"
+
+
 class EvidenceCategory(str, Enum):
     """Epistemic category for evidence or evidence-like assertions."""
 
@@ -174,6 +182,65 @@ class RelationshipEdge:
     evidence_ids: set[str] = field(default_factory=set)
     notes: str = ""
     id: str = field(default_factory=lambda: str(uuid4()))
+
+
+@dataclass(slots=True)
+class AssociationScore:
+    """Deterministic association signals; not a truth score."""
+
+    lexical_overlap: float = 0.0
+    tag_overlap: float = 0.0
+    entity_overlap: float = 0.0
+    timeline_proximity: float = 0.0
+    source_independence: float = 0.0
+    contradiction_penalty: float = 0.0
+    final_association_score: float = 0.0
+
+
+@dataclass(slots=True)
+class AssociationCandidate:
+    """A possible retrieval association with inspectable reasons."""
+
+    record_id: str
+    record_type: str
+    label: str
+    score: AssociationScore
+    association_label: AssociationLabel = AssociationLabel.POSSIBLE_ASSOCIATION
+    association_reason: list[str] = field(default_factory=list)
+    memory_ids: set[str] = field(default_factory=set)
+    claim_ids: set[str] = field(default_factory=set)
+    evidence_ids: set[str] = field(default_factory=set)
+    entity_ids: set[str] = field(default_factory=set)
+    source_id: str | None = None
+    lineage_id: str | None = None
+    claim_status: ClaimMatrixStatus | None = None
+    uncertainty_notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class RetrievalContext:
+    """Optional query-side context for deterministic associative retrieval."""
+
+    query: str
+    query_tags: set[str] = field(default_factory=set)
+    query_entity_ids: set[str] = field(default_factory=set)
+    query_canonical_topics: set[str] = field(default_factory=set)
+    query_date: date | None = None
+    source_id: str | None = None
+    lineage_id: str | None = None
+
+
+@dataclass(slots=True)
+class ActivatedContext:
+    """A focused retrieval context for downstream deterministic reasoning."""
+
+    activated_memory_ids: set[str] = field(default_factory=set)
+    activated_claim_ids: set[str] = field(default_factory=set)
+    activated_evidence_ids: set[str] = field(default_factory=set)
+    activated_entity_ids: set[str] = field(default_factory=set)
+    weak_associations: list[AssociationCandidate] = field(default_factory=list)
+    contested_associations: list[AssociationCandidate] = field(default_factory=list)
+    uncertainty_notes: list[str] = field(default_factory=list)
 
 
 @dataclass(slots=True)

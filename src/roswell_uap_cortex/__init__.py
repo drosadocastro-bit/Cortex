@@ -1,6 +1,7 @@
 """Uncertainty-preserving investigative memory framework."""
 
 from roswell_uap_cortex.activation import MemoryActivationEngine
+from roswell_uap_cortex.associative import ActivationContextBuilder, AssociativeRetrievalEngine
 from roswell_uap_cortex.claim_matrix import (
     ClaimEvidenceContribution,
     ClaimMatrixEngine,
@@ -9,12 +10,17 @@ from roswell_uap_cortex.claim_matrix import (
 from roswell_uap_cortex.compression import CompressedMemory, SemanticCompressionEngine
 from roswell_uap_cortex.contamination import ContaminationEngine
 from roswell_uap_cortex.contradictions import ContradictionPressureEngine
+from roswell_uap_cortex.correlation_guard import CorrelationGuard
 from roswell_uap_cortex.corroboration import CorroborationLayer
 from roswell_uap_cortex.graph import FocusedGraphNeighborhood, RelationshipGraphEngine
 from roswell_uap_cortex.independence import EvidenceIndependenceInput, IndependenceScorer
 from roswell_uap_cortex.lineage import EvidenceLineageEngine
 from roswell_uap_cortex.memory import MemoryDecayEngine
 from roswell_uap_cortex.models import (
+    ActivatedContext,
+    AssociationCandidate,
+    AssociationLabel,
+    AssociationScore,
     Claim,
     ClaimMatrixStatus,
     ClaimNode,
@@ -30,14 +36,22 @@ from roswell_uap_cortex.models import (
     MemoryRecord,
     RelationshipEdge,
     RelationshipType,
+    RetrievalContext,
     SourceNode,
     SourceTrust,
     TimelineDatePrecision,
 )
 from roswell_uap_cortex.source_trust import SourceTrustEngine
+from roswell_uap_cortex.text import SimpleTokenizer
 from roswell_uap_cortex.timeline import TimelineEngine
 
 __all__ = [
+    "ActivatedContext",
+    "ActivationContextBuilder",
+    "AssociationCandidate",
+    "AssociationLabel",
+    "AssociationScore",
+    "AssociativeRetrievalEngine",
     "Claim",
     "ClaimEvidenceContribution",
     "ClaimMatrixEngine",
@@ -49,6 +63,7 @@ __all__ = [
     "ContaminationReport",
     "Contradiction",
     "ContradictionPressureEngine",
+    "CorrelationGuard",
     "CorroborationAssessment",
     "CorroborationLayer",
     "EntityNode",
@@ -67,7 +82,9 @@ __all__ = [
     "RelationshipEdge",
     "RelationshipGraphEngine",
     "RelationshipType",
+    "RetrievalContext",
     "SemanticCompressionEngine",
+    "SimpleTokenizer",
     "SourceNode",
     "SourceTrust",
     "SourceTrustEngine",

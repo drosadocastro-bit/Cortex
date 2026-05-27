@@ -33,6 +33,14 @@ The initial framework provides:
   lineage from inflating confidence.
 - Source independence scoring so semantic repetition is not treated as
   corroboration.
+- Associative activation that retrieves possible related memories, claims,
+  evidence, and entities without confirming relationships.
+- A correlation guard that downgrades low-independence, high-overlap, or
+  contradiction-heavy associations.
+- Weak and contested associations remain visible in activated context for
+  review.
+- A vector-ready retrieval design that keeps future embeddings secondary to
+  provenance, independence, and contradiction state.
 - An AI debt register documenting future risks around inference, provenance,
   semantic similarity, temporal parsing, scoring, evaluation, and reporting.
 - Tests proving memory, source-trust, timeline, graph, and claim-matrix behavior.
@@ -48,16 +56,20 @@ Roswell-uap-cortex/
   src/
     roswell_uap_cortex/
       __init__.py
+      associative.py
       claim_matrix.py
+      correlation_guard.py
       graph.py
       independence.py
       models.py
       memory.py
+      text.py
       timeline.py
   tests/
     test_memory_merge.py
     test_phase2_evidence_trust.py
     test_phase3_investigative_graph.py
+    test_phase4_associative_retrieval.py
   pyproject.toml
   README.md
 ```

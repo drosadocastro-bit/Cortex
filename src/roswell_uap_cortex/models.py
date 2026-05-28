@@ -158,6 +158,68 @@ class DiscourseWarningType(str, Enum):
 
 
 @dataclass(slots=True)
+class SnapshotMetadata:
+    """Metadata for an immutable persistence snapshot."""
+
+    snapshot_id: str
+    created_at: datetime
+    schema_version: str
+    record_counts: dict[str, int] = field(default_factory=dict)
+    checksum: str = ""
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class PersistenceManifest:
+    """Manifest that identifies the snapshot format and producer."""
+
+    metadata: SnapshotMetadata
+    saved_by: str = "roswell_uap_cortex"
+    format: str = "json_snapshot"
+
+
+@dataclass(slots=True)
+class PersistenceRecord:
+    """Serialized record wrapper preserving unknown fields."""
+
+    record_type: str
+    payload: dict[str, Any]
+    record_id: str | None = None
+    unknown_fields: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
+class PersistenceEnvelope:
+    """Top-level immutable snapshot envelope."""
+
+    manifest: PersistenceManifest
+    records: dict[str, list[PersistenceRecord]] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
+class SaveResult:
+    """Result of saving a persistence snapshot."""
+
+    path: str
+    envelope: PersistenceEnvelope
+    checksum: str
+    warnings: list[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+    success: bool = True
+
+
+@dataclass(slots=True)
+class LoadResult:
+    """Result of loading a persistence snapshot."""
+
+    path: str
+    envelope: PersistenceEnvelope | None = None
+    warnings: list[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+    success: bool = True
+
+
+@dataclass(slots=True)
 class EvidenceItem:
     """A source-backed artifact or observation, never a truth claim by itself."""
 

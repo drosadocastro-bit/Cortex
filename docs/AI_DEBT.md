@@ -197,6 +197,28 @@ Must not do:
 Do not let polished narrative override structured evidence, citations,
 contradictions, or review-required warnings.
 
+## Persistence Debt
+
+Risk:
+Saved snapshots may be treated as authoritative truth state, or future schema
+changes may silently discard fields needed to preserve provenance and
+uncertainty.
+
+Current mitigation:
+`PersistenceStore` saves local JSON snapshots with manifests, schema versions,
+record counts, and deterministic checksums. `Serializer` preserves unknown
+fields, and `PersistenceGuardrails` keeps loaded discourse, archived memories,
+contradiction pressure, and provenance boundaries visible.
+
+Future trigger:
+Before adding a database, sync service, or migration tooling, snapshots must
+remain importable as immutable archival records with explicit schema migration
+steps.
+
+Must not do:
+Do not load a snapshot in a way that creates new evidence, confirms claims,
+creates graph edges, or promotes discourse into truth.
+
 ## VLM Perception Debt
 
 Risk:

@@ -214,6 +214,21 @@ visible, contradiction visibility is mandatory, and speculative content stays
 labeled. The CLI harness provides terminal output only; future web interfaces
 should render the same structured discourse rather than replacing it.
 
+## Snapshot Persistence
+
+Phase 8 adds `SnapshotBuilder`, `Serializer`, `PersistenceStore`,
+`SnapshotValidator`, and `PersistenceGuardrails`. The persistence layer saves
+evidence, memory, claims, graph records, provenance, lineage, activated context,
+reasoning, and discourse into deterministic local JSON snapshots.
+
+Snapshots include a manifest, schema version, record counts, checksum, and
+notes. Loading a snapshot reconstructs records for review but does not create
+new claims, graph edges, evidence, or truth state automatically.
+
+Unknown fields are preserved for future migrations. Discourse remains persisted
+as discourse, separate from evidence. Archived memories remain archived,
+contradiction pressure is preserved, and provenance warnings remain visible.
+
 ## Vector-Ready Design
 
 The association score separates lexical, tag, entity, timeline, source

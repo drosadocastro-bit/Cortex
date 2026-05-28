@@ -62,10 +62,15 @@ The initial framework provides:
   contradictions, weak associations, and contamination warnings visible.
 - A tiny CLI harness for deterministic terminal discourse output, with future
   web interface possibilities kept separate.
+- Snapshot persistence with manifest, schema versioning, record counts,
+  deterministic checksums, and guarded local JSON save/load behavior.
+- Immutable persistence boundaries: loading records does not create evidence,
+  claims, graph edges, or truth state automatically.
 - An AI debt register documenting future risks around inference, provenance,
   semantic similarity, temporal parsing, scoring, evaluation, and reporting.
 - Tests proving memory, source-trust, timeline, graph, claim-matrix,
-  associative retrieval, ingestion, bounded reasoning, and discourse behavior.
+  associative retrieval, ingestion, bounded reasoning, discourse, and
+  persistence behavior.
 
 ## Project Layout
 
@@ -95,8 +100,13 @@ Roswell-uap-cortex/
       mock_reasoner.py
       memory.py
       narrative.py
+      persistence.py
+      persistence_guardrails.py
       provenance.py
       reasoning.py
+      serialization.py
+      snapshot.py
+      snapshot_validator.py
       text.py
       timeline.py
       uncertainty.py
@@ -108,6 +118,7 @@ Roswell-uap-cortex/
     test_phase5_ingestion.py
     test_phase6_reasoning.py
     test_phase7_discourse.py
+    test_phase8_persistence.py
   pyproject.toml
   README.md
 ```

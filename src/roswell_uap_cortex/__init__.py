@@ -55,7 +55,11 @@ from roswell_uap_cortex.models import (
     IngestionResult,
     InvestigativeNarrative,
     LineageType,
+    LoadResult,
     MemoryRecord,
+    PersistenceEnvelope,
+    PersistenceManifest,
+    PersistenceRecord,
     ProvenanceRecord,
     RawInput,
     RawInputType,
@@ -71,6 +75,8 @@ from roswell_uap_cortex.models import (
     SourceNode,
     SourceLineageRecord,
     SourceTrust,
+    SaveResult,
+    SnapshotMetadata,
     TimelineDatePrecision,
     UncertaintyNote,
 )
@@ -81,6 +87,11 @@ from roswell_uap_cortex.source_trust import SourceTrustEngine
 from roswell_uap_cortex.text import SimpleTokenizer
 from roswell_uap_cortex.timeline import TimelineEngine
 from roswell_uap_cortex.uncertainty import UncertaintyFormatter
+from roswell_uap_cortex.persistence import PersistenceStore
+from roswell_uap_cortex.persistence_guardrails import PersistenceGuardrails
+from roswell_uap_cortex.serialization import Serializer
+from roswell_uap_cortex.snapshot import SCHEMA_VERSION, SnapshotBuilder
+from roswell_uap_cortex.snapshot_validator import SnapshotValidationResult, SnapshotValidator
 
 __all__ = [
     "ActivatedContext",
@@ -135,12 +146,18 @@ __all__ = [
     "InvestigativeNarrative",
     "LineageTracker",
     "LineageType",
+    "LoadResult",
     "LocalLLMAdapter",
     "MemoryActivationEngine",
     "MemoryDecayEngine",
     "MemoryRecord",
     "MockReasoner",
     "NarrativeBuilder",
+    "PersistenceEnvelope",
+    "PersistenceGuardrails",
+    "PersistenceManifest",
+    "PersistenceRecord",
+    "PersistenceStore",
     "ProvenanceExtractor",
     "ProvenanceRecord",
     "RawInput",
@@ -157,7 +174,14 @@ __all__ = [
     "RelationshipType",
     "RetrievalContext",
     "SemanticCompressionEngine",
+    "Serializer",
     "SimpleTokenizer",
+    "SaveResult",
+    "SCHEMA_VERSION",
+    "SnapshotBuilder",
+    "SnapshotMetadata",
+    "SnapshotValidationResult",
+    "SnapshotValidator",
     "SourceNode",
     "SourceLineageRecord",
     "SourceTrust",

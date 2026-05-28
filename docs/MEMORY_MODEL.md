@@ -175,6 +175,27 @@ Weak associations remain available for review instead of being promoted to
 support. Contested associations remain visible so contradiction is not filtered
 out of activated context.
 
+## Bounded Reasoning
+
+Phase 6 adds `CognitiveReasoningEngine`, `ContextWindowBuilder`,
+`ReasoningGuardrails`, and a deterministic `MockReasoner`. Reasoning operates
+on activated context after retrieval and ingestion have already preserved
+provenance, lineage, contamination flags, and contradiction state.
+
+The local reasoning layer does not mutate evidence, claims, provenance, lineage,
+or graph structures. It produces structured observations, uncertainty notes,
+warnings, speculative hypotheses, a provenance summary, and a categorical
+`confidence_band` that represents context support rather than truth.
+
+Context windows are intentionally compact. They prioritize strong associations,
+source diversity, contradiction visibility, timeline relevance, and lineage
+diversity while trimming low-value duplicate lineage. This reduces
+lost-in-the-middle risk before future local LLM or VLM components are added.
+
+Reasoning guardrails keep unsupported claims unsupported, preserve contested
+associations, label hypotheses as speculative, downgrade missing provenance,
+and warn when fictional contamination or repeated lineage is present.
+
 ## Vector-Ready Design
 
 The association score separates lexical, tag, entity, timeline, source

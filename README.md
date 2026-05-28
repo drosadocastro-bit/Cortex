@@ -46,10 +46,18 @@ The initial framework provides:
   warnings.
 - Sensory intake safeguards: ingestion does not confirm claims or create graph
   edges automatically.
+- A bounded local cognitive reasoning layer that operates on activated context
+  without mutating evidence, claims, or graph structures.
+- Context-window construction that trims duplicate lineage and preserves
+  contradiction visibility to mitigate lost-in-the-middle risk.
+- Reasoning guardrails for speculative labeling, unsupported claims, missing
+  provenance, same-lineage repetition, and fictional contamination warnings.
+- A deterministic mock reasoner plus adapter interface for future Nemotron,
+  LM Studio, Ollama, vLLM, OpenAI API, or VLM perception integrations.
 - An AI debt register documenting future risks around inference, provenance,
   semantic similarity, temporal parsing, scoring, evaluation, and reporting.
 - Tests proving memory, source-trust, timeline, graph, claim-matrix,
-  associative retrieval, and ingestion behavior.
+  associative retrieval, ingestion, and bounded reasoning behavior.
 
 ## Project Layout
 
@@ -64,13 +72,18 @@ Roswell-uap-cortex/
       __init__.py
       associative.py
       claim_matrix.py
+      context_builder.py
       correlation_guard.py
       graph.py
+      guardrails.py
       independence.py
       ingestion.py
+      llm_adapter.py
       models.py
+      mock_reasoner.py
       memory.py
       provenance.py
+      reasoning.py
       text.py
       timeline.py
   tests/
@@ -79,6 +92,7 @@ Roswell-uap-cortex/
     test_phase3_investigative_graph.py
     test_phase4_associative_retrieval.py
     test_phase5_ingestion.py
+    test_phase6_reasoning.py
   pyproject.toml
   README.md
 ```

@@ -122,6 +122,28 @@ class ContaminationFlagType(str, Enum):
     WEAK_CHAIN_OF_CUSTODY = "weak_chain_of_custody"
 
 
+class ConfidenceBand(str, Enum):
+    """Context-support band for reasoning output, not truth confidence."""
+
+    INSUFFICIENT_CONTEXT = "insufficient_context"
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH_CONTEXT_SUPPORT = "high_context_support"
+    CONTESTED = "contested"
+
+
+class ReasoningWarningType(str, Enum):
+    """Typed guardrail warnings for bounded reasoning."""
+
+    ASSOCIATION_NOT_CONFIRMATION = "association_not_confirmation"
+    CONTRADICTION_VISIBLE = "contradiction_visible"
+    UNSUPPORTED_CLAIM = "unsupported_claim"
+    MISSING_PROVENANCE = "missing_provenance"
+    SAME_LINEAGE_REPETITION = "same_lineage_repetition"
+    FICTIONAL_CONTAMINATION = "fictional_contamination"
+    SPECULATIVE_HYPOTHESIS = "speculative_hypothesis"
+
+
 @dataclass(slots=True)
 class EvidenceItem:
     """A source-backed artifact or observation, never a truth claim by itself."""
@@ -374,6 +396,72 @@ class ActivatedContext:
     weak_associations: list[AssociationCandidate] = field(default_factory=list)
     contested_associations: list[AssociationCandidate] = field(default_factory=list)
     uncertainty_notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class UncertaintyNote:
+    """A structured uncertainty note carried through reasoning."""
+
+    note: str
+    related_ids: set[str] = field(default_factory=set)
+    severity: str = "caution"
+
+
+@dataclass(slots=True)
+class ReasoningWarning:
+    """A guardrail warning emitted by reasoning."""
+
+    warning_type: ReasoningWarningType
+    message: str
+    related_ids: set[str] = field(default_factory=set)
+
+
+@dataclass(slots=True)
+class ReasoningObservation:
+    """A bounded observation made from supplied context only."""
+
+    text: str
+    context_ids: set[str] = field(default_factory=set)
+    speculative: bool = False
+
+
+@dataclass(slots=True)
+class ReasoningContext:
+    """Compact structured context passed into local reasoning."""
+
+    activated_context: ActivatedContext
+    selected_candidates: list[AssociationCandidate] = field(default_factory=list)
+    evidence_items: list[EvidenceItem] = field(default_factory=list)
+    claims: list[ClaimNode] = field(default_factory=list)
+    memories: list["MemoryRecord"] = field(default_factory=list)
+    provenance_records: list[ProvenanceRecord] = field(default_factory=list)
+    lineage_records: list[SourceLineageRecord] = field(default_factory=list)
+    uncertainty_notes: list[UncertaintyNote] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ReasoningRequest:
+    """A bounded local reasoning request."""
+
+    query: str
+    activated_context: ActivatedContext
+    candidates: list[AssociationCandidate] = field(default_factory=list)
+    max_context_items: int = 8
+
+
+@dataclass(slots=True)
+class ReasoningOutput:
+    """Structured local reasoning output; confidence band is not truth confidence."""
+
+    observations: list[ReasoningObservation] = field(default_factory=list)
+    supporting_context_ids: set[str] = field(default_factory=set)
+    contested_context_ids: set[str] = field(default_factory=set)
+    uncertainty_notes: list[UncertaintyNote] = field(default_factory=list)
+    reasoning_warnings: list[ReasoningWarning] = field(default_factory=list)
+    possible_hypotheses: list[ReasoningObservation] = field(default_factory=list)
+    confidence_band: ConfidenceBand = ConfidenceBand.INSUFFICIENT_CONTEXT
+    provenance_summary: str = ""
+    requires_review: bool = False
 
 
 @dataclass(slots=True)

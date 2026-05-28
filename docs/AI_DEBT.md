@@ -24,6 +24,26 @@ evidence ids, uncertainty notes, and a review state.
 Must not do:
 Do not treat an LLM-generated claim as evidence.
 
+## Local Reasoning Debt
+
+Risk:
+Future local inference through Nemotron, LM Studio, Ollama, vLLM, or another
+backend may produce fluent reasoning that hides contradiction, weak provenance,
+or same-lineage repetition.
+
+Current mitigation:
+`CognitiveReasoningEngine` operates on bounded activated context, uses a
+deterministic mock reasoner in tests, applies reasoning guardrails, and does not
+mutate evidence, claims, lineage, provenance, or graph structures.
+
+Future trigger:
+Before enabling real local inference, adapter outputs must be validated against
+the same structured `ReasoningOutput` schema and guardrail checks.
+
+Must not do:
+Do not let an LLM create graph edges, mutate evidence, confirm claims, or remove
+contradictions from context.
+
 ## Provenance Debt
 
 Risk:
@@ -154,3 +174,23 @@ supporting evidence, contradicting evidence, status, and unresolved notes.
 
 Must not do:
 Do not present a contested or weakly supported claim as a resolved finding.
+
+## VLM Perception Debt
+
+Risk:
+Future vision-language perception may describe images or video frames in ways
+that appear observationally certain while depending on model interpretation.
+
+Current mitigation:
+No VLM perception layer exists. Existing ingestion and reasoning layers require
+provenance, contamination warnings, uncertainty notes, and no claim
+confirmation.
+
+Future trigger:
+Before adding VLM perception, outputs must be modeled as observations with
+source provenance, frame or timestamp references, uncertainty notes, and review
+state.
+
+Must not do:
+Do not treat VLM descriptions as primary evidence without provenance and
+uncertainty labeling.

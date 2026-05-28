@@ -7,12 +7,15 @@ from roswell_uap_cortex.claim_matrix import (
     ClaimMatrixEngine,
     ClaimMatrixEntry,
 )
+from roswell_uap_cortex.citations import CitationFormatter
 from roswell_uap_cortex.compression import CompressedMemory, SemanticCompressionEngine
 from roswell_uap_cortex.contamination import ContaminationDetector, ContaminationEngine
 from roswell_uap_cortex.contradictions import ContradictionPressureEngine
 from roswell_uap_cortex.context_builder import ContextWindowBuilder
 from roswell_uap_cortex.correlation_guard import CorrelationGuard
 from roswell_uap_cortex.corroboration import CorroborationLayer
+from roswell_uap_cortex.discourse import DiscourseEngine
+from roswell_uap_cortex.discourse_guardrails import DiscourseGuardrails
 from roswell_uap_cortex.graph import FocusedGraphNeighborhood, RelationshipGraphEngine
 from roswell_uap_cortex.guardrails import ReasoningGuardrails
 from roswell_uap_cortex.independence import EvidenceIndependenceInput, IndependenceScorer
@@ -35,6 +38,12 @@ from roswell_uap_cortex.models import (
     ContaminationFlagType,
     ContaminationReport,
     CorroborationAssessment,
+    DiscourseCitation,
+    DiscourseRequest,
+    DiscourseResponse,
+    DiscourseSection,
+    DiscourseWarning,
+    DiscourseWarningType,
     EntityNode,
     EvidenceCategory,
     EvidenceItem,
@@ -44,6 +53,7 @@ from roswell_uap_cortex.models import (
     GraphNode,
     GraphNodeType,
     IngestionResult,
+    InvestigativeNarrative,
     LineageType,
     MemoryRecord,
     ProvenanceRecord,
@@ -64,11 +74,13 @@ from roswell_uap_cortex.models import (
     TimelineDatePrecision,
     UncertaintyNote,
 )
+from roswell_uap_cortex.narrative import NarrativeBuilder
 from roswell_uap_cortex.provenance import ProvenanceExtractor
 from roswell_uap_cortex.reasoning import CognitiveReasoningEngine
 from roswell_uap_cortex.source_trust import SourceTrustEngine
 from roswell_uap_cortex.text import SimpleTokenizer
 from roswell_uap_cortex.timeline import TimelineEngine
+from roswell_uap_cortex.uncertainty import UncertaintyFormatter
 
 __all__ = [
     "ActivatedContext",
@@ -84,6 +96,7 @@ __all__ = [
     "ClaimMatrixStatus",
     "ClaimNode",
     "CognitiveReasoningEngine",
+    "CitationFormatter",
     "CompressedMemory",
     "ConfidenceBand",
     "ContaminationDetector",
@@ -97,6 +110,14 @@ __all__ = [
     "CorrelationGuard",
     "CorroborationAssessment",
     "CorroborationLayer",
+    "DiscourseCitation",
+    "DiscourseEngine",
+    "DiscourseGuardrails",
+    "DiscourseRequest",
+    "DiscourseResponse",
+    "DiscourseSection",
+    "DiscourseWarning",
+    "DiscourseWarningType",
     "EntityNode",
     "EvidenceCategory",
     "EvidenceIndependenceInput",
@@ -111,6 +132,7 @@ __all__ = [
     "IndependenceScorer",
     "IngestionNormalizer",
     "IngestionResult",
+    "InvestigativeNarrative",
     "LineageTracker",
     "LineageType",
     "LocalLLMAdapter",
@@ -118,6 +140,7 @@ __all__ = [
     "MemoryDecayEngine",
     "MemoryRecord",
     "MockReasoner",
+    "NarrativeBuilder",
     "ProvenanceExtractor",
     "ProvenanceRecord",
     "RawInput",
@@ -142,4 +165,5 @@ __all__ = [
     "TimelineDatePrecision",
     "TimelineEngine",
     "UncertaintyNote",
+    "UncertaintyFormatter",
 ]

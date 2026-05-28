@@ -196,6 +196,24 @@ Reasoning guardrails keep unsupported claims unsupported, preserve contested
 associations, label hypotheses as speculative, downgrade missing provenance,
 and warn when fictional contamination or repeated lineage is present.
 
+## Investigative Discourse
+
+Phase 7 adds `DiscourseEngine`, `CitationFormatter`, `NarrativeBuilder`,
+`UncertaintyFormatter`, and `DiscourseGuardrails`. Discourse transforms
+activated context and bounded reasoning output into structured sections for
+human review.
+
+Discourse is separate from reasoning. It presents observed evidence, possible
+associations, contradictions, weak associations, speculative hypotheses,
+provenance notes, uncertainty summaries, missing information, reasoning
+warnings, and citations without creating new evidence or confirming claims.
+
+Narrative output is deterministic and separated into observations,
+interpretations, speculation, and uncertainty. Provenance citations remain
+visible, contradiction visibility is mandatory, and speculative content stays
+labeled. The CLI harness provides terminal output only; future web interfaces
+should render the same structured discourse rather than replacing it.
+
 ## Vector-Ready Design
 
 The association score separates lexical, tag, entity, timeline, source

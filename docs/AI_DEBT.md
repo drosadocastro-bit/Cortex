@@ -165,15 +165,37 @@ Reports or future interfaces may visually emphasize a single answer and hide
 uncertainty, contradiction, or provenance.
 
 Current mitigation:
-No UI exists yet. Documentation states that the system should ask better
-questions rather than decide truth.
+No web UI exists yet. `DiscourseEngine` produces deterministic structured
+sections with citations, contradictions, weak associations, speculative labels,
+missing information, and review-required status.
 
 Future trigger:
-Before building UI or generated reports, every claim view must show provenance,
-supporting evidence, contradicting evidence, status, and unresolved notes.
+Before building a web interface or generated reports, every rendered claim view
+must preserve the same discourse sections, citations, reasoning warnings,
+contradictions, and uncertainty notes.
 
 Must not do:
 Do not present a contested or weakly supported claim as a resolved finding.
+
+## Discourse Debt
+
+Risk:
+Readable narrative may accidentally smooth over uncertainty, omit provenance, or
+inflate possible associations into conclusions.
+
+Current mitigation:
+`NarrativeBuilder` uses deterministic templates and separates observations,
+interpretations, speculation, and uncertainty. `DiscourseGuardrails` preserves
+provenance visibility, contradiction visibility, speculative labeling, and
+certainty-language warnings.
+
+Future trigger:
+Before adding LLM-written narratives or a web discourse interface, generated
+text must pass deterministic discourse guardrails and preserve citations.
+
+Must not do:
+Do not let polished narrative override structured evidence, citations,
+contradictions, or review-required warnings.
 
 ## VLM Perception Debt
 

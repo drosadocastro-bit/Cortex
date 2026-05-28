@@ -144,6 +144,19 @@ class ReasoningWarningType(str, Enum):
     SPECULATIVE_HYPOTHESIS = "speculative_hypothesis"
 
 
+class DiscourseWarningType(str, Enum):
+    """Typed warnings for human-facing discourse."""
+
+    SPECULATION_LABELED = "speculation_labeled"
+    UNSUPPORTED_REMAINS_UNSUPPORTED = "unsupported_remains_unsupported"
+    PROVENANCE_VISIBLE = "provenance_visible"
+    CONTRADICTION_VISIBLE = "contradiction_visible"
+    NO_FABRICATED_EVIDENCE = "no_fabricated_evidence"
+    CERTAINTY_LANGUAGE_AVOIDED = "certainty_language_avoided"
+    CONTAMINATION_WARNING = "contamination_warning"
+    MISSING_PROVENANCE = "missing_provenance"
+
+
 @dataclass(slots=True)
 class EvidenceItem:
     """A source-backed artifact or observation, never a truth claim by itself."""
@@ -462,6 +475,75 @@ class ReasoningOutput:
     confidence_band: ConfidenceBand = ConfidenceBand.INSUFFICIENT_CONTEXT
     provenance_summary: str = ""
     requires_review: bool = False
+
+
+@dataclass(slots=True)
+class DiscourseCitation:
+    """Deterministic citation bound to evidence, source, provenance, or lineage."""
+
+    evidence_id: str | None = None
+    source_id: str | None = None
+    lineage_id: str | None = None
+    provenance_id: str | None = None
+    page_number: int | None = None
+    timestamp_range: tuple[str, str] | None = None
+    label: str = ""
+
+
+@dataclass(slots=True)
+class DiscourseWarning:
+    """A warning emitted by discourse guardrails."""
+
+    warning_type: DiscourseWarningType
+    message: str
+    related_ids: set[str] = field(default_factory=set)
+
+
+@dataclass(slots=True)
+class DiscourseSection:
+    """A compact explainable section for investigative review."""
+
+    title: str
+    items: list[str] = field(default_factory=list)
+    citations: list[DiscourseCitation] = field(default_factory=list)
+    warnings: list[DiscourseWarning] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class InvestigativeNarrative:
+    """Deterministic narrative separated by epistemic role."""
+
+    observations: str = ""
+    interpretations: str = ""
+    speculation: str = ""
+    uncertainty: str = ""
+
+
+@dataclass(slots=True)
+class DiscourseRequest:
+    """Request to transform reasoning into human-review discourse."""
+
+    query: str
+    activated_context: ActivatedContext
+    reasoning_output: ReasoningOutput
+
+
+@dataclass(slots=True)
+class DiscourseResponse:
+    """Structured discourse output for human review."""
+
+    observed_evidence: DiscourseSection
+    possible_associations: DiscourseSection
+    contradictions: DiscourseSection
+    weak_associations: DiscourseSection
+    speculative_hypotheses: DiscourseSection
+    provenance_notes: DiscourseSection
+    uncertainty_summary: DiscourseSection
+    missing_information: DiscourseSection
+    reasoning_warnings: list[ReasoningWarning] = field(default_factory=list)
+    citations: list[DiscourseCitation] = field(default_factory=list)
+    narrative: InvestigativeNarrative = field(default_factory=InvestigativeNarrative)
+    review_required: bool = False
 
 
 @dataclass(slots=True)

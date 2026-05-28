@@ -54,10 +54,18 @@ The initial framework provides:
   provenance, same-lineage repetition, and fictional contamination warnings.
 - A deterministic mock reasoner plus adapter interface for future Nemotron,
   LM Studio, Ollama, vLLM, OpenAI API, or VLM perception integrations.
+- An investigative discourse layer that turns activated context and bounded
+  reasoning into structured human-review sections.
+- Deterministic narrative separation for observations, interpretations,
+  speculation, and uncertainty.
+- Provenance citations and discourse guardrails that keep uncertainty,
+  contradictions, weak associations, and contamination warnings visible.
+- A tiny CLI harness for deterministic terminal discourse output, with future
+  web interface possibilities kept separate.
 - An AI debt register documenting future risks around inference, provenance,
   semantic similarity, temporal parsing, scoring, evaluation, and reporting.
 - Tests proving memory, source-trust, timeline, graph, claim-matrix,
-  associative retrieval, ingestion, and bounded reasoning behavior.
+  associative retrieval, ingestion, bounded reasoning, and discourse behavior.
 
 ## Project Layout
 
@@ -72,8 +80,12 @@ Roswell-uap-cortex/
       __init__.py
       associative.py
       claim_matrix.py
+      citations.py
+      cli.py
       context_builder.py
       correlation_guard.py
+      discourse.py
+      discourse_guardrails.py
       graph.py
       guardrails.py
       independence.py
@@ -82,10 +94,12 @@ Roswell-uap-cortex/
       models.py
       mock_reasoner.py
       memory.py
+      narrative.py
       provenance.py
       reasoning.py
       text.py
       timeline.py
+      uncertainty.py
   tests/
     test_memory_merge.py
     test_phase2_evidence_trust.py
@@ -93,6 +107,7 @@ Roswell-uap-cortex/
     test_phase4_associative_retrieval.py
     test_phase5_ingestion.py
     test_phase6_reasoning.py
+    test_phase7_discourse.py
   pyproject.toml
   README.md
 ```

@@ -219,6 +219,25 @@ Must not do:
 Do not load a snapshot in a way that creates new evidence, confirms claims,
 creates graph edges, or promotes discourse into truth.
 
+## Evaluation Debt
+
+Risk:
+Synthetic evaluation scores may be mistaken for scientific validity,
+real-world accuracy, or validation of UAP conclusions.
+
+Current mitigation:
+`EvaluationHarness` measures framework behavior only. `EvaluationReportFormatter`
+includes limitations in every report, and `EpistemicMetrics` exposes bounded
+guardrail rates rather than truth metrics.
+
+Future trigger:
+Before adding real data, vector retrieval, or real model inference, new
+synthetic scenarios should be added for the failure modes those features
+introduce.
+
+Must not do:
+Do not interpret passing synthetic scenarios as real-world truth validation.
+
 ## VLM Perception Debt
 
 Risk:

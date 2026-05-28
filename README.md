@@ -66,11 +66,13 @@ The initial framework provides:
   deterministic checksums, and guarded local JSON save/load behavior.
 - Immutable persistence boundaries: loading records does not create evidence,
   claims, graph edges, or truth state automatically.
+- A synthetic evaluation harness with epistemic metrics, deterministic reports,
+  no-mutation checks, and mandatory limitations.
 - An AI debt register documenting future risks around inference, provenance,
   semantic similarity, temporal parsing, scoring, evaluation, and reporting.
 - Tests proving memory, source-trust, timeline, graph, claim-matrix,
   associative retrieval, ingestion, bounded reasoning, discourse, and
-  persistence behavior.
+  persistence/evaluation behavior.
 
 ## Project Layout
 
@@ -91,6 +93,9 @@ Roswell-uap-cortex/
       correlation_guard.py
       discourse.py
       discourse_guardrails.py
+      evaluation.py
+      evaluation_guardrails.py
+      evaluation_report.py
       graph.py
       guardrails.py
       independence.py
@@ -99,12 +104,14 @@ Roswell-uap-cortex/
       models.py
       mock_reasoner.py
       memory.py
+      metrics.py
       narrative.py
       persistence.py
       persistence_guardrails.py
       provenance.py
       reasoning.py
       serialization.py
+      scenarios.py
       snapshot.py
       snapshot_validator.py
       text.py
@@ -119,6 +126,7 @@ Roswell-uap-cortex/
     test_phase6_reasoning.py
     test_phase7_discourse.py
     test_phase8_persistence.py
+    test_phase8_1_evaluation.py
   pyproject.toml
   README.md
 ```

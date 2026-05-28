@@ -16,6 +16,9 @@ from roswell_uap_cortex.correlation_guard import CorrelationGuard
 from roswell_uap_cortex.corroboration import CorroborationLayer
 from roswell_uap_cortex.discourse import DiscourseEngine
 from roswell_uap_cortex.discourse_guardrails import DiscourseGuardrails
+from roswell_uap_cortex.evaluation import EvaluationHarness
+from roswell_uap_cortex.evaluation_guardrails import EvaluationGuardrails
+from roswell_uap_cortex.evaluation_report import EvaluationReportFormatter
 from roswell_uap_cortex.graph import FocusedGraphNeighborhood, RelationshipGraphEngine
 from roswell_uap_cortex.guardrails import ReasoningGuardrails
 from roswell_uap_cortex.independence import EvidenceIndependenceInput, IndependenceScorer
@@ -23,6 +26,7 @@ from roswell_uap_cortex.ingestion import IngestionNormalizer
 from roswell_uap_cortex.lineage import EvidenceLineageEngine, LineageTracker
 from roswell_uap_cortex.llm_adapter import LocalLLMAdapter
 from roswell_uap_cortex.memory import MemoryDecayEngine
+from roswell_uap_cortex.metrics import EpistemicMetrics
 from roswell_uap_cortex.mock_reasoner import MockReasoner
 from roswell_uap_cortex.models import (
     ActivatedContext,
@@ -48,6 +52,14 @@ from roswell_uap_cortex.models import (
     EvidenceCategory,
     EvidenceItem,
     EvidenceLineageRecord,
+    EvaluationExpectedBehavior,
+    EvaluationFailure,
+    EvaluationInput,
+    EvaluationMetric,
+    EvaluationReport,
+    EvaluationResult,
+    EvaluationScenario,
+    ExpectedBehaviorType,
     EventNode,
     ExtractedObservation,
     GraphNode,
@@ -90,6 +102,7 @@ from roswell_uap_cortex.uncertainty import UncertaintyFormatter
 from roswell_uap_cortex.persistence import PersistenceStore
 from roswell_uap_cortex.persistence_guardrails import PersistenceGuardrails
 from roswell_uap_cortex.serialization import Serializer
+from roswell_uap_cortex.scenarios import ScenarioFactory
 from roswell_uap_cortex.snapshot import SCHEMA_VERSION, SnapshotBuilder
 from roswell_uap_cortex.snapshot_validator import SnapshotValidationResult, SnapshotValidator
 
@@ -135,6 +148,18 @@ __all__ = [
     "EvidenceItem",
     "EvidenceLineageEngine",
     "EvidenceLineageRecord",
+    "EpistemicMetrics",
+    "EvaluationExpectedBehavior",
+    "EvaluationFailure",
+    "EvaluationGuardrails",
+    "EvaluationHarness",
+    "EvaluationInput",
+    "EvaluationMetric",
+    "EvaluationReport",
+    "EvaluationReportFormatter",
+    "EvaluationResult",
+    "EvaluationScenario",
+    "ExpectedBehaviorType",
     "EventNode",
     "ExtractedObservation",
     "FocusedGraphNeighborhood",
@@ -178,6 +203,7 @@ __all__ = [
     "SimpleTokenizer",
     "SaveResult",
     "SCHEMA_VERSION",
+    "ScenarioFactory",
     "SnapshotBuilder",
     "SnapshotMetadata",
     "SnapshotValidationResult",

@@ -157,6 +157,21 @@ class DiscourseWarningType(str, Enum):
     MISSING_PROVENANCE = "missing_provenance"
 
 
+class ExpectedBehaviorType(str, Enum):
+    """Epistemic behaviors evaluated by synthetic scenarios."""
+
+    PROVENANCE_VISIBLE = "provenance_visible"
+    CONTRADICTIONS_PRESERVED = "contradictions_preserved"
+    UNSUPPORTED_CLAIM_NOT_CONFIRMED = "unsupported_claim_not_confirmed"
+    ASSOCIATION_NOT_CONFIRMATION = "association_not_confirmation"
+    SPECULATIVE_LABELED = "speculative_labeled"
+    SAME_LINEAGE_NOT_INDEPENDENT = "same_lineage_not_independent"
+    UNCERTAINTY_EXPOSED = "uncertainty_exposed"
+    CONTAMINATION_WARNING_VISIBLE = "contamination_warning_visible"
+    CONFIDENCE_BOUNDED = "confidence_bounded"
+    NO_STATE_MUTATION = "no_state_mutation"
+
+
 @dataclass(slots=True)
 class SnapshotMetadata:
     """Metadata for an immutable persistence snapshot."""
@@ -217,6 +232,84 @@ class LoadResult:
     warnings: list[str] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
     success: bool = True
+
+
+@dataclass(slots=True)
+class EvaluationInput:
+    """Artifacts inspected by the deterministic evaluation harness."""
+
+    activated_context: "ActivatedContext | None" = None
+    reasoning_output: "ReasoningOutput | None" = None
+    discourse_response: "DiscourseResponse | None" = None
+    persistence_envelope: PersistenceEnvelope | None = None
+    evidence_items: list["EvidenceItem"] = field(default_factory=list)
+    claims: list["ClaimNode"] = field(default_factory=list)
+    lineage_records: list["SourceLineageRecord"] = field(default_factory=list)
+    before_state_hash: str | None = None
+    after_state_hash: str | None = None
+
+
+@dataclass(slots=True)
+class EvaluationExpectedBehavior:
+    """A behavior expectation for a scenario."""
+
+    behavior: ExpectedBehaviorType
+    description: str = ""
+
+
+@dataclass(slots=True)
+class EvaluationScenario:
+    """Synthetic scenario for evaluating epistemic framework behavior."""
+
+    scenario_id: str
+    title: str
+    description: str
+    inputs: EvaluationInput
+    expected_behaviors: list[EvaluationExpectedBehavior]
+    tags: set[str] = field(default_factory=set)
+    risk_level: str = "medium"
+
+
+@dataclass(slots=True)
+class EvaluationFailure:
+    """A structured failed behavior result."""
+
+    scenario_id: str
+    behavior: ExpectedBehaviorType
+    message: str
+    related_ids: set[str] = field(default_factory=set)
+
+
+@dataclass(slots=True)
+class EvaluationMetric:
+    """A bounded aggregate metric."""
+
+    name: str
+    value: float
+    description: str = ""
+
+
+@dataclass(slots=True)
+class EvaluationResult:
+    """Per-scenario evaluation result."""
+
+    scenario_id: str
+    behavior_results: dict[ExpectedBehaviorType, bool] = field(default_factory=dict)
+    failures: list[EvaluationFailure] = field(default_factory=list)
+
+    @property
+    def passed(self) -> bool:
+        return all(self.behavior_results.values()) if self.behavior_results else False
+
+
+@dataclass(slots=True)
+class EvaluationReport:
+    """Aggregate evaluation report for synthetic scenarios."""
+
+    results: list[EvaluationResult] = field(default_factory=list)
+    metrics: list[EvaluationMetric] = field(default_factory=list)
+    limitations: list[str] = field(default_factory=list)
+    overall_pass_rate: float = 0.0
 
 
 @dataclass(slots=True)

@@ -229,6 +229,22 @@ Unknown fields are preserved for future migrations. Discourse remains persisted
 as discourse, separate from evidence. Archived memories remain archived,
 contradiction pressure is preserved, and provenance warnings remain visible.
 
+## Evaluation Harness
+
+Phase 8.1 adds `EvaluationHarness`, `EpistemicMetrics`, `ScenarioFactory`,
+`EvaluationGuardrails`, and `EvaluationReportFormatter`. The harness uses tiny
+synthetic scenarios to check whether the framework preserves its epistemic
+rules under stress.
+
+Evaluation measures behavior such as provenance visibility, contradiction
+preservation, association-not-confirmation, same-lineage caution, uncertainty
+exposure, bounded confidence, contamination warning visibility, and no state
+mutation.
+
+These metrics are not truth metrics. Passing synthetic scenarios does not
+validate any real-world UAP conclusion or evidentiary claim. Every report
+includes limitations.
+
 ## Vector-Ready Design
 
 The association score separates lexical, tag, entity, timeline, source

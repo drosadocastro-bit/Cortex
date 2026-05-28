@@ -6,6 +6,8 @@ import argparse
 from datetime import datetime, timezone
 
 from roswell_uap_cortex.discourse import DiscourseEngine
+from roswell_uap_cortex.evaluation import EvaluationHarness
+from roswell_uap_cortex.evaluation_report import EvaluationReportFormatter
 from roswell_uap_cortex.models import (
     ActivatedContext,
     DiscourseRequest,
@@ -15,6 +17,7 @@ from roswell_uap_cortex.models import (
     SourceLineageRecord,
 )
 from roswell_uap_cortex.reasoning import CognitiveReasoningEngine
+from roswell_uap_cortex.scenarios import ScenarioFactory
 
 
 def build_demo_discourse(prompt: str) -> str:
@@ -86,6 +89,12 @@ def render_response(response) -> str:
     lines.append("## Review")
     lines.append(f"- required: {str(response.review_required).lower()}")
     return "\n".join(lines)
+
+
+def build_demo_evaluation_report() -> str:
+    scenarios = ScenarioFactory().all()
+    report = EvaluationHarness().run(scenarios)
+    return EvaluationReportFormatter().format(report)
 
 
 def main(argv: list[str] | None = None) -> int:

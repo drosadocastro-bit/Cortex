@@ -2,6 +2,10 @@
 
 A cognitive investigative assistant framework for uncertain evidence domains.
 
+**Disclaimer:** This is a personal, independent hobby project conducted entirely on personal time, personal equipment, and personal resources. The views, logic architectures, design patterns, documentation, and code expressed in this repository are solely those of the author and do not represent the official policy, position, endorsement, or technical guidance of the Federal Aviation Administration (FAA), the Department of Transportation (DOT), or the United States Government.
+
+This project is exploratory and educational in nature. It is not intended for operational use, official analysis, regulatory decision-making, or safety-critical deployment.
+
 This project does not claim truth. Its purpose is to preserve uncertainty while
 organizing evidence, claims, memory, contradictions, timelines, graph context,
 and source trust.

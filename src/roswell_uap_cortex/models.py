@@ -170,6 +170,21 @@ class ExpectedBehaviorType(str, Enum):
     CONTAMINATION_WARNING_VISIBLE = "contamination_warning_visible"
     CONFIDENCE_BOUNDED = "confidence_bounded"
     NO_STATE_MUTATION = "no_state_mutation"
+    SEMANTIC_SIMILARITY_NOT_CONFIRMATION = "semantic_similarity_not_confirmation"
+    SEMANTIC_LINEAGE_ECHO_DOWNGRADED = "semantic_lineage_echo_downgraded"
+    SEMANTIC_MISSING_PROVENANCE_WARNING = "semantic_missing_provenance_warning"
+    CONTESTED_SEMANTIC_CLUSTER_VISIBLE = "contested_semantic_cluster_visible"
+
+
+class SemanticWarningType(str, Enum):
+    """Typed warnings for semantic retrieval and clustering."""
+
+    SIMILARITY_NOT_CONFIRMATION = "similarity_not_confirmation"
+    SAME_LINEAGE_ECHO = "same_lineage_echo"
+    MISSING_PROVENANCE = "missing_provenance"
+    CONTESTED_MATCH = "contested_match"
+    FICTIONAL_CONTAMINATION = "fictional_contamination"
+    PARAPHRASE_NOT_INDEPENDENCE = "paraphrase_not_independence"
 
 
 @dataclass(slots=True)
@@ -310,6 +325,82 @@ class EvaluationReport:
     metrics: list[EvaluationMetric] = field(default_factory=list)
     limitations: list[str] = field(default_factory=list)
     overall_pass_rate: float = 0.0
+
+
+@dataclass(slots=True)
+class EmbeddingVector:
+    """A deterministic embedding vector container."""
+
+    values: list[float]
+    model: str = "mock"
+
+
+@dataclass(slots=True)
+class SemanticWarning:
+    """A warning emitted by semantic infrastructure."""
+
+    warning_type: SemanticWarningType
+    message: str
+    related_ids: set[str] = field(default_factory=set)
+
+
+@dataclass(slots=True)
+class SemanticRecord:
+    """Record prepared for controlled semantic comparison."""
+
+    record_id: str
+    text: str
+    record_role: str = "unknown"
+    tags: set[str] = field(default_factory=set)
+    entity_ids: set[str] = field(default_factory=set)
+    provenance_ids: set[str] = field(default_factory=set)
+    source_id: str | None = None
+    lineage_id: str | None = None
+    contradiction_pressure: float = 0.0
+    contested: bool = False
+    contamination_flags: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
+class SemanticSimilarityResult:
+    """Semantic similarity result; score is not truth confidence."""
+
+    record_a_id: str
+    record_b_id: str
+    similarity_score: float
+    similarity_reason: list[str] = field(default_factory=list)
+    source_independence: float = 0.0
+    lineage_overlap: bool = False
+    contradiction_pressure: float = 0.0
+    warning_flags: list[SemanticWarning] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class SemanticCluster:
+    """A possible related semantic cluster, never equivalence or confirmation."""
+
+    cluster_id: str
+    member_ids: set[str] = field(default_factory=set)
+    cluster_label: str = "possible_related_cluster"
+    duplicate_lineage_ids: set[str] = field(default_factory=set)
+    contested_member_ids: set[str] = field(default_factory=set)
+    warnings: list[SemanticWarning] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class HybridRetrievalResult:
+    """Hybrid retrieval output preserving component scores separately."""
+
+    record_id: str
+    associative_score: float = 0.0
+    graph_score: float = 0.0
+    timeline_score: float = 0.0
+    semantic_similarity_score: float = 0.0
+    provenance_visible: bool = False
+    ranking_score: float = 0.0
+    uncertainty_notes: list[str] = field(default_factory=list)
+    semantic_warnings: list[SemanticWarning] = field(default_factory=list)
 
 
 @dataclass(slots=True)

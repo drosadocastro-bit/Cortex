@@ -258,6 +258,28 @@ Must not do:
 Do not let infrastructure dependencies decide truth, erase uncertainty, or
 replace provenance-aware framework models.
 
+## Semantic Layer Debt
+
+Risk:
+Future embeddings or vector databases may make semantically similar records
+look confirmed, equivalent, or independently corroborated.
+
+Current mitigation:
+`SemanticSimilarityEngine` uses deterministic mock embeddings by default.
+Semantic records carry provenance, lineage, role, contradiction pressure, and
+contamination flags. `SemanticContaminationGuard` warns on same-lineage echoes,
+missing provenance, contested matches, paraphrase risk, and fictional
+contamination.
+
+Future trigger:
+Before adding real embedding models or a vector database, every backend must
+pass the same semantic guardrail tests and preserve component scores in hybrid
+retrieval.
+
+Must not do:
+Do not treat semantic similarity, paraphrase, or cluster membership as claim
+confirmation or independent corroboration.
+
 ## VLM Perception Debt
 
 Risk:

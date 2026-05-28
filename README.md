@@ -72,6 +72,9 @@ The initial framework provides:
   traversal, contradiction lookup, lineage paths, subgraphs, and temporal links.
 - Conservative temporal helpers using `python-dateutil` behind wrappers that
   preserve fuzzy-date uncertainty.
+- Controlled semantic layer with embedding backend abstraction, deterministic
+  mock embeddings, semantic warnings, possible-related clusters, and hybrid
+  retrieval component scores.
 - An AI debt register documenting future risks around inference, provenance,
   semantic similarity, temporal parsing, scoring, evaluation, and reporting.
 - Tests proving memory, source-trust, timeline, graph, claim-matrix,
@@ -100,9 +103,11 @@ Roswell-uap-cortex/
       evaluation.py
       evaluation_guardrails.py
       evaluation_report.py
+      embedding_backend.py
       graph.py
       graph_backend.py
       guardrails.py
+      hybrid_retrieval.py
       independence.py
       ingestion.py
       llm_adapter.py
@@ -116,6 +121,9 @@ Roswell-uap-cortex/
       persistence_guardrails.py
       provenance.py
       reasoning.py
+      semantic.py
+      semantic_clustering.py
+      semantic_guardrails.py
       serialization.py
       scenarios.py
       snapshot.py
@@ -135,6 +143,7 @@ Roswell-uap-cortex/
     test_phase8_persistence.py
     test_phase8_1_evaluation.py
     test_phase9_graph_temporal.py
+    test_phase10_semantic.py
   pyproject.toml
   README.md
 ```

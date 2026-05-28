@@ -264,6 +264,27 @@ approximate ranges with uncertainty notes. Unknown dates remain unknown.
 Future graph databases should preserve the same backend interface and epistemic
 guardrails.
 
+## Controlled Semantic Layer
+
+Phase 10 adds `EmbeddingBackend`, `MockEmbeddingBackend`,
+`SemanticSimilarityEngine`, `SemanticClusterEngine`,
+`HybridRetrievalCoordinator`, and `SemanticContaminationGuard`.
+
+Semantic records carry role, provenance ids, lineage id, source id, tags,
+entities, contradiction pressure, contested state, and contamination flags.
+Similarity combines deterministic mock embedding similarity, lexical overlap,
+tags, entities, source independence, lineage overlap, and contradiction
+pressure.
+
+Semantic similarity is not confirmation. Same-lineage echoes are downgraded,
+missing provenance creates warnings, fictional contamination propagates, and
+contested semantic matches remain visible.
+
+Semantic clusters are labeled `possible_related_cluster`. They preserve member
+ids, duplicate lineage ids, and contested member ids without implying
+equivalence, support, or confirmation. Hybrid retrieval preserves associative,
+graph, timeline, and semantic component scores separately.
+
 ## Vector-Ready Design
 
 The association score separates lexical, tag, entity, timeline, source

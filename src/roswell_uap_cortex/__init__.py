@@ -19,9 +19,11 @@ from roswell_uap_cortex.discourse_guardrails import DiscourseGuardrails
 from roswell_uap_cortex.evaluation import EvaluationHarness
 from roswell_uap_cortex.evaluation_guardrails import EvaluationGuardrails
 from roswell_uap_cortex.evaluation_report import EvaluationReportFormatter
+from roswell_uap_cortex.embedding_backend import EmbeddingBackend, MockEmbeddingBackend
 from roswell_uap_cortex.graph import FocusedGraphNeighborhood, RelationshipGraphEngine
 from roswell_uap_cortex.graph_backend import GraphBackend, GraphTraversalResult
 from roswell_uap_cortex.guardrails import ReasoningGuardrails
+from roswell_uap_cortex.hybrid_retrieval import HybridRetrievalCoordinator
 from roswell_uap_cortex.independence import EvidenceIndependenceInput, IndependenceScorer
 from roswell_uap_cortex.ingestion import IngestionNormalizer
 from roswell_uap_cortex.lineage import EvidenceLineageEngine, LineageTracker
@@ -54,6 +56,7 @@ from roswell_uap_cortex.models import (
     EvidenceCategory,
     EvidenceItem,
     EvidenceLineageRecord,
+    EmbeddingVector,
     EvaluationExpectedBehavior,
     EvaluationFailure,
     EvaluationInput,
@@ -66,6 +69,7 @@ from roswell_uap_cortex.models import (
     ExtractedObservation,
     GraphNode,
     GraphNodeType,
+    HybridRetrievalResult,
     IngestionResult,
     InvestigativeNarrative,
     LineageType,
@@ -86,6 +90,11 @@ from roswell_uap_cortex.models import (
     RelationshipEdge,
     RelationshipType,
     RetrievalContext,
+    SemanticCluster,
+    SemanticRecord,
+    SemanticSimilarityResult,
+    SemanticWarning,
+    SemanticWarningType,
     SourceNode,
     SourceLineageRecord,
     SourceTrust,
@@ -106,6 +115,9 @@ from roswell_uap_cortex.persistence import PersistenceStore
 from roswell_uap_cortex.persistence_guardrails import PersistenceGuardrails
 from roswell_uap_cortex.serialization import Serializer
 from roswell_uap_cortex.scenarios import ScenarioFactory
+from roswell_uap_cortex.semantic import SemanticSimilarityEngine
+from roswell_uap_cortex.semantic_clustering import SemanticClusterEngine
+from roswell_uap_cortex.semantic_guardrails import SemanticContaminationGuard
 from roswell_uap_cortex.snapshot import SCHEMA_VERSION, SnapshotBuilder
 from roswell_uap_cortex.snapshot_validator import SnapshotValidationResult, SnapshotValidator
 
@@ -147,6 +159,8 @@ __all__ = [
     "DiscourseWarningType",
     "EntityNode",
     "EvidenceCategory",
+    "EmbeddingBackend",
+    "EmbeddingVector",
     "EvidenceIndependenceInput",
     "EvidenceItem",
     "EvidenceLineageEngine",
@@ -170,6 +184,8 @@ __all__ = [
     "GraphNode",
     "GraphNodeType",
     "GraphTraversalResult",
+    "HybridRetrievalCoordinator",
+    "HybridRetrievalResult",
     "IndependenceScorer",
     "IngestionNormalizer",
     "IngestionResult",
@@ -181,6 +197,7 @@ __all__ = [
     "MemoryActivationEngine",
     "MemoryDecayEngine",
     "MemoryRecord",
+    "MockEmbeddingBackend",
     "MockReasoner",
     "NarrativeBuilder",
     "NetworkXGraphBackend",
@@ -205,6 +222,14 @@ __all__ = [
     "RelationshipType",
     "RetrievalContext",
     "SemanticCompressionEngine",
+    "SemanticCluster",
+    "SemanticClusterEngine",
+    "SemanticContaminationGuard",
+    "SemanticRecord",
+    "SemanticSimilarityEngine",
+    "SemanticSimilarityResult",
+    "SemanticWarning",
+    "SemanticWarningType",
     "Serializer",
     "SimpleTokenizer",
     "SaveResult",

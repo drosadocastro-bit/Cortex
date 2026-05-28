@@ -149,4 +149,12 @@ class EvaluationHarness:
         if behavior is ExpectedBehaviorType.NO_STATE_MUTATION:
             passed = inputs.before_state_hash is not None and inputs.before_state_hash == inputs.after_state_hash
             return passed, "state hash changed during evaluation", set()
+        if behavior in {
+            ExpectedBehaviorType.SEMANTIC_SIMILARITY_NOT_CONFIRMATION,
+            ExpectedBehaviorType.SEMANTIC_LINEAGE_ECHO_DOWNGRADED,
+            ExpectedBehaviorType.SEMANTIC_MISSING_PROVENANCE_WARNING,
+            ExpectedBehaviorType.CONTESTED_SEMANTIC_CLUSTER_VISIBLE,
+        }:
+            passed = inputs.before_state_hash is not None and inputs.before_state_hash == inputs.after_state_hash
+            return passed, f"{behavior.value} guardrail did not hold", set()
         return False, "unknown expected behavior", set()

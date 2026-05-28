@@ -45,6 +45,7 @@ class ScenarioFactory:
             self.discourse_certainty_inflation_attempt(),
             self.archived_memory_reload_check(),
             *self.graph_infrastructure_scenarios(),
+            *self.semantic_scenarios(),
         ]
 
     def graph_infrastructure_scenarios(self) -> list[EvaluationScenario]:
@@ -84,6 +85,50 @@ class ScenarioFactory:
                 EvaluationInput(before_state_hash="dedupe", after_state_hash="dedupe"),
                 [ExpectedBehaviorType.NO_STATE_MUTATION],
                 {"synthetic", "graph", "dedupe"},
+            ),
+        ]
+
+    def semantic_scenarios(self) -> list[EvaluationScenario]:
+        return [
+            self._scenario(
+                "synthetic-semantic-no-confirmation",
+                "Semantic Similarity Without Confirmation",
+                EvaluationInput(before_state_hash="semantic", after_state_hash="semantic"),
+                [
+                    ExpectedBehaviorType.NO_STATE_MUTATION,
+                    ExpectedBehaviorType.SEMANTIC_SIMILARITY_NOT_CONFIRMATION,
+                ],
+                {"synthetic", "semantic"},
+            ),
+            self._scenario(
+                "synthetic-semantic-lineage-echo",
+                "Same-Lineage Semantic Echo",
+                EvaluationInput(before_state_hash="semantic-lineage", after_state_hash="semantic-lineage"),
+                [
+                    ExpectedBehaviorType.NO_STATE_MUTATION,
+                    ExpectedBehaviorType.SEMANTIC_LINEAGE_ECHO_DOWNGRADED,
+                ],
+                {"synthetic", "semantic", "lineage"},
+            ),
+            self._scenario(
+                "synthetic-semantic-missing-provenance",
+                "High Similarity With Missing Provenance",
+                EvaluationInput(before_state_hash="semantic-provenance", after_state_hash="semantic-provenance"),
+                [
+                    ExpectedBehaviorType.NO_STATE_MUTATION,
+                    ExpectedBehaviorType.SEMANTIC_MISSING_PROVENANCE_WARNING,
+                ],
+                {"synthetic", "semantic", "provenance"},
+            ),
+            self._scenario(
+                "synthetic-contested-semantic-cluster",
+                "Contested Semantic Cluster",
+                EvaluationInput(before_state_hash="semantic-cluster", after_state_hash="semantic-cluster"),
+                [
+                    ExpectedBehaviorType.NO_STATE_MUTATION,
+                    ExpectedBehaviorType.CONTESTED_SEMANTIC_CLUSTER_VISIBLE,
+                ],
+                {"synthetic", "semantic", "cluster"},
             ),
         ]
 

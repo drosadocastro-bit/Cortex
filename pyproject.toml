@@ -11,7 +11,10 @@ requires-python = ">=3.10"
 authors = [
   { name = "Roswell UAP Research Assistance" }
 ]
-dependencies = []
+dependencies = [
+  "networkx>=3.0",
+  "python-dateutil>=2.8"
+]
 
 [project.optional-dependencies]
 dev = [

@@ -245,6 +245,25 @@ These metrics are not truth metrics. Passing synthetic scenarios does not
 validate any real-world UAP conclusion or evidentiary claim. Every report
 includes limitations.
 
+## Graph And Temporal Infrastructure
+
+Phase 9 adds `GraphBackend`, `NetworkXGraphBackend`, and
+`TemporalReasoningHelper`. The original in-memory graph engine remains
+available, while NetworkX provides deterministic traversal, contradiction
+lookup, lineage paths, focused subgraphs, and temporal-link traversal behind an
+abstraction.
+
+Graph traversal is sorted and duplicate edges are deduplicated by source,
+endpoint, and relationship type. Provenance metadata, evidence ids, edge types,
+and contradiction relationships remain visible.
+
+`TimelineEngine` now uses `python-dateutil` only through conservative wrappers.
+Full ISO dates can become exact dates. Month, year, and fuzzy month hints become
+approximate ranges with uncertainty notes. Unknown dates remain unknown.
+
+Future graph databases should preserve the same backend interface and epistemic
+guardrails.
+
 ## Vector-Ready Design
 
 The association score separates lexical, tag, entity, timeline, source

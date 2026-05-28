@@ -68,6 +68,10 @@ The initial framework provides:
   claims, graph edges, or truth state automatically.
 - A synthetic evaluation harness with epistemic metrics, deterministic reports,
   no-mutation checks, and mandatory limitations.
+- Graph backend abstraction with NetworkX integration for deterministic
+  traversal, contradiction lookup, lineage paths, subgraphs, and temporal links.
+- Conservative temporal helpers using `python-dateutil` behind wrappers that
+  preserve fuzzy-date uncertainty.
 - An AI debt register documenting future risks around inference, provenance,
   semantic similarity, temporal parsing, scoring, evaluation, and reporting.
 - Tests proving memory, source-trust, timeline, graph, claim-matrix,
@@ -97,6 +101,7 @@ Roswell-uap-cortex/
       evaluation_guardrails.py
       evaluation_report.py
       graph.py
+      graph_backend.py
       guardrails.py
       independence.py
       ingestion.py
@@ -106,6 +111,7 @@ Roswell-uap-cortex/
       memory.py
       metrics.py
       narrative.py
+      networkx_backend.py
       persistence.py
       persistence_guardrails.py
       provenance.py
@@ -114,6 +120,7 @@ Roswell-uap-cortex/
       scenarios.py
       snapshot.py
       snapshot_validator.py
+      temporal.py
       text.py
       timeline.py
       uncertainty.py
@@ -127,6 +134,7 @@ Roswell-uap-cortex/
     test_phase7_discourse.py
     test_phase8_persistence.py
     test_phase8_1_evaluation.py
+    test_phase9_graph_temporal.py
   pyproject.toml
   README.md
 ```

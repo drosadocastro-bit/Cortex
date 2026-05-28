@@ -20,6 +20,7 @@ from roswell_uap_cortex.evaluation import EvaluationHarness
 from roswell_uap_cortex.evaluation_guardrails import EvaluationGuardrails
 from roswell_uap_cortex.evaluation_report import EvaluationReportFormatter
 from roswell_uap_cortex.graph import FocusedGraphNeighborhood, RelationshipGraphEngine
+from roswell_uap_cortex.graph_backend import GraphBackend, GraphTraversalResult
 from roswell_uap_cortex.guardrails import ReasoningGuardrails
 from roswell_uap_cortex.independence import EvidenceIndependenceInput, IndependenceScorer
 from roswell_uap_cortex.ingestion import IngestionNormalizer
@@ -28,6 +29,7 @@ from roswell_uap_cortex.llm_adapter import LocalLLMAdapter
 from roswell_uap_cortex.memory import MemoryDecayEngine
 from roswell_uap_cortex.metrics import EpistemicMetrics
 from roswell_uap_cortex.mock_reasoner import MockReasoner
+from roswell_uap_cortex.networkx_backend import NetworkXGraphBackend
 from roswell_uap_cortex.models import (
     ActivatedContext,
     AssociationCandidate,
@@ -96,6 +98,7 @@ from roswell_uap_cortex.narrative import NarrativeBuilder
 from roswell_uap_cortex.provenance import ProvenanceExtractor
 from roswell_uap_cortex.reasoning import CognitiveReasoningEngine
 from roswell_uap_cortex.source_trust import SourceTrustEngine
+from roswell_uap_cortex.temporal import TemporalComparison, TemporalReasoningHelper
 from roswell_uap_cortex.text import SimpleTokenizer
 from roswell_uap_cortex.timeline import TimelineEngine
 from roswell_uap_cortex.uncertainty import UncertaintyFormatter
@@ -163,8 +166,10 @@ __all__ = [
     "EventNode",
     "ExtractedObservation",
     "FocusedGraphNeighborhood",
+    "GraphBackend",
     "GraphNode",
     "GraphNodeType",
+    "GraphTraversalResult",
     "IndependenceScorer",
     "IngestionNormalizer",
     "IngestionResult",
@@ -178,6 +183,7 @@ __all__ = [
     "MemoryRecord",
     "MockReasoner",
     "NarrativeBuilder",
+    "NetworkXGraphBackend",
     "PersistenceEnvelope",
     "PersistenceGuardrails",
     "PersistenceManifest",
@@ -212,6 +218,8 @@ __all__ = [
     "SourceLineageRecord",
     "SourceTrust",
     "SourceTrustEngine",
+    "TemporalComparison",
+    "TemporalReasoningHelper",
     "TimelineDatePrecision",
     "TimelineEngine",
     "UncertaintyNote",

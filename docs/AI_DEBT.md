@@ -238,6 +238,26 @@ introduce.
 Must not do:
 Do not interpret passing synthetic scenarios as real-world truth validation.
 
+## Dependency Boundary Debt
+
+Risk:
+Infrastructure libraries may smuggle assumptions into graph traversal,
+temporal parsing, or future persistence/database behavior.
+
+Current mitigation:
+`networkx` and `python-dateutil` are used only behind deterministic wrappers.
+Graph traversal is sorted, duplicate edges are deduplicated, and temporal
+parsing preserves fuzzy-date uncertainty instead of fabricating precision.
+
+Future trigger:
+Before adding a graph database, vector database, or additional parsing library,
+the dependency must sit behind an interface with tests for provenance,
+contradiction visibility, deterministic ordering, and uncertainty preservation.
+
+Must not do:
+Do not let infrastructure dependencies decide truth, erase uncertainty, or
+replace provenance-aware framework models.
+
 ## VLM Perception Debt
 
 Risk:

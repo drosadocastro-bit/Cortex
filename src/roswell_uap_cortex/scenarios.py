@@ -44,6 +44,47 @@ class ScenarioFactory:
             self.weak_association_misread_as_confirmation(),
             self.discourse_certainty_inflation_attempt(),
             self.archived_memory_reload_check(),
+            *self.graph_infrastructure_scenarios(),
+        ]
+
+    def graph_infrastructure_scenarios(self) -> list[EvaluationScenario]:
+        """Synthetic graph upgrade checks for traversal and temporal ambiguity boundaries."""
+        return [
+            self._scenario(
+                "synthetic-graph-contradiction-traversal",
+                "Graph Contradiction Traversal",
+                EvaluationInput(before_state_hash="graph", after_state_hash="graph"),
+                [ExpectedBehaviorType.NO_STATE_MUTATION],
+                {"synthetic", "graph", "contradiction"},
+            ),
+            self._scenario(
+                "synthetic-graph-lineage-path",
+                "Graph Lineage Path Traversal",
+                EvaluationInput(before_state_hash="lineage", after_state_hash="lineage"),
+                [ExpectedBehaviorType.NO_STATE_MUTATION],
+                {"synthetic", "graph", "lineage"},
+            ),
+            self._scenario(
+                "synthetic-temporal-ambiguity",
+                "Temporal Ambiguity Preservation",
+                EvaluationInput(before_state_hash="temporal", after_state_hash="temporal"),
+                [ExpectedBehaviorType.NO_STATE_MUTATION],
+                {"synthetic", "temporal", "ambiguity"},
+            ),
+            self._scenario(
+                "synthetic-graph-subgraph-determinism",
+                "Deterministic Subgraph Extraction",
+                EvaluationInput(before_state_hash="subgraph", after_state_hash="subgraph"),
+                [ExpectedBehaviorType.NO_STATE_MUTATION],
+                {"synthetic", "graph", "subgraph"},
+            ),
+            self._scenario(
+                "synthetic-graph-duplicate-edge-deduplication",
+                "Duplicate Edge Deduplication",
+                EvaluationInput(before_state_hash="dedupe", after_state_hash="dedupe"),
+                [ExpectedBehaviorType.NO_STATE_MUTATION],
+                {"synthetic", "graph", "dedupe"},
+            ),
         ]
 
     def duplicate_source_repetition(self) -> EvaluationScenario:

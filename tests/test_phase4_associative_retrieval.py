@@ -202,6 +202,6 @@ def test_final_association_score_is_bounded_between_zero_and_one() -> None:
 def test_no_external_dependencies_are_required() -> None:
     pyproject = open("pyproject.toml", encoding="utf-8").read()
 
-    assert 'dependencies = []' in pyproject
-    assert "networkx" not in pyproject
-    assert "dateutil" not in pyproject
+    assert "chromadb" not in pyproject
+    assert "faiss" not in pyproject
+    assert "openai" not in pyproject

@@ -11,6 +11,24 @@ fragments, or reports. In the framework this is represented by `EvidenceItem`.
 It records source, time, summary, tags, and confidence without asserting that
 the observed content is true.
 
+Phase 5 adds `RawInput`, `IngestionNormalizer`, and `ExtractedObservation` as
+the sensory intake layer. Raw documents, transcripts, notes, and metadata are
+normalized into evidence records with deterministic extraction notes.
+
+Ingestion does not create claim confirmations, support edges, or truth
+assertions. It records what was supplied and preserves uncertainty for later
+reasoning.
+
+## Provenance Extraction
+
+`ProvenanceExtractor` creates a `ProvenanceRecord` for every ingested evidence
+item. Provenance preserves source URI, source kind, ingestion method, extraction
+method, original input id, extracted span, and optional page or timestamp
+metadata.
+
+Provenance is mandatory. If source information is missing, the missingness is
+flagged and represented explicitly rather than erased.
+
 ## Attention Filtering
 
 Attention filtering determines which evidence-backed memories become active.
@@ -130,6 +148,21 @@ This preserves contradiction instead of forcing premature resolution.
 lineage. Same-lineage or same-source evidence contributes cautiously, while
 separate primary sources can increase confidence more. Unknown lineage remains
 medium-low because missing provenance is not confirmation.
+
+`LineageTracker` assigns ingestion lineage ids before evidence reaches graph,
+claim-matrix, or retrieval layers. Derivative records and repeated source URIs
+share visible lineage metadata so later independence scoring can treat them
+cautiously.
+
+## Contamination Flags
+
+`ContaminationDetector` attaches deterministic warning flags such as
+`missing_date`, `missing_source_uri`, `missing_title`, `derivative_source`,
+`repeated_source_uri`, `anonymous_source`, `speculative_language`,
+`fictional_contamination_terms`, and `weak_chain_of_custody`.
+
+These flags are review signals, not conclusions. They help preserve uncertainty
+at sensory intake time.
 
 ## Correlation Guard
 

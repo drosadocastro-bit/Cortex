@@ -5,7 +5,14 @@ from __future__ import annotations
 from collections import defaultdict
 from dataclasses import dataclass
 
-from roswell_uap_cortex.models import ContaminationReport, EvidenceLineageRecord
+from roswell_uap_cortex.models import (
+    ContaminationFlag,
+    ContaminationFlagType,
+    ContaminationReport,
+    EvidenceItem,
+    EvidenceLineageRecord,
+    RawInput,
+)
 
 
 @dataclass(slots=True)
@@ -71,3 +78,97 @@ class ContaminationEngine:
                 return False
             parent_id = parent.parent_source_id
         return False
+
+
+@dataclass(slots=True)
+class ContaminationDetector:
+    """Rule-based contamination and source-quality flagging for ingestion."""
+
+    seen_source_uris: set[str] | None = None
+    speculative_terms: tuple[str, ...] = (
+        "maybe",
+        "perhaps",
+        "rumor",
+        "rumour",
+        "allegedly",
+        "speculative",
+        "unverified",
+        "i think",
+        "could be",
+        "might be",
+    )
+    fictional_terms: tuple[str, ...] = (
+        "astrophage",
+        "petrova line",
+        "warp drive",
+        "lightsaber",
+        "federation starship",
+    )
+
+    def __post_init__(self) -> None:
+        if self.seen_source_uris is None:
+            self.seen_source_uris = set()
+
+    def detect(
+        self,
+        raw_input: RawInput,
+        evidence: EvidenceItem | None = None,
+        *,
+        duplicate_source_uri: bool = False,
+        derivative_source: bool = False,
+    ) -> list[ContaminationFlag]:
+        text = raw_input.raw_text.casefold()
+        flags: list[ContaminationFlag] = []
+        evidence_id = evidence.id if evidence else None
+
+        def add(flag_type: ContaminationFlagType, note: str) -> None:
+            flags.append(
+                ContaminationFlag(
+                    flag_type=flag_type,
+                    input_id=raw_input.input_id,
+                    evidence_id=evidence_id,
+                    source_uri=raw_input.source_uri,
+                    note=note,
+                )
+            )
+
+        if raw_input.collected_at is None and not raw_input.declared_event_hint:
+            add(ContaminationFlagType.MISSING_DATE, "no collected_at or declared event hint")
+        if not raw_input.source_uri:
+            add(ContaminationFlagType.MISSING_SOURCE_URI, "source_uri is missing")
+        if not raw_input.title:
+            add(ContaminationFlagType.MISSING_TITLE, "title is missing")
+        if derivative_source:
+            add(ContaminationFlagType.DERIVATIVE_SOURCE, "metadata indicates derivative source")
+        if duplicate_source_uri:
+            add(ContaminationFlagType.REPEATED_SOURCE_URI, "source_uri was already ingested")
+        if self._is_anonymous(raw_input):
+            add(ContaminationFlagType.ANONYMOUS_SOURCE, "source appears anonymous or unattributed")
+        if any(term in text for term in self.speculative_terms):
+            add(ContaminationFlagType.SPECULATIVE_LANGUAGE, "speculative language detected")
+        if any(term in text for term in self.fictional_terms):
+            add(
+                ContaminationFlagType.FICTIONAL_CONTAMINATION_TERMS,
+                "fictional contamination term detected",
+            )
+        if self._weak_chain_of_custody(raw_input):
+            add(ContaminationFlagType.WEAK_CHAIN_OF_CUSTODY, "weak chain-of-custody metadata")
+
+        if raw_input.source_uri:
+            self.seen_source_uris.add(raw_input.source_uri)
+        return self._dedupe(flags)
+
+    def _is_anonymous(self, raw_input: RawInput) -> bool:
+        author = str(raw_input.metadata.get("author", "")).casefold()
+        return author in {"anonymous", "unknown"} or raw_input.source_kind == "anonymous"
+
+    def _weak_chain_of_custody(self, raw_input: RawInput) -> bool:
+        if raw_input.metadata.get("chain_of_custody") in {"weak", "unclear", "unknown"}:
+            return True
+        return raw_input.source_kind in {"forum", "repost", "social_media", "unknown"}
+
+    def _dedupe(self, flags: list[ContaminationFlag]) -> list[ContaminationFlag]:
+        deduped: dict[ContaminationFlagType, ContaminationFlag] = {}
+        for flag in flags:
+            deduped.setdefault(flag.flag_type, flag)
+        return list(deduped.values())

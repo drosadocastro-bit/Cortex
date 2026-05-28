@@ -7,7 +7,7 @@ from datetime import date
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Any
-from uuid import uuid4
+from uuid import NAMESPACE_URL, uuid4, uuid5
 
 
 def utc_now() -> datetime:
@@ -88,6 +88,40 @@ class EvidenceCategory(str, Enum):
     UNSUPPORTED_CLAIM = "unsupported_claim"
 
 
+class RawInputType(str, Enum):
+    """Supported raw ingestion input types."""
+
+    DOCUMENT = "document"
+    TRANSCRIPT = "transcript"
+    NOTE = "note"
+    IMAGE_METADATA = "image_metadata"
+    VIDEO_METADATA = "video_metadata"
+    UNKNOWN = "unknown"
+
+
+class LineageType(str, Enum):
+    """Ingestion lineage classification."""
+
+    PRIMARY_SOURCE = "primary_source"
+    SECONDARY_SOURCE = "secondary_source"
+    DERIVATIVE_SOURCE = "derivative_source"
+    UNKNOWN_LINEAGE = "unknown_lineage"
+
+
+class ContaminationFlagType(str, Enum):
+    """Deterministic contamination and source-quality warnings."""
+
+    MISSING_DATE = "missing_date"
+    MISSING_SOURCE_URI = "missing_source_uri"
+    MISSING_TITLE = "missing_title"
+    DERIVATIVE_SOURCE = "derivative_source"
+    REPEATED_SOURCE_URI = "repeated_source_uri"
+    ANONYMOUS_SOURCE = "anonymous_source"
+    SPECULATIVE_LANGUAGE = "speculative_language"
+    FICTIONAL_CONTAMINATION_TERMS = "fictional_contamination_terms"
+    WEAK_CHAIN_OF_CUSTODY = "weak_chain_of_custody"
+
+
 @dataclass(slots=True)
 class EvidenceItem:
     """A source-backed artifact or observation, never a truth claim by itself."""
@@ -102,6 +136,105 @@ class EvidenceItem:
     confidence: float = 0.5
     tags: set[str] = field(default_factory=set)
     metadata: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
+class RawInput:
+    """Raw sensory input before normalization into evidence records."""
+
+    input_id: str
+    input_type: RawInputType | str = RawInputType.UNKNOWN
+    title: str | None = None
+    raw_text: str = ""
+    source_uri: str | None = None
+    source_kind: str = "unknown"
+    collected_at: datetime | None = None
+    declared_event_hint: str | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.input_type, str):
+            self.input_type = RawInputType(self.input_type)
+
+
+@dataclass(slots=True)
+class ExtractedObservation:
+    """A deterministic observation span extracted from raw text."""
+
+    input_id: str
+    text: str
+    sequence: int
+    id: str = ""
+    start_offset: int | None = None
+    end_offset: int | None = None
+    evidence_id: str | None = None
+    extraction_notes: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if not self.id:
+            self.id = str(uuid5(NAMESPACE_URL, f"observation:{self.input_id}:{self.sequence}:{self.text}"))
+
+
+@dataclass(slots=True)
+class ProvenanceRecord:
+    """Mandatory provenance for ingested evidence."""
+
+    evidence_id: str
+    source_uri: str
+    source_kind: str
+    ingestion_method: str
+    extraction_method: str
+    original_input_id: str
+    id: str = ""
+    extracted_span: tuple[int, int] | None = None
+    page_number: int | None = None
+    timestamp_range: tuple[str, str] | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        if not self.id:
+            self.id = str(uuid5(NAMESPACE_URL, f"provenance:{self.original_input_id}:{self.evidence_id}"))
+
+
+@dataclass(slots=True)
+class SourceLineageRecord:
+    """Lineage assigned during ingestion so repetition remains visible."""
+
+    evidence_id: str
+    source_id: str
+    lineage_id: str
+    lineage_type: LineageType = LineageType.UNKNOWN_LINEAGE
+    source_uri: str | None = None
+    parent_source_id: str | None = None
+    derived_from: str | None = None
+    duplicate_source_uri: bool = False
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ContaminationFlag:
+    """A deterministic warning about source quality or contamination risk."""
+
+    flag_type: ContaminationFlagType
+    input_id: str
+    evidence_id: str | None = None
+    source_uri: str | None = None
+    note: str = ""
+
+
+@dataclass(slots=True)
+class IngestionResult:
+    """Auditable output of deterministic raw-input normalization."""
+
+    raw_input_id: str
+    evidence_items: list[EvidenceItem] = field(default_factory=list)
+    observations: list[ExtractedObservation] = field(default_factory=list)
+    provenance_records: list[ProvenanceRecord] = field(default_factory=list)
+    lineage_records: list[SourceLineageRecord] = field(default_factory=list)
+    contamination_flags: list[ContaminationFlag] = field(default_factory=list)
+    source_trust_hints: dict[str, Any] = field(default_factory=dict)
+    ingestion_warnings: list[str] = field(default_factory=list)
+    ingestion_notes: list[str] = field(default_factory=list)
 
 
 @dataclass(slots=True)

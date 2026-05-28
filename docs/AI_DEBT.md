@@ -31,15 +31,37 @@ Imported notes, documents, or summaries may lose source, author, lineage,
 publication date, or chain-of-custody metadata.
 
 Current mitigation:
-Evidence, relationship edges, claim contributions, source trust records, and
-lineage records carry explicit provenance fields.
+Evidence, relationship edges, claim contributions, source trust records,
+ingestion provenance records, and lineage records carry explicit provenance
+fields.
 
 Future trigger:
-Before adding ingestion, the importer must reject or quarantine records that
-cannot preserve provenance metadata.
+Before expanding ingestion beyond small deterministic fixtures, importers must
+reject, quarantine, or explicitly flag records that cannot preserve provenance
+metadata.
 
 Must not do:
 Do not silently ingest source material without a source id.
+
+## Ingestion Debt
+
+Risk:
+Raw input normalization may accidentally turn sensory intake into claim
+confirmation, especially if future parsers extract confident-looking statements
+from ambiguous text.
+
+Current mitigation:
+`IngestionNormalizer` creates evidence, observations, provenance, lineage,
+contamination flags, and warnings. It does not create claims, support edges, or
+graph relationships.
+
+Future trigger:
+Before adding richer document parsing, OCR, media extraction, or batch import,
+fixtures must include malformed, derivative, anonymous, speculative, and
+missing-provenance cases.
+
+Must not do:
+Do not confirm, support, or rank claims during ingestion.
 
 ## Similarity Debt
 
@@ -104,11 +126,13 @@ epistemic safeguards.
 Current mitigation:
 Tests currently cover memory merging, source trust, lineage, contamination,
 corroboration, timeline ordering, claim matrix behavior, graph relationships,
-duplicate edge prevention, and contradiction retrieval.
+duplicate edge prevention, contradiction retrieval, associative retrieval, and
+evidence ingestion.
 
 Future trigger:
-Before Phase 4 adds new capabilities, tests must include negative cases that
-prove unsupported or repeated evidence does not become confirmation.
+Before new capabilities are added, tests must include negative cases that prove
+unsupported, repeated, derivative, or ingested evidence does not become
+confirmation.
 
 Must not do:
 Do not add AI, ingestion, vector search, or ranking features without tests for

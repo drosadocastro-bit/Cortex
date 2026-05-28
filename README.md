@@ -41,9 +41,15 @@ The initial framework provides:
   review.
 - A vector-ready retrieval design that keeps future embeddings secondary to
   provenance, independence, and contradiction state.
+- A deterministic ingestion layer that normalizes raw inputs into evidence,
+  observations, provenance, source lineage, contamination flags, and ingestion
+  warnings.
+- Sensory intake safeguards: ingestion does not confirm claims or create graph
+  edges automatically.
 - An AI debt register documenting future risks around inference, provenance,
   semantic similarity, temporal parsing, scoring, evaluation, and reporting.
-- Tests proving memory, source-trust, timeline, graph, and claim-matrix behavior.
+- Tests proving memory, source-trust, timeline, graph, claim-matrix,
+  associative retrieval, and ingestion behavior.
 
 ## Project Layout
 
@@ -61,8 +67,10 @@ Roswell-uap-cortex/
       correlation_guard.py
       graph.py
       independence.py
+      ingestion.py
       models.py
       memory.py
+      provenance.py
       text.py
       timeline.py
   tests/
@@ -70,6 +78,7 @@ Roswell-uap-cortex/
     test_phase2_evidence_trust.py
     test_phase3_investigative_graph.py
     test_phase4_associative_retrieval.py
+    test_phase5_ingestion.py
   pyproject.toml
   README.md
 ```

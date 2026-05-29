@@ -1,14 +1,25 @@
 # Roswell UAP Cortex
 
-A cognitive investigative assistant framework for uncertain evidence domains.
+An experimental cognitive framework and epistemic research sandbox for uncertain,
+noisy, unstructured evidence domains.
 
 **Disclaimer:** This is a personal, independent hobby project conducted entirely on personal time, personal equipment, and personal resources. The views, logic architectures, design patterns, documentation, and code expressed in this repository are solely those of the author and do not represent the official policy, position, endorsement, or technical guidance of the Federal Aviation Administration (FAA), the Department of Transportation (DOT), or the United States Government.
 
-This project is exploratory and educational in nature. It is not intended for operational use, official analysis, regulatory decision-making, or safety-critical deployment.
+This project is exploratory and educational in nature. It is **not intended for
+operational analysis, automated truth determination, or production deployment**.
+It is a testbed for uncertainty-preserving extraction and reasoning — a
+cognitive architecture experiment rather than a finished system.
+
+The framework attempts to model brain-inspired mechanisms such as memory,
+associative activation, contradiction handling, temporal ordering, and bounded
+reasoning. It is intended to explore how these mechanisms interact when applied
+to noisy, incomplete, and contested real-world evidence, not to produce
+authoritative conclusions.
 
 This project does not claim truth. Its purpose is to preserve uncertainty while
 organizing evidence, claims, memory, contradictions, timelines, graph context,
-and source trust.
+and source trust — retaining provenance, lineage, contamination risk, and
+epistemic tension throughout.
 
 The framework is intentionally skeletal at this stage:
 
@@ -160,6 +171,13 @@ Install test dependencies and run the suite:
 python -m pip install -e ".[dev]"
 python -m pytest
 ```
+
+## Research Roadmap
+
+See [`docs/RESEARCH_ROADMAP.md`](docs/RESEARCH_ROADMAP.md) for the next planned
+experiments: observation vs interpretation separation, lineage and repeated-source
+bias, associative activation, contradiction-preserving discourse, and memory
+formation and decay.
 
 ## Design Principle
 

@@ -149,6 +149,42 @@ class EvaluationHarness:
         if behavior is ExpectedBehaviorType.NO_STATE_MUTATION:
             passed = inputs.before_state_hash is not None and inputs.before_state_hash == inputs.after_state_hash
             return passed, "state hash changed during evaluation", set()
+        if behavior is ExpectedBehaviorType.ATTENTION_SALIENCE_NOT_CONFIDENCE:
+            decision = inputs.attention_decision
+            passed = bool(
+                decision
+                and decision.salience_by_id
+                and all(0.0 <= score.final_salience_score <= 1.0 for score in decision.salience_by_id.values())
+            )
+            return passed, "attention salience was not bounded review priority", set()
+        if behavior is ExpectedBehaviorType.ATTENTION_CONTRADICTION_VISIBLE:
+            decision = inputs.attention_decision
+            passed = bool(
+                decision
+                and any(candidate.contested or candidate.contradiction_pressure > 0 for candidate in decision.selected_for_review)
+            )
+            return passed, "contradictory attention candidate was not preserved", set()
+        if behavior is ExpectedBehaviorType.ATTENTION_PROVENANCE_WARNING_VISIBLE:
+            decision = inputs.attention_decision
+            passed = bool(
+                decision
+                and any(not candidate.provenance_ids for candidate in decision.selected_for_review)
+            )
+            return passed, "fragile provenance was not escalated for review", set()
+        if behavior is ExpectedBehaviorType.ATTENTION_CONTAMINATION_WARNING_VISIBLE:
+            decision = inputs.attention_decision
+            passed = bool(
+                decision
+                and any(candidate.contamination_risk > 0 for candidate in decision.selected_for_review)
+            )
+            return passed, "contaminated salient record was not visible for review", set()
+        if behavior is ExpectedBehaviorType.ATTENTION_SAME_LINEAGE_SUPPRESSED:
+            decision = inputs.attention_decision
+            passed = bool(
+                decision
+                and any("same_lineage_downgraded" in score.reason_codes for score in decision.salience_by_id.values())
+            )
+            return passed, "same-lineage attention repetition was not downgraded", set()
         if behavior in {
             ExpectedBehaviorType.SEMANTIC_SIMILARITY_NOT_CONFIRMATION,
             ExpectedBehaviorType.SEMANTIC_LINEAGE_ECHO_DOWNGRADED,
@@ -157,4 +193,21 @@ class EvaluationHarness:
         }:
             passed = inputs.before_state_hash is not None and inputs.before_state_hash == inputs.after_state_hash
             return passed, f"{behavior.value} guardrail did not hold", set()
+        if behavior in {
+            ExpectedBehaviorType.DISCOURSE_NOT_EVIDENCE,
+            ExpectedBehaviorType.REASONING_NOT_CLAIM_MUTATION,
+            ExpectedBehaviorType.SEMANTIC_CLUSTER_NOT_GRAPH_SUPPORT,
+            ExpectedBehaviorType.SYNTHETIC_NOT_REAL_EVIDENCE,
+            ExpectedBehaviorType.SPECULATION_REMAINS_SPECULATION,
+        }:
+            state = inputs.cognitive_state
+            passed = bool(
+                state
+                and any(violation.violation_type == behavior.value for violation in state.violations)
+            )
+            return passed, f"{behavior.value} was not blocked", set()
+        if behavior is ExpectedBehaviorType.RECURSIVE_INFERENCE_DETECTED:
+            state = inputs.cognitive_state
+            passed = bool(state and state.warnings)
+            return passed, "recursive inference warning missing", set()
         return False, "unknown expected behavior", set()

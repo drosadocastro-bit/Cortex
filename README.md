@@ -90,6 +90,15 @@ The initial framework provides:
 - Controlled semantic layer with embedding backend abstraction, deterministic
   mock embeddings, semantic warnings, possible-related clusters, and hybrid
   retrieval component scores.
+- Reality boundary layer with cognitive artifact separation, inference
+  provenance chains, recursive inference protection, self-citation detection,
+  and live-inference safety guardrails.
+- Attention and salience gating that ranks review priority across records,
+  preserves noisy evidence warnings, suppresses same-lineage dominance, and
+  mitigates context overload without creating truth claims.
+- Adversarial epistemic stress testing with synthetic attacks for provenance
+  laundering, semantic echo, discourse contamination, confidence inflation,
+  contradiction suppression, speculation hardening, and policy abuse.
 - An AI debt register documenting future risks around inference, provenance,
   semantic similarity, temporal parsing, scoring, evaluation, and reporting.
 - Tests proving memory, source-trust, timeline, graph, claim-matrix,
@@ -102,12 +111,20 @@ The initial framework provides:
 Roswell-uap-cortex/
   docs/
     AI_DEBT.md
+    ADVERSARIAL_FINDINGS.md
     MEMORY_MODEL.md
     PROBLEM_STATEMENT.md
   src/
     roswell_uap_cortex/
       __init__.py
       associative.py
+      adversarial.py
+      adversarial_report.py
+      adversarial_scenarios.py
+      artifact_registry.py
+      attention.py
+      attention_gate.py
+      attention_guardrails.py
       claim_matrix.py
       citations.py
       cli.py
@@ -125,7 +142,10 @@ Roswell-uap-cortex/
       hybrid_retrieval.py
       independence.py
       ingestion.py
+      inference_provenance.py
+      focus.py
       llm_adapter.py
+      live_inference_guardrails.py
       models.py
       mock_reasoner.py
       memory.py
@@ -136,6 +156,9 @@ Roswell-uap-cortex/
       persistence_guardrails.py
       provenance.py
       reasoning.py
+      reality_boundary.py
+      recursive_guard.py
+      salience_policy.py
       semantic.py
       semantic_clustering.py
       semantic_guardrails.py
@@ -159,6 +182,9 @@ Roswell-uap-cortex/
     test_phase8_1_evaluation.py
     test_phase9_graph_temporal.py
     test_phase10_semantic.py
+    test_phase11_reality_boundary.py
+    test_phase12_attention.py
+    test_phase13_adversarial.py
   pyproject.toml
   README.md
 ```

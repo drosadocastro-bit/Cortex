@@ -258,6 +258,72 @@ Must not do:
 Do not let infrastructure dependencies decide truth, erase uncertainty, or
 replace provenance-aware framework models.
 
+## Reality Boundary Debt
+
+Risk:
+Future live inference may recursively reuse reasoning, discourse, retrieval
+results, semantic clusters, or synthetic evaluations until generated cognition
+appears to be external evidence.
+
+Current mitigation:
+`RealityBoundaryEngine`, `CognitiveArtifactRegistry`,
+`InferenceProvenanceTracker`, `RecursiveInferenceGuard`, and
+`LiveInferenceSafetyGuard` preserve artifact type separation, track inference
+provenance chains, detect self-citation, and block unsafe promotion.
+
+Future trigger:
+Before adding real local LLM inference, VLM perception, vector databases, or
+agentic loops, generated artifacts must be registered and checked against the
+reality boundary.
+
+Must not do:
+Do not let discourse, reasoning, semantic clusters, retrieval results,
+synthetic evaluations, or speculative hypotheses become evidence or claim
+confirmation automatically.
+
+## Attention Debt
+
+Risk:
+Salience scoring may be mistaken for belief, evidence validity, or truth
+confidence, especially when contaminated or contradictory records are ranked
+highly for review.
+
+Current mitigation:
+`AttentionEngine`, `AttentionGate`, `SaliencePolicyEngine`, and
+`AttentionGuardrails` label salience as review priority, keep selected-for-review
+separate from selected-for-context, preserve provenance and contradiction
+warnings, and downgrade repeated same-lineage records.
+
+Future trigger:
+Before attention scores are shown in reports, UI, agent loops, or live
+inference prompts, display labels must explain that salience is not truth
+confidence.
+
+Must not do:
+Do not interpret attention priority as evidence validity, claim confirmation,
+or permission to suppress contradictions, provenance gaps, contamination flags,
+or speculative labels.
+
+## Adversarial Testing Debt
+
+Risk:
+Synthetic adversarial scenarios may be mistaken for proof that the framework is
+robust against real-world manipulation, noisy data, or deliberate deception.
+
+Current mitigation:
+`AdversarialHarness` and `AdversarialScenarioFactory` record attacks and
+findings as framework-behavior stress tests only. `docs/ADVERSARIAL_FINDINGS.md`
+includes limitations with every report.
+
+Future trigger:
+Before adding live inference, real data ingestion, vector databases, web UI
+ranking, or autonomous workflows, add adversarial scenarios for the new failure
+modes those features introduce.
+
+Must not do:
+Do not treat resisted synthetic attacks as real-world validation or as evidence
+that any external claim is true or false.
+
 ## Semantic Layer Debt
 
 Risk:

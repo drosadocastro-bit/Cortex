@@ -1,7 +1,14 @@
 """Uncertainty-preserving investigative memory framework."""
 
 from roswell_uap_cortex.activation import MemoryActivationEngine
+from roswell_uap_cortex.adversarial import AdversarialHarness
+from roswell_uap_cortex.adversarial_report import AdversarialReportFormatter
+from roswell_uap_cortex.adversarial_scenarios import AdversarialScenarioFactory
+from roswell_uap_cortex.attention import AttentionEngine
+from roswell_uap_cortex.attention_gate import AttentionGate
+from roswell_uap_cortex.attention_guardrails import AttentionGuardrails
 from roswell_uap_cortex.associative import ActivationContextBuilder, AssociativeRetrievalEngine
+from roswell_uap_cortex.artifact_registry import CognitiveArtifactRegistry
 from roswell_uap_cortex.claim_matrix import (
     ClaimEvidenceContribution,
     ClaimMatrixEngine,
@@ -24,9 +31,12 @@ from roswell_uap_cortex.graph import FocusedGraphNeighborhood, RelationshipGraph
 from roswell_uap_cortex.graph_backend import GraphBackend, GraphTraversalResult
 from roswell_uap_cortex.guardrails import ReasoningGuardrails
 from roswell_uap_cortex.hybrid_retrieval import HybridRetrievalCoordinator
+from roswell_uap_cortex.focus import AttentionFocusBuilder
+from roswell_uap_cortex.inference_provenance import InferenceProvenanceTracker
 from roswell_uap_cortex.independence import EvidenceIndependenceInput, IndependenceScorer
 from roswell_uap_cortex.ingestion import IngestionNormalizer
 from roswell_uap_cortex.lineage import EvidenceLineageEngine, LineageTracker
+from roswell_uap_cortex.live_inference_guardrails import LiveInferenceSafetyGuard
 from roswell_uap_cortex.llm_adapter import LocalLLMAdapter
 from roswell_uap_cortex.memory import MemoryDecayEngine
 from roswell_uap_cortex.metrics import EpistemicMetrics
@@ -34,12 +44,27 @@ from roswell_uap_cortex.mock_reasoner import MockReasoner
 from roswell_uap_cortex.networkx_backend import NetworkXGraphBackend
 from roswell_uap_cortex.models import (
     ActivatedContext,
+    AdversarialAttackVector,
+    AdversarialExpectedFailureMode,
+    AdversarialFinding,
+    AdversarialReport,
+    AdversarialScenario,
     AssociationCandidate,
     AssociationLabel,
     AssociationScore,
+    ArtifactType,
+    AttentionCandidate,
+    AttentionDecision,
+    AttentionFocus,
+    AttentionPolicy,
+    AttentionSignal,
+    AttentionWarning,
+    AttentionWarningType,
     Claim,
     ClaimMatrixStatus,
     ClaimNode,
+    CognitiveArtifact,
+    CognitiveSeparationState,
     ConfidenceBand,
     Contradiction,
     ContaminationFlag,
@@ -72,6 +97,7 @@ from roswell_uap_cortex.models import (
     HybridRetrievalResult,
     IngestionResult,
     InvestigativeNarrative,
+    InferenceBoundaryRecord,
     LineageType,
     LoadResult,
     MemoryRecord,
@@ -87,6 +113,8 @@ from roswell_uap_cortex.models import (
     ReasoningRequest,
     ReasoningWarning,
     ReasoningWarningType,
+    RealityBoundaryViolation,
+    RecursiveInferenceWarning,
     RelationshipEdge,
     RelationshipType,
     RetrievalContext,
@@ -99,6 +127,7 @@ from roswell_uap_cortex.models import (
     SourceLineageRecord,
     SourceTrust,
     SaveResult,
+    SalienceScore,
     SnapshotMetadata,
     TimelineDatePrecision,
     UncertaintyNote,
@@ -106,6 +135,8 @@ from roswell_uap_cortex.models import (
 from roswell_uap_cortex.narrative import NarrativeBuilder
 from roswell_uap_cortex.provenance import ProvenanceExtractor
 from roswell_uap_cortex.reasoning import CognitiveReasoningEngine
+from roswell_uap_cortex.reality_boundary import RealityBoundaryEngine
+from roswell_uap_cortex.recursive_guard import RecursiveInferenceGuard
 from roswell_uap_cortex.source_trust import SourceTrustEngine
 from roswell_uap_cortex.temporal import TemporalComparison, TemporalReasoningHelper
 from roswell_uap_cortex.text import SimpleTokenizer
@@ -115,6 +146,7 @@ from roswell_uap_cortex.persistence import PersistenceStore
 from roswell_uap_cortex.persistence_guardrails import PersistenceGuardrails
 from roswell_uap_cortex.serialization import Serializer
 from roswell_uap_cortex.scenarios import ScenarioFactory
+from roswell_uap_cortex.salience_policy import SaliencePolicyEngine
 from roswell_uap_cortex.semantic import SemanticSimilarityEngine
 from roswell_uap_cortex.semantic_clustering import SemanticClusterEngine
 from roswell_uap_cortex.semantic_guardrails import SemanticContaminationGuard
@@ -123,18 +155,41 @@ from roswell_uap_cortex.snapshot_validator import SnapshotValidationResult, Snap
 
 __all__ = [
     "ActivatedContext",
+    "AdversarialAttackVector",
+    "AdversarialExpectedFailureMode",
+    "AdversarialFinding",
+    "AdversarialHarness",
+    "AdversarialReport",
+    "AdversarialReportFormatter",
+    "AdversarialScenario",
+    "AdversarialScenarioFactory",
     "ActivationContextBuilder",
     "AssociationCandidate",
     "AssociationLabel",
     "AssociationScore",
     "AssociativeRetrievalEngine",
+    "ArtifactType",
+    "AttentionCandidate",
+    "AttentionDecision",
+    "AttentionEngine",
+    "AttentionFocus",
+    "AttentionFocusBuilder",
+    "AttentionGate",
+    "AttentionGuardrails",
+    "AttentionPolicy",
+    "AttentionSignal",
+    "AttentionWarning",
+    "AttentionWarningType",
     "Claim",
     "ClaimEvidenceContribution",
     "ClaimMatrixEngine",
     "ClaimMatrixEntry",
     "ClaimMatrixStatus",
     "ClaimNode",
+    "CognitiveArtifact",
+    "CognitiveArtifactRegistry",
     "CognitiveReasoningEngine",
+    "CognitiveSeparationState",
     "CitationFormatter",
     "CompressedMemory",
     "ConfidenceBand",
@@ -190,10 +245,13 @@ __all__ = [
     "IngestionNormalizer",
     "IngestionResult",
     "InvestigativeNarrative",
+    "InferenceBoundaryRecord",
+    "InferenceProvenanceTracker",
     "LineageTracker",
     "LineageType",
     "LoadResult",
     "LocalLLMAdapter",
+    "LiveInferenceSafetyGuard",
     "MemoryActivationEngine",
     "MemoryDecayEngine",
     "MemoryRecord",
@@ -217,6 +275,10 @@ __all__ = [
     "ReasoningRequest",
     "ReasoningWarning",
     "ReasoningWarningType",
+    "RealityBoundaryEngine",
+    "RealityBoundaryViolation",
+    "RecursiveInferenceGuard",
+    "RecursiveInferenceWarning",
     "RelationshipEdge",
     "RelationshipGraphEngine",
     "RelationshipType",
@@ -233,6 +295,8 @@ __all__ = [
     "Serializer",
     "SimpleTokenizer",
     "SaveResult",
+    "SaliencePolicyEngine",
+    "SalienceScore",
     "SCHEMA_VERSION",
     "ScenarioFactory",
     "SnapshotBuilder",

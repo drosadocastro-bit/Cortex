@@ -1,6 +1,6 @@
 # Synthetic Evaluation Report
 
-Generated: 2026-05-28
+Generated: 2026-05-29
 
 Command:
 
@@ -10,8 +10,8 @@ $env:PYTHONPATH='src'; python -c "from roswell_uap_cortex.cli import build_demo_
 
 ## Summary
 
-- Scenario count: 17
-- Passed scenarios: 17
+- Scenario count: 30
+- Passed scenarios: 30
 - Failed scenarios: 0
 - Overall framework-behavior pass rate: 1.000
 

@@ -174,6 +174,17 @@ class ExpectedBehaviorType(str, Enum):
     SEMANTIC_LINEAGE_ECHO_DOWNGRADED = "semantic_lineage_echo_downgraded"
     SEMANTIC_MISSING_PROVENANCE_WARNING = "semantic_missing_provenance_warning"
     CONTESTED_SEMANTIC_CLUSTER_VISIBLE = "contested_semantic_cluster_visible"
+    DISCOURSE_NOT_EVIDENCE = "discourse_not_evidence"
+    REASONING_NOT_CLAIM_MUTATION = "reasoning_not_claim_mutation"
+    SEMANTIC_CLUSTER_NOT_GRAPH_SUPPORT = "semantic_cluster_not_graph_support"
+    RECURSIVE_INFERENCE_DETECTED = "recursive_inference_detected"
+    SYNTHETIC_NOT_REAL_EVIDENCE = "synthetic_not_real_evidence"
+    SPECULATION_REMAINS_SPECULATION = "speculation_remains_speculation"
+    ATTENTION_SALIENCE_NOT_CONFIDENCE = "attention_salience_not_confidence"
+    ATTENTION_CONTRADICTION_VISIBLE = "attention_contradiction_visible"
+    ATTENTION_PROVENANCE_WARNING_VISIBLE = "attention_provenance_warning_visible"
+    ATTENTION_CONTAMINATION_WARNING_VISIBLE = "attention_contamination_warning_visible"
+    ATTENTION_SAME_LINEAGE_SUPPRESSED = "attention_same_lineage_suppressed"
 
 
 class SemanticWarningType(str, Enum):
@@ -185,6 +196,247 @@ class SemanticWarningType(str, Enum):
     CONTESTED_MATCH = "contested_match"
     FICTIONAL_CONTAMINATION = "fictional_contamination"
     PARAPHRASE_NOT_INDEPENDENCE = "paraphrase_not_independence"
+
+
+class AttentionSignal(str, Enum):
+    """Signals used to calculate review salience, not truth confidence."""
+
+    RELEVANCE = "relevance"
+    NOVELTY = "novelty"
+    CONTRADICTION_PRESSURE = "contradiction_pressure"
+    PROVENANCE_FRAGILITY = "provenance_fragility"
+    SOURCE_TRUST = "source_trust"
+    SOURCE_INDEPENDENCE = "source_independence"
+    TEMPORAL_IMPORTANCE = "temporal_importance"
+    CONTAMINATION_RISK = "contamination_risk"
+    RECURRENCE = "recurrence"
+    UNCERTAINTY_LOAD = "uncertainty_load"
+    USER_FOCUS_MATCH = "user_focus_match"
+
+
+class AttentionWarningType(str, Enum):
+    """Typed warnings emitted by attention guardrails."""
+
+    SALIENCE_NOT_BELIEF = "salience_not_belief"
+    CONTAMINATION_SALIENT_NOT_TRUSTED = "contamination_salient_not_trusted"
+    SAME_LINEAGE_DOWNGRADED = "same_lineage_downgraded"
+    CONTRADICTION_VISIBLE = "contradiction_visible"
+    PROVENANCE_WARNING_VISIBLE = "provenance_warning_visible"
+    ARCHIVAL_UNCERTAINTY_PRESERVED = "archival_uncertainty_preserved"
+    FOCUS_DOES_NOT_OVERRIDE_PROVENANCE = "focus_does_not_override_provenance"
+    SPECULATION_REMAINS_SPECULATION = "speculation_remains_speculation"
+
+
+class AdversarialAttackVector(str, Enum):
+    """Synthetic attack vectors against epistemic guardrails."""
+
+    PROVENANCE_LAUNDERING = "provenance_laundering"
+    SEMANTIC_ECHO_CHAMBER = "semantic_echo_chamber"
+    DISCOURSE_CONTAMINATION = "discourse_contamination"
+    CONFIDENCE_INFLATION = "confidence_inflation"
+    CONTRADICTION_SUPPRESSION = "contradiction_suppression"
+    SPECULATION_HARDENING = "speculation_hardening"
+    SYNTHETIC_TO_REAL_CONFUSION = "synthetic_to_real_confusion"
+    MISSING_PROVENANCE_CAMOUFLAGE = "missing_provenance_camouflage"
+    TEMPORAL_OVERREACH = "temporal_overreach"
+    POLICY_ABUSE = "policy_abuse"
+
+
+class AdversarialExpectedFailureMode(str, Enum):
+    """Failure modes an adversarial scenario attempts to trigger."""
+
+    FALSE_INDEPENDENCE = "false_independence"
+    SIMILARITY_AS_CONFIRMATION = "similarity_as_confirmation"
+    DISCOURSE_AS_EVIDENCE = "discourse_as_evidence"
+    UNSUPPORTED_CONFIDENCE_INFLATION = "unsupported_confidence_inflation"
+    HIDDEN_CONTRADICTION = "hidden_contradiction"
+    SPECULATION_AS_FACT = "speculation_as_fact"
+    SYNTHETIC_AS_REAL_EVIDENCE = "synthetic_as_real_evidence"
+    PROVENANCE_GAP_HIDDEN = "provenance_gap_hidden"
+    FABRICATED_TEMPORAL_PRECISION = "fabricated_temporal_precision"
+    GUARDRAIL_DISABLED_BY_POLICY = "guardrail_disabled_by_policy"
+
+
+class ArtifactType(str, Enum):
+    """Artifact roles kept separate by the reality boundary layer."""
+
+    EVIDENCE = "evidence"
+    CLAIM = "claim"
+    REASONING_OUTPUT = "reasoning_output"
+    DISCOURSE_OUTPUT = "discourse_output"
+    SEMANTIC_CLUSTER = "semantic_cluster"
+    SPECULATIVE_HYPOTHESIS = "speculative_hypothesis"
+    RETRIEVAL_RESULT = "retrieval_result"
+    SYNTHETIC_EVALUATION = "synthetic_evaluation"
+    EXTERNAL_INPUT = "external_input"
+
+
+@dataclass(slots=True)
+class CognitiveArtifact:
+    """Generated or imported artifact whose epistemic role must not drift."""
+
+    artifact_id: str
+    artifact_type: ArtifactType | str
+    content: str = ""
+    source_artifact_ids: set[str] = field(default_factory=set)
+    source_evidence_ids: set[str] = field(default_factory=set)
+    provenance_ids: set[str] = field(default_factory=set)
+    layer_origin: str = "unknown"
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.artifact_type, str):
+            self.artifact_type = ArtifactType(self.artifact_type)
+
+
+@dataclass(slots=True)
+class InferenceBoundaryRecord:
+    """Queryable provenance for a cognitive artifact."""
+
+    artifact_id: str
+    artifact_type: ArtifactType | str
+    source_artifact_ids: set[str] = field(default_factory=set)
+    source_evidence_ids: set[str] = field(default_factory=set)
+    provenance_ids: set[str] = field(default_factory=set)
+    reasoning_layer_origin: str | None = None
+    discourse_layer_origin: str | None = None
+    semantic_layer_origin: str | None = None
+    synthetic_scenario_origin: str | None = None
+    depth: int = 0
+    notes: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.artifact_type, str):
+            self.artifact_type = ArtifactType(self.artifact_type)
+
+
+@dataclass(slots=True)
+class RecursiveInferenceWarning:
+    """Warning emitted when inference begins citing itself."""
+
+    warning_type: str
+    message: str
+    artifact_ids: set[str] = field(default_factory=set)
+    severity: str = "warning"
+
+
+@dataclass(slots=True)
+class RealityBoundaryViolation:
+    """A blocked boundary crossing or unsafe cognitive promotion."""
+
+    violation_type: str
+    message: str
+    artifact_ids: set[str] = field(default_factory=set)
+    blocked: bool = True
+
+
+@dataclass(slots=True)
+class CognitiveSeparationState:
+    """Current artifact registry state plus boundary findings."""
+
+    artifacts: dict[str, CognitiveArtifact] = field(default_factory=dict)
+    boundary_records: dict[str, InferenceBoundaryRecord] = field(default_factory=dict)
+    warnings: list[RecursiveInferenceWarning] = field(default_factory=list)
+    violations: list[RealityBoundaryViolation] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class AttentionWarning:
+    """Attention warning that keeps review priority separate from belief."""
+
+    warning_type: AttentionWarningType | str
+    message: str
+    related_ids: set[str] = field(default_factory=set)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.warning_type, str):
+            self.warning_type = AttentionWarningType(self.warning_type)
+
+
+@dataclass(slots=True)
+class SalienceScore:
+    """Bounded salience score for review priority, not evidence confidence."""
+
+    component_scores: dict[AttentionSignal | str, float] = field(default_factory=dict)
+    final_salience_score: float = 0.0
+    reason_codes: list[str] = field(default_factory=list)
+    warnings: list[AttentionWarning] = field(default_factory=list)
+    bounded: bool = True
+
+    def __post_init__(self) -> None:
+        self.component_scores = {
+            AttentionSignal(key) if isinstance(key, str) else key: max(0.0, min(1.0, value))
+            for key, value in self.component_scores.items()
+        }
+        self.final_salience_score = max(0.0, min(1.0, self.final_salience_score))
+
+
+@dataclass(slots=True)
+class AttentionCandidate:
+    """A record or artifact candidate for review-priority scoring."""
+
+    record_id: str
+    record_type: str
+    label: str = ""
+    text: str = ""
+    tags: set[str] = field(default_factory=set)
+    entity_ids: set[str] = field(default_factory=set)
+    event_ids: set[str] = field(default_factory=set)
+    claim_topics: set[str] = field(default_factory=set)
+    source_id: str | None = None
+    lineage_id: str | None = None
+    provenance_ids: set[str] = field(default_factory=set)
+    contradiction_pressure: float = 0.0
+    contamination_risk: float = 0.0
+    source_trust: float = 0.5
+    source_independence: float = 0.5
+    recurrence: float = 0.0
+    novelty: float = 0.5
+    temporal_importance: float = 0.0
+    uncertainty_load: float = 0.0
+    archived: bool = False
+    contested: bool = False
+    speculative: bool = False
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
+class AttentionPolicy:
+    """Named deterministic salience policy with immutable guardrail flags."""
+
+    name: str
+    weights: dict[AttentionSignal, float] = field(default_factory=dict)
+    preserve_contradictions: bool = True
+    preserve_provenance_warnings: bool = True
+    preserve_association_not_confirmation: bool = True
+    preserve_reality_boundaries: bool = True
+
+
+@dataclass(slots=True)
+class AttentionFocus:
+    """Current investigation focus used to calculate salience."""
+
+    query_text: str = ""
+    focus_terms: set[str] = field(default_factory=set)
+    target_entities: set[str] = field(default_factory=set)
+    target_event_ids: set[str] = field(default_factory=set)
+    target_claim_topics: set[str] = field(default_factory=set)
+    time_window: tuple[date | None, date | None] | None = None
+    investigation_mode: str = "conservative"
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
+class AttentionDecision:
+    """Ranked attention output; deferred records are not deleted."""
+
+    selected_records: list[AttentionCandidate] = field(default_factory=list)
+    selected_for_context: list[AttentionCandidate] = field(default_factory=list)
+    selected_for_review: list[AttentionCandidate] = field(default_factory=list)
+    deferred_records: list[AttentionCandidate] = field(default_factory=list)
+    archived_records_considered: list[AttentionCandidate] = field(default_factory=list)
+    salience_by_id: dict[str, SalienceScore] = field(default_factory=dict)
+    attention_warnings: list[AttentionWarning] = field(default_factory=list)
 
 
 @dataclass(slots=True)
@@ -260,6 +512,8 @@ class EvaluationInput:
     evidence_items: list["EvidenceItem"] = field(default_factory=list)
     claims: list["ClaimNode"] = field(default_factory=list)
     lineage_records: list["SourceLineageRecord"] = field(default_factory=list)
+    cognitive_state: CognitiveSeparationState | None = None
+    attention_decision: AttentionDecision | None = None
     before_state_hash: str | None = None
     after_state_hash: str | None = None
 
@@ -325,6 +579,62 @@ class EvaluationReport:
     metrics: list[EvaluationMetric] = field(default_factory=list)
     limitations: list[str] = field(default_factory=list)
     overall_pass_rate: float = 0.0
+
+
+@dataclass(slots=True)
+class AdversarialScenario:
+    """Tiny synthetic adversarial stress scenario; never real-world validation."""
+
+    scenario_id: str
+    title: str
+    attack_vector: AdversarialAttackVector | str
+    expected_failure_mode: AdversarialExpectedFailureMode | str
+    description: str = ""
+    inputs: EvaluationInput = field(default_factory=EvaluationInput)
+    expected_behaviors: list[ExpectedBehaviorType] = field(default_factory=list)
+    tags: set[str] = field(default_factory=set)
+    risk_level: str = "adversarial_synthetic"
+
+    def __post_init__(self) -> None:
+        if isinstance(self.attack_vector, str):
+            self.attack_vector = AdversarialAttackVector(self.attack_vector)
+        if isinstance(self.expected_failure_mode, str):
+            self.expected_failure_mode = AdversarialExpectedFailureMode(self.expected_failure_mode)
+
+
+@dataclass(slots=True)
+class AdversarialFinding:
+    """Observed outcome for one adversarial scenario."""
+
+    scenario_id: str
+    attack_vector: AdversarialAttackVector
+    expected_failure_mode: AdversarialExpectedFailureMode
+    resisted: bool
+    triggered_behaviors: list[ExpectedBehaviorType] = field(default_factory=list)
+    failed_behaviors: list[ExpectedBehaviorType] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class AdversarialReport:
+    """Aggregate adversarial stress-test report."""
+
+    findings: list[AdversarialFinding] = field(default_factory=list)
+    limitations: list[str] = field(default_factory=list)
+
+    @property
+    def scenario_count(self) -> int:
+        return len(self.findings)
+
+    @property
+    def resisted_count(self) -> int:
+        return sum(1 for finding in self.findings if finding.resisted)
+
+    @property
+    def resistance_rate(self) -> float:
+        if not self.findings:
+            return 0.0
+        return self.resisted_count / len(self.findings)
 
 
 @dataclass(slots=True)

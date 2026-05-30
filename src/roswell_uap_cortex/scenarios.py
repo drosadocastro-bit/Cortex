@@ -9,8 +9,12 @@ from roswell_uap_cortex.models import (
     AssociationCandidate,
     AssociationLabel,
     AssociationScore,
+    ArtifactType,
+    AttentionCandidate,
+    AttentionDecision,
     ClaimMatrixStatus,
     ClaimNode,
+    CognitiveArtifact,
     ConfidenceBand,
     DiscourseCitation,
     DiscourseResponse,
@@ -28,6 +32,8 @@ from roswell_uap_cortex.models import (
     SourceLineageRecord,
     UncertaintyNote,
 )
+from roswell_uap_cortex.attention_gate import AttentionGate
+from roswell_uap_cortex.reality_boundary import RealityBoundaryEngine
 
 
 @dataclass(slots=True)
@@ -46,6 +52,8 @@ class ScenarioFactory:
             self.archived_memory_reload_check(),
             *self.graph_infrastructure_scenarios(),
             *self.semantic_scenarios(),
+            *self.reality_boundary_scenarios(),
+            *self.attention_scenarios(),
         ]
 
     def graph_infrastructure_scenarios(self) -> list[EvaluationScenario]:
@@ -129,6 +137,192 @@ class ScenarioFactory:
                     ExpectedBehaviorType.CONTESTED_SEMANTIC_CLUSTER_VISIBLE,
                 ],
                 {"synthetic", "semantic", "cluster"},
+            ),
+        ]
+
+    def reality_boundary_scenarios(self) -> list[EvaluationScenario]:
+        return [
+            self._boundary_scenario(
+                "synthetic-recursive-discourse-contamination",
+                "Recursive Discourse Contamination",
+                CognitiveArtifact(
+                    "discursive-evidence",
+                    ArtifactType.DISCOURSE_OUTPUT,
+                    source_artifact_ids={"discursive-evidence"},
+                    provenance_ids={"prov-synthetic"},
+                    layer_origin="synthetic_discourse",
+                ),
+                ExpectedBehaviorType.DISCOURSE_NOT_EVIDENCE,
+                {"synthetic", "reality-boundary", "discourse"},
+            ),
+            self._boundary_scenario(
+                "synthetic-self-citation-loop",
+                "Self-Citation Loop Attempt",
+                CognitiveArtifact(
+                    "self-loop",
+                    ArtifactType.REASONING_OUTPUT,
+                    source_artifact_ids={"self-loop"},
+                    provenance_ids={"prov-synthetic"},
+                    layer_origin="synthetic_reasoning",
+                ),
+                ExpectedBehaviorType.RECURSIVE_INFERENCE_DETECTED,
+                {"synthetic", "reality-boundary", "recursion"},
+            ),
+            self._boundary_scenario(
+                "synthetic-semantic-recursion-loop",
+                "Semantic Recursion Loop",
+                CognitiveArtifact(
+                    "semantic-loop",
+                    ArtifactType.SEMANTIC_CLUSTER,
+                    source_artifact_ids={"semantic-loop"},
+                    provenance_ids={"prov-synthetic"},
+                    layer_origin="synthetic_semantic",
+                ),
+                ExpectedBehaviorType.SEMANTIC_CLUSTER_NOT_GRAPH_SUPPORT,
+                {"synthetic", "reality-boundary", "semantic"},
+            ),
+            self._boundary_scenario(
+                "synthetic-reasoning-promotion",
+                "Reasoning-Output Promotion Attempt",
+                CognitiveArtifact(
+                    "reasoning-promotion",
+                    ArtifactType.REASONING_OUTPUT,
+                    source_evidence_ids={"e-synthetic"},
+                    provenance_ids={"prov-synthetic"},
+                    layer_origin="synthetic_reasoning",
+                ),
+                ExpectedBehaviorType.REASONING_NOT_CLAIM_MUTATION,
+                {"synthetic", "reality-boundary", "reasoning"},
+                target=ArtifactType.CLAIM,
+            ),
+            self._boundary_scenario(
+                "synthetic-eval-to-evidence",
+                "Synthetic Evaluation To Evidence Attempt",
+                CognitiveArtifact(
+                    "eval-promotion",
+                    ArtifactType.SYNTHETIC_EVALUATION,
+                    provenance_ids={"prov-synthetic"},
+                    layer_origin="synthetic_evaluation",
+                ),
+                ExpectedBehaviorType.SYNTHETIC_NOT_REAL_EVIDENCE,
+                {"synthetic", "reality-boundary", "evaluation"},
+            ),
+            self._boundary_scenario(
+                "synthetic-speculation-promotion",
+                "Speculative Hypothesis Promotion Attempt",
+                CognitiveArtifact(
+                    "speculation-promotion",
+                    ArtifactType.SPECULATIVE_HYPOTHESIS,
+                    source_evidence_ids={"e-synthetic"},
+                    provenance_ids={"prov-synthetic"},
+                    layer_origin="synthetic_reasoning",
+                ),
+                ExpectedBehaviorType.SPECULATION_REMAINS_SPECULATION,
+                {"synthetic", "reality-boundary", "speculation"},
+            ),
+        ]
+
+    def attention_scenarios(self) -> list[EvaluationScenario]:
+        gate = AttentionGate()
+        contamination = AttentionCandidate(
+            "attention-contamination",
+            "evidence",
+            provenance_ids={"prov"},
+            contamination_risk=0.9,
+            novelty=0.7,
+        )
+        contradiction = AttentionCandidate(
+            "attention-contradiction",
+            "claim",
+            provenance_ids={"prov"},
+            contradiction_pressure=0.9,
+            contested=True,
+        )
+        repeated_a = AttentionCandidate(
+            "attention-lineage-a",
+            "evidence",
+            provenance_ids={"prov-a"},
+            lineage_id="same",
+            recurrence=0.9,
+        )
+        repeated_b = AttentionCandidate(
+            "attention-lineage-b",
+            "evidence",
+            provenance_ids={"prov-b"},
+            lineage_id="same",
+            recurrence=0.9,
+        )
+        fragile = AttentionCandidate("attention-fragile", "evidence", provenance_ids=set())
+        archived = AttentionCandidate(
+            "attention-archived",
+            "memory",
+            provenance_ids={"prov"},
+            archived=True,
+            novelty=0.8,
+        )
+        focus_warning = AttentionCandidate(
+            "attention-focus-warning",
+            "evidence",
+            text="radar focus match",
+            provenance_ids=set(),
+            entity_ids={"entity-focus"},
+        )
+        duplicate = AttentionCandidate(
+            "attention-low-novelty",
+            "evidence",
+            provenance_ids={"prov"},
+            lineage_id="same",
+            novelty=0.1,
+        )
+        return [
+            self._attention_scenario(
+                "synthetic-attention-contamination",
+                "High-Salience Contamination",
+                gate.apply([contamination], limit=1),
+                [ExpectedBehaviorType.ATTENTION_CONTAMINATION_WARNING_VISIBLE],
+                {"synthetic", "attention", "contamination"},
+            ),
+            self._attention_scenario(
+                "synthetic-attention-contradiction",
+                "Contradiction-Priority Attention",
+                gate.apply([contradiction], policy="contradiction_first", limit=1),
+                [ExpectedBehaviorType.ATTENTION_CONTRADICTION_VISIBLE],
+                {"synthetic", "attention", "contradiction"},
+            ),
+            self._attention_scenario(
+                "synthetic-attention-lineage-suppression",
+                "Repeated Same-Lineage Attention Suppression",
+                gate.apply([repeated_a, repeated_b, duplicate], limit=2),
+                [ExpectedBehaviorType.ATTENTION_SAME_LINEAGE_SUPPRESSED],
+                {"synthetic", "attention", "lineage"},
+            ),
+            self._attention_scenario(
+                "synthetic-attention-fragile-provenance",
+                "Fragile Provenance Escalation",
+                gate.apply([fragile], policy="provenance_first", limit=1),
+                [ExpectedBehaviorType.ATTENTION_PROVENANCE_WARNING_VISIBLE],
+                {"synthetic", "attention", "provenance"},
+            ),
+            self._attention_scenario(
+                "synthetic-attention-archived-reactivation",
+                "Archived Memory Reactivation Candidate",
+                gate.apply([archived], policy="exploratory", limit=1),
+                [ExpectedBehaviorType.ATTENTION_SALIENCE_NOT_CONFIDENCE],
+                {"synthetic", "attention", "archived"},
+            ),
+            self._attention_scenario(
+                "synthetic-attention-focus-provenance",
+                "Focus Match With Provenance Warning",
+                gate.apply([focus_warning], limit=1),
+                [ExpectedBehaviorType.ATTENTION_PROVENANCE_WARNING_VISIBLE],
+                {"synthetic", "attention", "focus"},
+            ),
+            self._attention_scenario(
+                "synthetic-attention-low-novelty-deferral",
+                "Low-Novelty Duplicate Deferral",
+                gate.apply([repeated_a, repeated_b, duplicate], limit=1),
+                [ExpectedBehaviorType.ATTENTION_SAME_LINEAGE_SUPPRESSED],
+                {"synthetic", "attention", "deferral"},
             ),
         ]
 
@@ -283,6 +477,48 @@ class ScenarioFactory:
             expected_behaviors=[EvaluationExpectedBehavior(behavior=behavior) for behavior in behaviors],
             tags=tags,
             risk_level="synthetic",
+        )
+
+    def _boundary_scenario(
+        self,
+        scenario_id: str,
+        title: str,
+        artifact: CognitiveArtifact,
+        behavior: ExpectedBehaviorType,
+        tags: set[str],
+        *,
+        target: ArtifactType = ArtifactType.EVIDENCE,
+    ) -> EvaluationScenario:
+        engine = RealityBoundaryEngine()
+        engine.register_artifact(artifact)
+        if target is ArtifactType.CLAIM:
+            engine.prevent_claim_mutation(artifact.artifact_id)
+        elif behavior is ExpectedBehaviorType.SEMANTIC_CLUSTER_NOT_GRAPH_SUPPORT:
+            engine.prevent_graph_support(artifact.artifact_id)
+        else:
+            engine.prevent_evidence_promotion(artifact.artifact_id)
+        return self._scenario(
+            scenario_id,
+            title,
+            EvaluationInput(cognitive_state=engine.registry.state),
+            [behavior],
+            tags,
+        )
+
+    def _attention_scenario(
+        self,
+        scenario_id: str,
+        title: str,
+        decision: AttentionDecision,
+        behaviors: list[ExpectedBehaviorType],
+        tags: set[str],
+    ) -> EvaluationScenario:
+        return self._scenario(
+            scenario_id,
+            title,
+            EvaluationInput(attention_decision=decision, before_state_hash="attention", after_state_hash="attention"),
+            behaviors,
+            tags,
         )
 
     def _discourse(

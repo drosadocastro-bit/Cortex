@@ -285,6 +285,63 @@ ids, duplicate lineage ids, and contested member ids without implying
 equivalence, support, or confirmation. Hybrid retrieval preserves associative,
 graph, timeline, and semantic component scores separately.
 
+## Reality Boundary
+
+Phase 11 adds `CognitiveArtifact`, `InferenceProvenanceTracker`,
+`CognitiveArtifactRegistry`, `RecursiveInferenceGuard`,
+`RealityBoundaryEngine`, and `LiveInferenceSafetyGuard`.
+
+The boundary layer separates evidence, claims, reasoning outputs, discourse
+outputs, semantic clusters, speculative hypotheses, retrieval results,
+synthetic evaluations, and external inputs. Generated cognition can be useful
+for review, but it is not external reality.
+
+Discourse cannot become evidence automatically. Reasoning outputs cannot mutate
+claims directly. Semantic clusters cannot create graph support edges. Synthetic
+evaluation artifacts remain synthetic, and speculative hypotheses remain
+speculative.
+
+Inference provenance chains remain queryable so recursive inference,
+self-citation, discourse reuse, and semantic recursion can be detected before
+future live inference systems are connected.
+
+## Attention And Salience
+
+Phase 12 adds `AttentionFocusBuilder`, `AttentionEngine`,
+`SaliencePolicyEngine`, `AttentionGate`, and `AttentionGuardrails`.
+
+Attention scores review priority across memories, evidence, claims, graph
+nodes, semantic clusters, reasoning outputs, discourse artifacts, and cognitive
+artifacts. Salience is not truth confidence. It is a bounded signal that helps
+decide what deserves human or downstream review first.
+
+Attention can boost contradiction pressure, fragile provenance, contamination
+risk, temporal importance, novelty, recurrence, uncertainty load, and focus
+matches. It can downgrade duplicate same-lineage records, low-novelty
+repetition, and archived low-strength memories unless they become relevant
+again.
+
+`AttentionGate` separates records selected for context from records selected
+for review. Noisy, contaminated, or fragile records may be highly salient for
+review while remaining untrusted. Deferred records are not deleted and are not
+declared irrelevant forever.
+
+Policy presets change review ordering but cannot disable contradiction
+visibility, provenance warnings, association-not-confirmation, or reality
+boundary rules.
+
+## Adversarial Epistemic Testing
+
+Phase 13 adds `AdversarialHarness`, `AdversarialScenarioFactory`, and
+`AdversarialReportFormatter`. These scenarios intentionally try to make the
+framework confuse repetition, semantic similarity, discourse, synthetic
+fixtures, speculation, weak provenance, or attention policy with evidence or
+truth.
+
+Adversarial findings are framework-behavior findings only. A resisted attack
+means the current synthetic fixture triggered the expected guardrail. It does
+not prove real-world validity, scientific accuracy, or claim truth.
+
 ## Vector-Ready Design
 
 The association score separates lexical, tag, entity, timeline, source

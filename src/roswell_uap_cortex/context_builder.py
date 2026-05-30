@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from roswell_uap_cortex.models import (
     ActivatedContext,
     AssociationCandidate,
+    AttentionDecision,
     ClaimNode,
     EvidenceItem,
     MemoryRecord,
@@ -34,6 +35,7 @@ class ContextWindowBuilder:
         memories_by_id: dict[str, MemoryRecord] | None = None,
         provenance_by_evidence_id: dict[str, ProvenanceRecord] | None = None,
         lineage_by_evidence_id: dict[str, SourceLineageRecord] | None = None,
+        attention_decision: AttentionDecision | None = None,
         max_items: int | None = None,
     ) -> ReasoningContext:
         evidence_by_id = evidence_by_id or {}
@@ -48,6 +50,7 @@ class ContextWindowBuilder:
             candidates or [],
             lineage_by_evidence_id,
             limit,
+            attention_decision,
         )
         evidence_ids = set(activated_context.activated_evidence_ids)
         claim_ids = set(activated_context.activated_claim_ids)
@@ -104,6 +107,7 @@ class ContextWindowBuilder:
         candidates: list[AssociationCandidate],
         lineage_by_evidence_id: dict[str, SourceLineageRecord],
         limit: int,
+        attention_decision: AttentionDecision | None = None,
     ) -> list[AssociationCandidate]:
         all_candidates = list(candidates)
         all_candidates.extend(activated_context.contested_associations)
@@ -121,6 +125,7 @@ class ContextWindowBuilder:
         ranked = sorted(
             merged.values(),
             key=lambda item: (
+                self._attention_rank(item, attention_decision),
                 bool(item.claim_status and item.claim_status.value == "contested"),
                 item.score.final_association_score,
                 len(item.evidence_ids),
@@ -147,6 +152,16 @@ class ContextWindowBuilder:
             if len(selected) >= limit:
                 break
         return selected
+
+    def _attention_rank(
+        self,
+        candidate: AssociationCandidate,
+        attention_decision: AttentionDecision | None,
+    ) -> float:
+        if attention_decision is None:
+            return 0.0
+        score = attention_decision.salience_by_id.get(candidate.record_id)
+        return 0.0 if score is None else score.final_salience_score
 
     def _trim_evidence_by_lineage(
         self,

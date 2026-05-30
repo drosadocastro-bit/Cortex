@@ -139,6 +139,7 @@ from roswell_uap_cortex.models import (
     SnapshotMetadata,
     TimelineDatePrecision,
     UncertaintyNote,
+    utc_now,
 )
 from roswell_uap_cortex.narrative import NarrativeBuilder
 from roswell_uap_cortex.provenance import ProvenanceExtractor
@@ -329,4 +330,5 @@ __all__ = [
     "TimelineEngine",
     "UncertaintyNote",
     "UncertaintyFormatter",
+    "utc_now",
 ]

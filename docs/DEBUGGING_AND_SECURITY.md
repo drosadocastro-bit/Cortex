@@ -1,0 +1,67 @@
+# Debugging And Security Hygiene
+
+This project is a deterministic research framework. Security hygiene here means
+checking that the current local code does not accidentally cross its stated
+boundaries.
+
+## Local Checks
+
+Recommended maintenance checks:
+
+```powershell
+python -m pytest
+rg "import requests|urllib|httpx|socket|subprocess|eval\(|exec\(|pickle|yaml.load|os.system" src tests
+python -m pytest tests/test_phase13_2_hygiene.py
+```
+
+The first command verifies behavior. The second looks for network, process,
+dynamic execution, or unsafe deserialization patterns. The third looks for
+encoding artifacts in documentation through the hygiene test without embedding
+the artifact markers in this file.
+
+## Dependency Surface
+
+Project dependencies are defined in `pyproject.toml`, not by the global Python
+environment. The current runtime environment may contain many unrelated
+packages, but the project dependency surface is intentionally small:
+
+- `networkx`
+- `python-dateutil`
+- `pytest` as a development dependency
+
+Future dependency additions should explain why standard library behavior is
+insufficient and should sit behind deterministic wrappers when possible.
+
+## Persistence Safety
+
+Snapshot loading reads JSON and reconstructs project records. It must never:
+
+- execute loaded data
+- import code from a snapshot
+- create claims, evidence, graph edges, or truth state automatically
+- discard unknown fields silently
+
+`PersistenceStore`, `Serializer`, `SnapshotValidator`, and
+`PersistenceGuardrails` should remain the safety boundary for local snapshots.
+
+## CLI Safety
+
+The CLI harness uses synthetic deterministic fixtures. It should not call the
+network, invoke external commands, or treat prompts as executable instructions.
+
+## Known Non-Issues
+
+The global environment may include packages such as web clients, LLM libraries,
+or vector libraries installed for other work. That does not make them project
+dependencies unless they appear in `pyproject.toml` or are imported by `src`.
+
+## Future Hardening
+
+Before adding live LLM inference, web UI, connectors, VLM perception, or vector
+databases, add checks for:
+
+- prompt-like instruction contamination
+- metadata visibility boundaries
+- resource budgets for duplicate floods
+- provenance-preserving importers
+- no automatic artifact promotion across the reality boundary

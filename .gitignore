@@ -10,3 +10,4 @@ build/
 dist/
 *.egg-info/
 tests/.tmp_persistence/
+tests/.tmp_hygiene/

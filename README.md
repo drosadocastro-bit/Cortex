@@ -115,10 +115,14 @@ Roswell-uap-cortex/
   docs/
     AI_DEBT.md
     ADVERSARIAL_FINDINGS.md
+    ARCHITECTURE.md
+    DEBUGGING_AND_SECURITY.md
     HARD_ADVERSARIAL_FINDINGS.md
     HARD_ADVERSARIAL_REMEDIATION.md
+    MAINTENANCE_LOG.md
     MEMORY_MODEL.md
     PROBLEM_STATEMENT.md
+    PUBLIC_API.md
   src/
     roswell_uap_cortex/
       __init__.py
@@ -193,6 +197,7 @@ Roswell-uap-cortex/
     test_phase11_reality_boundary.py
     test_phase12_attention.py
     test_phase13_1_hard_adversarial.py
+    test_phase13_2_hygiene.py
     test_phase13_adversarial.py
   pyproject.toml
   README.md

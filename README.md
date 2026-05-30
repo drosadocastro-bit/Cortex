@@ -99,6 +99,9 @@ The initial framework provides:
 - Adversarial epistemic stress testing with synthetic attacks for provenance
   laundering, semantic echo, discourse contamination, confidence inflation,
   contradiction suppression, speculation hardening, and policy abuse.
+- OWASP-inspired hard adversarial testing with honest outcomes including
+  resisted, near-miss, expected-failure, unexpected-failure, and inconclusive
+  results.
 - An AI debt register documenting future risks around inference, provenance,
   semantic similarity, temporal parsing, scoring, evaluation, and reporting.
 - Tests proving memory, source-trust, timeline, graph, claim-matrix,
@@ -112,6 +115,8 @@ Roswell-uap-cortex/
   docs/
     AI_DEBT.md
     ADVERSARIAL_FINDINGS.md
+    HARD_ADVERSARIAL_FINDINGS.md
+    HARD_ADVERSARIAL_REMEDIATION.md
     MEMORY_MODEL.md
     PROBLEM_STATEMENT.md
   src/
@@ -139,6 +144,9 @@ Roswell-uap-cortex/
       graph.py
       graph_backend.py
       guardrails.py
+      hard_adversarial.py
+      hard_adversarial_report.py
+      hard_adversarial_scenarios.py
       hybrid_retrieval.py
       independence.py
       ingestion.py
@@ -184,6 +192,7 @@ Roswell-uap-cortex/
     test_phase10_semantic.py
     test_phase11_reality_boundary.py
     test_phase12_attention.py
+    test_phase13_1_hard_adversarial.py
     test_phase13_adversarial.py
   pyproject.toml
   README.md

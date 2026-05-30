@@ -30,6 +30,9 @@ from roswell_uap_cortex.embedding_backend import EmbeddingBackend, MockEmbedding
 from roswell_uap_cortex.graph import FocusedGraphNeighborhood, RelationshipGraphEngine
 from roswell_uap_cortex.graph_backend import GraphBackend, GraphTraversalResult
 from roswell_uap_cortex.guardrails import ReasoningGuardrails
+from roswell_uap_cortex.hard_adversarial import HardAdversarialHarness
+from roswell_uap_cortex.hard_adversarial_report import HardAdversarialReportFormatter
+from roswell_uap_cortex.hard_adversarial_scenarios import HardAdversarialScenarioFactory
 from roswell_uap_cortex.hybrid_retrieval import HybridRetrievalCoordinator
 from roswell_uap_cortex.focus import AttentionFocusBuilder
 from roswell_uap_cortex.inference_provenance import InferenceProvenanceTracker
@@ -94,6 +97,10 @@ from roswell_uap_cortex.models import (
     ExtractedObservation,
     GraphNode,
     GraphNodeType,
+    HardAdversarialFinding,
+    HardAdversarialOutcome,
+    HardAdversarialReport,
+    HardAdversarialScenario,
     HybridRetrievalResult,
     IngestionResult,
     InvestigativeNarrative,
@@ -101,6 +108,7 @@ from roswell_uap_cortex.models import (
     LineageType,
     LoadResult,
     MemoryRecord,
+    OWASPLLMRisk,
     PersistenceEnvelope,
     PersistenceManifest,
     PersistenceRecord,
@@ -239,6 +247,13 @@ __all__ = [
     "GraphNode",
     "GraphNodeType",
     "GraphTraversalResult",
+    "HardAdversarialFinding",
+    "HardAdversarialHarness",
+    "HardAdversarialOutcome",
+    "HardAdversarialReport",
+    "HardAdversarialReportFormatter",
+    "HardAdversarialScenario",
+    "HardAdversarialScenarioFactory",
     "HybridRetrievalCoordinator",
     "HybridRetrievalResult",
     "IndependenceScorer",
@@ -259,6 +274,7 @@ __all__ = [
     "MockReasoner",
     "NarrativeBuilder",
     "NetworkXGraphBackend",
+    "OWASPLLMRisk",
     "PersistenceEnvelope",
     "PersistenceGuardrails",
     "PersistenceManifest",

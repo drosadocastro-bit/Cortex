@@ -342,6 +342,12 @@ Adversarial findings are framework-behavior findings only. A resisted attack
 means the current synthetic fixture triggered the expected guardrail. It does
 not prove real-world validity, scientific accuracy, or claim truth.
 
+Phase 13.1 adds an OWASP-inspired hard adversarial suite. Unlike the smoke
+suite, hard findings are not expected to be perfect. Outcomes include
+`resisted`, `near_miss`, `failed_expected`, `failed_unexpected`, and
+`inconclusive` so the framework can document weaknesses without turning tests
+into false assurance.
+
 ## Vector-Ready Design
 
 The association score separates lexical, tag, entity, timeline, source

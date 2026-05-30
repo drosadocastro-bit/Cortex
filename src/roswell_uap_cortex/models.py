@@ -257,6 +257,29 @@ class AdversarialExpectedFailureMode(str, Enum):
     GUARDRAIL_DISABLED_BY_POLICY = "guardrail_disabled_by_policy"
 
 
+class HardAdversarialOutcome(str, Enum):
+    """Honest outcomes for hard adversarial tests."""
+
+    RESISTED = "resisted"
+    NEAR_MISS = "near_miss"
+    FAILED_EXPECTED = "failed_expected"
+    FAILED_UNEXPECTED = "failed_unexpected"
+    INCONCLUSIVE = "inconclusive"
+
+
+class OWASPLLMRisk(str, Enum):
+    """OWASP LLM Top 10 inspired risk categories mapped to Cortex."""
+
+    LLM01_PROMPT_INJECTION = "LLM01_prompt_injection"
+    LLM02_SENSITIVE_INFORMATION_DISCLOSURE = "LLM02_sensitive_information_disclosure"
+    LLM04_DATA_AND_MODEL_POISONING = "LLM04_data_and_model_poisoning"
+    LLM05_IMPROPER_OUTPUT_HANDLING = "LLM05_improper_output_handling"
+    LLM06_EXCESSIVE_AGENCY = "LLM06_excessive_agency"
+    LLM08_VECTOR_AND_EMBEDDING_WEAKNESSES = "LLM08_vector_and_embedding_weaknesses"
+    LLM09_MISINFORMATION = "LLM09_misinformation"
+    LLM10_UNBOUNDED_CONSUMPTION = "LLM10_unbounded_consumption"
+
+
 class ArtifactType(str, Enum):
     """Artifact roles kept separate by the reality boundary layer."""
 
@@ -635,6 +658,78 @@ class AdversarialReport:
         if not self.findings:
             return 0.0
         return self.resisted_count / len(self.findings)
+
+
+@dataclass(slots=True)
+class HardAdversarialScenario:
+    """OWASP-inspired hard stress scenario with expected honest outcome."""
+
+    scenario_id: str
+    title: str
+    owasp_risk: OWASPLLMRisk | str
+    attack_vector: AdversarialAttackVector | str
+    expected_failure_mode: AdversarialExpectedFailureMode | str
+    expected_outcome: HardAdversarialOutcome | str
+    description: str = ""
+    inputs: EvaluationInput = field(default_factory=EvaluationInput)
+    expected_behaviors: list[ExpectedBehaviorType] = field(default_factory=list)
+    near_miss_reason: str = ""
+    tags: set[str] = field(default_factory=set)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.owasp_risk, str):
+            self.owasp_risk = OWASPLLMRisk(self.owasp_risk)
+        if isinstance(self.attack_vector, str):
+            self.attack_vector = AdversarialAttackVector(self.attack_vector)
+        if isinstance(self.expected_failure_mode, str):
+            self.expected_failure_mode = AdversarialExpectedFailureMode(self.expected_failure_mode)
+        if isinstance(self.expected_outcome, str):
+            self.expected_outcome = HardAdversarialOutcome(self.expected_outcome)
+
+
+@dataclass(slots=True)
+class HardAdversarialFinding:
+    """Observed hard adversarial result with calibration notes."""
+
+    scenario_id: str
+    owasp_risk: OWASPLLMRisk
+    attack_vector: AdversarialAttackVector
+    expected_failure_mode: AdversarialExpectedFailureMode
+    outcome: HardAdversarialOutcome
+    expected_outcome: HardAdversarialOutcome
+    passed_behaviors: list[ExpectedBehaviorType] = field(default_factory=list)
+    failed_behaviors: list[ExpectedBehaviorType] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class HardAdversarialReport:
+    """Aggregate hard adversarial report with non-perfect outcomes allowed."""
+
+    findings: list[HardAdversarialFinding] = field(default_factory=list)
+    limitations: list[str] = field(default_factory=list)
+
+    @property
+    def scenario_count(self) -> int:
+        return len(self.findings)
+
+    def outcome_counts(self) -> dict[HardAdversarialOutcome, int]:
+        counts = {outcome: 0 for outcome in HardAdversarialOutcome}
+        for finding in self.findings:
+            counts[finding.outcome] += 1
+        return counts
+
+    @property
+    def calibration_passed(self) -> bool:
+        outcomes = {finding.outcome for finding in self.findings}
+        return HardAdversarialOutcome.RESISTED in outcomes and any(
+            outcome in outcomes
+            for outcome in (
+                HardAdversarialOutcome.NEAR_MISS,
+                HardAdversarialOutcome.FAILED_EXPECTED,
+                HardAdversarialOutcome.INCONCLUSIVE,
+            )
+        )
 
 
 @dataclass(slots=True)

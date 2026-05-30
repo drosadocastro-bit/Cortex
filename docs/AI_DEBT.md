@@ -324,6 +324,40 @@ Must not do:
 Do not treat resisted synthetic attacks as real-world validation or as evidence
 that any external claim is true or false.
 
+## Hard Adversarial Calibration Debt
+
+Risk:
+A perfect hard-adversarial score may create false assurance that the system is
+robust against prompt injection, data poisoning, semantic echo, output
+reingestion, misinformation, or duplicate flooding.
+
+Current mitigation:
+The OWASP-inspired hard suite intentionally includes `near_miss`,
+`failed_expected`, and `inconclusive` outcomes. `docs/HARD_ADVERSARIAL_FINDINGS.md`
+documents those outcomes separately from the smoke adversarial report.
+`docs/HARD_ADVERSARIAL_REMEDIATION.md` maps each non-perfect outcome to a
+specific remediation target and acceptance criteria.
+
+Future trigger:
+When live LLM inference, VLM perception, larger ingestion, vector databases, or
+tool-use capabilities are added, hard adversarial scenarios must be expanded and
+expected failures converted into explicit design tasks.
+
+Must not do:
+Do not optimize the hard adversarial suite toward a perfect score. A credible
+hard suite should preserve known weaknesses and near misses until they are
+actually fixed.
+
+Open remediation items:
+- `hard-llm01-prompt-injection-note`: deterministic instruction-contamination
+  detection for prompt-like source content.
+- `hard-llm02-sensitive-metadata-disclosure`: metadata visibility boundaries for
+  public, internal, and private fields.
+- `hard-llm09-polished-misinformation`: speculation-hardening checks that do not
+  depend only on literal trigger words.
+- `hard-llm10-duplicate-flood`: bounded workload, truncation notes, and
+  duplicate-flood reporting.
+
 ## Semantic Layer Debt
 
 Risk:

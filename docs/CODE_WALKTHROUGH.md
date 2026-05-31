@@ -84,6 +84,28 @@ Candidate claims preserve:
 Every candidate claim starts unsupported with confidence `0.0`. Extraction does
 not create graph edges, support relationships, or claim confirmation.
 
+## Claim Normalization
+
+`claim_normalization.py` contains `ClaimNormalizer`.
+
+It groups `CandidateClaim` records by deterministic canonical keys. Keys use
+tokenized claim text plus an origin bucket so speculation and metadata stay
+isolated by default.
+
+`NormalizedClaim` records preserve:
+
+- candidate claim ids
+- source evidence ids
+- provenance ids
+- lineage ids
+- origin types
+- warnings
+
+`claim_matrix_integration.py` contains `ClaimMatrixIntegrator`. It registers
+normalized claims as unsupported candidate topics in `ClaimMatrixEngine`.
+Integration does not add supporting evidence, contradiction evidence, graph
+edges, or confidence.
+
 ## Provenance, Lineage, And Contamination
 
 `provenance.py` creates mandatory provenance records.

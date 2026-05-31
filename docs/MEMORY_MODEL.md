@@ -32,6 +32,13 @@ claims begin unsupported with confidence `0.0`. Claim extraction preserves
 origin, source observation id, evidence id, provenance ids, and warnings. It
 does not create support, graph edges, or confirmation.
 
+Phase 16 adds deterministic claim normalization and safe matrix integration.
+`ClaimNormalizer` groups candidate claims by canonical keys while preserving
+candidate ids, evidence ids, provenance ids, lineage ids, and origin types.
+`ClaimMatrixIntegrator` registers normalized claims as unsupported candidate
+topics only. It does not create support evidence, contradiction evidence, graph
+edges, or confidence.
+
 ## Provenance Extraction
 
 `ProvenanceExtractor` creates a `ProvenanceRecord` for every ingested evidence

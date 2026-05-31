@@ -133,6 +133,19 @@ class ClaimExtractionWarningType(str, Enum):
     MISSING_PROVENANCE = "missing_provenance"
 
 
+class ClaimNormalizationWarningType(str, Enum):
+    """Warnings emitted while grouping candidate claims."""
+
+    NORMALIZATION_NOT_VALIDATION = "normalization_not_validation"
+    SAME_LINEAGE_REPETITION = "same_lineage_repetition"
+    REPEATED_CLAIMS_NOT_CORROBORATION = "repeated_claims_not_corroboration"
+    SPECULATION_ORIGIN_VISIBLE = "speculation_origin_visible"
+    REPORTED_ORIGIN_VISIBLE = "reported_origin_visible"
+    METADATA_NOT_EVENT_TRUTH = "metadata_not_event_truth"
+    AMBIGUOUS_ORIGIN_MERGE = "ambiguous_origin_merge"
+    UNSUPPORTED_TOPIC_ONLY = "unsupported_topic_only"
+
+
 class LineageType(str, Enum):
     """Ingestion lineage classification."""
 
@@ -219,6 +232,8 @@ class ExpectedBehaviorType(str, Enum):
     ATTENTION_PROVENANCE_WARNING_VISIBLE = "attention_provenance_warning_visible"
     ATTENTION_CONTAMINATION_WARNING_VISIBLE = "attention_contamination_warning_visible"
     ATTENTION_SAME_LINEAGE_SUPPRESSED = "attention_same_lineage_suppressed"
+    CLAIM_NORMALIZATION_NOT_VALIDATION = "claim_normalization_not_validation"
+    NORMALIZED_CLAIMS_UNSUPPORTED = "normalized_claims_unsupported"
 
 
 class SemanticWarningType(str, Enum):
@@ -571,6 +586,7 @@ class EvaluationInput:
     lineage_records: list["SourceLineageRecord"] = field(default_factory=list)
     cognitive_state: CognitiveSeparationState | None = None
     attention_decision: AttentionDecision | None = None
+    normalized_claims: list["NormalizedClaim"] = field(default_factory=list)
     before_state_hash: str | None = None
     after_state_hash: str | None = None
 
@@ -1024,6 +1040,75 @@ class ClaimExtractionResult:
     candidate_claims: list[CandidateClaim] = field(default_factory=list)
     warnings: list[ClaimExtractionWarning] = field(default_factory=list)
     extraction_notes: list[str] = field(default_factory=list)
+
+
+@dataclass(frozen=True, slots=True)
+class ClaimCanonicalKey:
+    """Deterministic key for grouping candidate claims."""
+
+    value: str
+    origin_bucket: str
+    token_fingerprint: tuple[str, ...] = ()
+
+
+@dataclass(slots=True)
+class ClaimNormalizationWarning:
+    """Warning emitted during claim normalization or matrix integration."""
+
+    warning_type: ClaimNormalizationWarningType | str
+    message: str
+    related_ids: set[str] = field(default_factory=set)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.warning_type, str):
+            self.warning_type = ClaimNormalizationWarningType(self.warning_type)
+
+
+@dataclass(slots=True)
+class NormalizedClaim:
+    """Canonical candidate-claim group; organization, not validation."""
+
+    normalized_claim_id: str
+    canonical_key: ClaimCanonicalKey
+    canonical_text: str
+    candidate_claim_ids: set[str] = field(default_factory=set)
+    origin_types: set[CandidateClaimOrigin] = field(default_factory=set)
+    evidence_ids: set[str] = field(default_factory=set)
+    provenance_ids: set[str] = field(default_factory=set)
+    lineage_ids: set[str] = field(default_factory=set)
+    warning_flags: list[ClaimNormalizationWarning] = field(default_factory=list)
+    unsupported: bool = True
+    confidence: float = 0.0
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ClaimNormalizationPolicy:
+    """Controls cautious candidate-claim grouping."""
+
+    allow_cross_origin_merge: bool = False
+    allow_metadata_event_merge: bool = False
+    isolate_speculation: bool = True
+    isolate_metadata: bool = True
+
+
+@dataclass(slots=True)
+class ClaimNormalizationResult:
+    """Normalized claims plus grouping warnings."""
+
+    normalized_claims: list[NormalizedClaim] = field(default_factory=list)
+    warnings: list[ClaimNormalizationWarning] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ClaimMatrixIntegrationResult:
+    """Result of safely registering normalized claims in the claim matrix."""
+
+    registered_topics: set[str] = field(default_factory=set)
+    claim_node_ids: set[str] = field(default_factory=set)
+    warnings: list[ClaimNormalizationWarning] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
 
 
 @dataclass(slots=True)

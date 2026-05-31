@@ -33,6 +33,27 @@ Verification:
 
 - `python -m pytest`
 
+## 2026-05-30: Phase 16 Claim Normalization And Matrix Integration
+
+Scope:
+Group candidate claims under deterministic canonical keys and register them in
+the claim matrix as unsupported candidate topics only.
+
+Fixes / documentation added:
+
+- Added `ClaimCanonicalKey`, `NormalizedClaim`, `ClaimNormalizationPolicy`,
+  `ClaimNormalizationWarning`, `ClaimNormalizationResult`, and
+  `ClaimMatrixIntegrationResult`.
+- Added `ClaimNormalizer`, `ClaimNormalizationGuardrails`, and
+  `ClaimMatrixIntegrator`.
+- Added safe `ClaimMatrixEngine.register_unsupported_candidate_topic()`.
+- Added `docs/ADR-018-claim-normalization-and-matrix-integration.md`.
+- Updated hard adversarial coverage with a polished paraphrase flood scenario.
+
+Verification:
+
+- `python -m pytest`
+
 ## 2026-05-30: Phase 15 Claim Extraction Without Confirmation
 
 Scope:

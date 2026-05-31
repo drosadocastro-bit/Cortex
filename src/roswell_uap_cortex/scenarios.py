@@ -12,6 +12,8 @@ from roswell_uap_cortex.models import (
     ArtifactType,
     AttentionCandidate,
     AttentionDecision,
+    CandidateClaimOrigin,
+    ClaimCanonicalKey,
     ClaimMatrixStatus,
     ClaimNode,
     CognitiveArtifact,
@@ -29,6 +31,7 @@ from roswell_uap_cortex.models import (
     ReasoningOutput,
     ReasoningWarning,
     ReasoningWarningType,
+    NormalizedClaim,
     SourceLineageRecord,
     UncertaintyNote,
 )
@@ -54,6 +57,7 @@ class ScenarioFactory:
             *self.semantic_scenarios(),
             *self.reality_boundary_scenarios(),
             *self.attention_scenarios(),
+            *self.claim_normalization_scenarios(),
         ]
 
     def graph_infrastructure_scenarios(self) -> list[EvaluationScenario]:
@@ -324,6 +328,33 @@ class ScenarioFactory:
                 [ExpectedBehaviorType.ATTENTION_SAME_LINEAGE_SUPPRESSED],
                 {"synthetic", "attention", "deferral"},
             ),
+        ]
+
+    def claim_normalization_scenarios(self) -> list[EvaluationScenario]:
+        normalized = NormalizedClaim(
+            normalized_claim_id="synthetic-normalized-claim",
+            canonical_key=ClaimCanonicalKey("bright-light", "reported", ("bright", "light")),
+            canonical_text="Witness reported bright light",
+            candidate_claim_ids={"candidate-1", "candidate-2"},
+            origin_types={CandidateClaimOrigin.FROM_REPORTED_CLAIM},
+            evidence_ids={"e1", "e2"},
+            provenance_ids={"p1", "p2"},
+            lineage_ids={"same"},
+            unsupported=True,
+            confidence=0.0,
+            notes=["synthetic claim normalization scenario"],
+        )
+        return [
+            self._scenario(
+                "synthetic-claim-normalization-no-validation",
+                "Claim Normalization Is Not Validation",
+                EvaluationInput(normalized_claims=[normalized]),
+                [
+                    ExpectedBehaviorType.CLAIM_NORMALIZATION_NOT_VALIDATION,
+                    ExpectedBehaviorType.NORMALIZED_CLAIMS_UNSUPPORTED,
+                ],
+                {"synthetic", "claim-normalization"},
+            )
         ]
 
     def duplicate_source_repetition(self) -> EvaluationScenario:

@@ -11,7 +11,7 @@ def test_hard_adversarial_factory_maps_to_owasp_inspired_risks() -> None:
     scenarios = HardAdversarialScenarioFactory().all()
     risks = {scenario.owasp_risk for scenario in scenarios}
 
-    assert len(scenarios) == 8
+    assert len(scenarios) == 9
     assert OWASPLLMRisk.LLM01_PROMPT_INJECTION in risks
     assert OWASPLLMRisk.LLM08_VECTOR_AND_EMBEDDING_WEAKNESSES in risks
     assert OWASPLLMRisk.LLM10_UNBOUNDED_CONSUMPTION in risks

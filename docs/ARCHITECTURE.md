@@ -13,6 +13,7 @@ raw input
 -> ingestion / normalization
 -> evidence / provenance / lineage
 -> candidate claim extraction
+-> claim normalization / unsupported topic registration
 -> memory / graph / claims
 -> associative retrieval / attention
 -> activated context
@@ -49,6 +50,11 @@ Candidate claim extraction:
 Classified observations can seed `CandidateClaim` records for review. Candidate
 claims are not support, confirmation, or graph relationships. They start
 unsupported and preserve their observation origin and provenance.
+
+Claim normalization:
+Candidate claims can be grouped under deterministic canonical keys and
+registered in the claim matrix as unsupported topics. Normalization organizes
+candidate claims, but it does not validate them or create support.
 
 Cognitive state:
 Memory, graph, claim matrix, source trust, contradiction pressure, and temporal

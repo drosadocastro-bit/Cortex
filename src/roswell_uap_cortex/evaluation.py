@@ -185,6 +185,14 @@ class EvaluationHarness:
                 and any("same_lineage_downgraded" in score.reason_codes for score in decision.salience_by_id.values())
             )
             return passed, "same-lineage attention repetition was not downgraded", set()
+        if behavior is ExpectedBehaviorType.CLAIM_NORMALIZATION_NOT_VALIDATION:
+            normalized = inputs.normalized_claims
+            passed = bool(normalized) and all(claim.confidence == 0.0 for claim in normalized)
+            return passed, "claim normalization appeared to create confidence", set()
+        if behavior is ExpectedBehaviorType.NORMALIZED_CLAIMS_UNSUPPORTED:
+            normalized = inputs.normalized_claims
+            passed = bool(normalized) and all(claim.unsupported for claim in normalized)
+            return passed, "normalized claims were not kept unsupported", set()
         if behavior in {
             ExpectedBehaviorType.SEMANTIC_SIMILARITY_NOT_CONFIRMATION,
             ExpectedBehaviorType.SEMANTIC_LINEAGE_ECHO_DOWNGRADED,

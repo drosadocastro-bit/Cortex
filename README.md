@@ -65,6 +65,9 @@ The initial framework provides:
 - Candidate claim extraction that turns classified observations into
   unsupported review candidates without creating support, graph edges, or
   confirmation.
+- Claim normalization and matrix integration that groups candidate claims under
+  canonical topics while preserving origin, provenance, lineage, unsupported
+  status, and zero confidence.
 - Sensory intake safeguards: ingestion does not confirm claims or create graph
   edges automatically.
 - A bounded local cognitive reasoning layer that operates on activated context
@@ -144,6 +147,9 @@ Roswell-uap-cortex/
       attention_guardrails.py
       claim_matrix.py
       claim_extraction.py
+      claim_matrix_integration.py
+      claim_normalization.py
+      claim_normalization_guardrails.py
       citations.py
       cli.py
       context_builder.py
@@ -211,6 +217,7 @@ Roswell-uap-cortex/
     test_phase13_adversarial.py
     test_phase14_observation_classification.py
     test_phase15_claim_extraction.py
+    test_phase16_claim_normalization.py
   pyproject.toml
   README.md
 ```

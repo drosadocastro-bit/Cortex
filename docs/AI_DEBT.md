@@ -122,6 +122,27 @@ Must not do:
 Do not create support edges, increase claim confidence, or mark a claim
 supported merely because it was extracted from text.
 
+## Claim Normalization Debt
+
+Risk:
+Canonical grouping may make repeated or paraphrased candidate claims look more
+supported than they are.
+
+Current mitigation:
+`ClaimNormalizer` emits warnings that normalization is not validation. It
+preserves candidate ids, origin types, provenance ids, evidence ids, and lineage
+ids. `ClaimMatrixIntegrator` registers normalized claims as unsupported topics
+without support evidence or confidence.
+
+Future trigger:
+Before adding richer paraphrase matching, LLM claim extraction, or semantic
+claim clustering, normalization must keep origin and lineage visible and must
+add adversarial tests for repeated same-lineage phrasing.
+
+Must not do:
+Do not treat normalized claim grouping, repeated phrasing, or canonical topic
+registration as corroboration.
+
 ## Similarity Debt
 
 Risk:

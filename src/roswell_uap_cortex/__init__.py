@@ -15,6 +15,9 @@ from roswell_uap_cortex.claim_matrix import (
     ClaimMatrixEntry,
 )
 from roswell_uap_cortex.claim_extraction import ClaimExtractionEngine
+from roswell_uap_cortex.claim_matrix_integration import ClaimMatrixIntegrator
+from roswell_uap_cortex.claim_normalization import ClaimNormalizer
+from roswell_uap_cortex.claim_normalization_guardrails import ClaimNormalizationGuardrails
 from roswell_uap_cortex.citations import CitationFormatter
 from roswell_uap_cortex.compression import CompressedMemory, SemanticCompressionEngine
 from roswell_uap_cortex.contamination import ContaminationDetector, ContaminationEngine
@@ -68,11 +71,17 @@ from roswell_uap_cortex.models import (
     CandidateClaim,
     CandidateClaimOrigin,
     Claim,
+    ClaimCanonicalKey,
     ClaimExtractionPolicy,
     ClaimExtractionResult,
     ClaimExtractionWarning,
     ClaimExtractionWarningType,
+    ClaimMatrixIntegrationResult,
     ClaimMatrixStatus,
+    ClaimNormalizationPolicy,
+    ClaimNormalizationResult,
+    ClaimNormalizationWarning,
+    ClaimNormalizationWarningType,
     ClaimNode,
     CognitiveArtifact,
     CognitiveSeparationState,
@@ -116,6 +125,7 @@ from roswell_uap_cortex.models import (
     LineageType,
     LoadResult,
     MemoryRecord,
+    NormalizedClaim,
     OWASPLLMRisk,
     ObservationType,
     PersistenceEnvelope,
@@ -201,6 +211,7 @@ __all__ = [
     "CandidateClaim",
     "CandidateClaimOrigin",
     "Claim",
+    "ClaimCanonicalKey",
     "ClaimExtractionEngine",
     "ClaimExtractionPolicy",
     "ClaimExtractionResult",
@@ -209,7 +220,15 @@ __all__ = [
     "ClaimEvidenceContribution",
     "ClaimMatrixEngine",
     "ClaimMatrixEntry",
+    "ClaimMatrixIntegrationResult",
+    "ClaimMatrixIntegrator",
     "ClaimMatrixStatus",
+    "ClaimNormalizationGuardrails",
+    "ClaimNormalizationPolicy",
+    "ClaimNormalizationResult",
+    "ClaimNormalizationWarning",
+    "ClaimNormalizationWarningType",
+    "ClaimNormalizer",
     "ClaimNode",
     "CognitiveArtifact",
     "CognitiveArtifactRegistry",
@@ -291,6 +310,7 @@ __all__ = [
     "MockReasoner",
     "NarrativeBuilder",
     "NetworkXGraphBackend",
+    "NormalizedClaim",
     "OWASPLLMRisk",
     "ObservationClassifier",
     "ObservationType",

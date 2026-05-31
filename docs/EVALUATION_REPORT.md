@@ -10,8 +10,8 @@ $env:PYTHONPATH='src'; python -c "from roswell_uap_cortex.cli import build_demo_
 
 ## Summary
 
-- Scenario count: 30
-- Passed scenarios: 30
+- Scenario count: 31
+- Passed scenarios: 31
 - Failed scenarios: 0
 - Overall framework-behavior pass rate: 1.000
 

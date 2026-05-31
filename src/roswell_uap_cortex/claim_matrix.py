@@ -64,6 +64,27 @@ class ClaimMatrixEngine:
         self.evaluate(claim.canonical_topic)
         return entry
 
+    def register_unsupported_candidate_topic(
+        self,
+        canonical_topic: str,
+        claim: ClaimNode,
+    ) -> ClaimMatrixEntry:
+        claim.status = ClaimMatrixStatus.UNSUPPORTED
+        claim.confidence = 0.0
+        entry = self.entries.setdefault(
+            canonical_topic,
+            ClaimMatrixEntry(canonical_topic=canonical_topic),
+        )
+        if all(existing.id != claim.id for existing in entry.claims):
+            entry.claims.append(claim)
+        if not entry.supporting_evidence and not entry.contradicting_evidence:
+            entry.status = ClaimMatrixStatus.UNSUPPORTED
+            entry.claim_confidence = 0.0
+            for existing in entry.claims:
+                existing.status = ClaimMatrixStatus.UNSUPPORTED
+                existing.confidence = 0.0
+        return entry
+
     def add_support(
         self,
         canonical_topic: str,

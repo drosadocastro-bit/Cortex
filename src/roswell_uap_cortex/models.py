@@ -110,6 +110,29 @@ class ObservationType(str, Enum):
     UNKNOWN = "unknown"
 
 
+class CandidateClaimOrigin(str, Enum):
+    """Where a candidate claim was extracted from; not a truth source."""
+
+    FROM_DIRECT_OBSERVATION = "from_direct_observation"
+    FROM_REPORTED_CLAIM = "from_reported_claim"
+    FROM_INTERPRETATION = "from_interpretation"
+    FROM_SPECULATION = "from_speculation"
+    FROM_METADATA = "from_metadata"
+    UNKNOWN = "unknown"
+
+
+class ClaimExtractionWarningType(str, Enum):
+    """Warnings emitted during candidate claim extraction."""
+
+    EXTRACTION_NOT_CONFIRMATION = "extraction_not_confirmation"
+    DIRECT_OBSERVATION_CAUTION = "direct_observation_caution"
+    REPORTED_CLAIM_NOT_VERIFIED = "reported_claim_not_verified"
+    INTERPRETATION_NOT_OBSERVATION = "interpretation_not_observation"
+    SPECULATION_REMAINS_SPECULATION = "speculation_remains_speculation"
+    METADATA_NOT_CLAIM_SUPPORT = "metadata_not_claim_support"
+    MISSING_PROVENANCE = "missing_provenance"
+
+
 class LineageType(str, Enum):
     """Ingestion lineage classification."""
 
@@ -939,6 +962,68 @@ class IngestionResult:
     source_trust_hints: dict[str, Any] = field(default_factory=dict)
     ingestion_warnings: list[str] = field(default_factory=list)
     ingestion_notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ClaimExtractionWarning:
+    """Warning that extraction created a candidate, not confirmation."""
+
+    warning_type: ClaimExtractionWarningType | str
+    message: str
+    related_ids: set[str] = field(default_factory=set)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.warning_type, str):
+            self.warning_type = ClaimExtractionWarningType(self.warning_type)
+
+
+@dataclass(slots=True)
+class CandidateClaim:
+    """A claim-like statement extracted for review, initially unsupported."""
+
+    text: str
+    canonical_topic: str
+    origin: CandidateClaimOrigin | str
+    source_observation_id: str | None = None
+    source_evidence_id: str | None = None
+    provenance_ids: set[str] = field(default_factory=set)
+    observation_type: ObservationType = ObservationType.UNKNOWN
+    status: ClaimMatrixStatus = ClaimMatrixStatus.UNSUPPORTED
+    confidence: float = 0.0
+    speculative: bool = False
+    extraction_notes: list[str] = field(default_factory=list)
+    warnings: list[ClaimExtractionWarning] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
+    id: str = ""
+
+    def __post_init__(self) -> None:
+        if isinstance(self.origin, str):
+            self.origin = CandidateClaimOrigin(self.origin)
+        if isinstance(self.observation_type, str):
+            self.observation_type = ObservationType(self.observation_type)
+        if not self.id:
+            self.id = str(uuid5(NAMESPACE_URL, f"candidate-claim:{self.origin.value}:{self.text}"))
+
+
+@dataclass(slots=True)
+class ClaimExtractionPolicy:
+    """Deterministic extraction policy; extraction never confirms claims."""
+
+    extract_from_direct_observation: bool = True
+    extract_from_reported_claim: bool = True
+    extract_from_interpretation: bool = True
+    extract_from_speculation: bool = True
+    extract_from_metadata: bool = False
+    require_provenance_note: bool = True
+
+
+@dataclass(slots=True)
+class ClaimExtractionResult:
+    """Candidate claims plus warnings produced by deterministic extraction."""
+
+    candidate_claims: list[CandidateClaim] = field(default_factory=list)
+    warnings: list[ClaimExtractionWarning] = field(default_factory=list)
+    extraction_notes: list[str] = field(default_factory=list)
 
 
 @dataclass(slots=True)

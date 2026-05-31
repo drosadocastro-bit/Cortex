@@ -33,6 +33,24 @@ Verification:
 
 - `python -m pytest`
 
+## 2026-05-30: Phase 15 Claim Extraction Without Confirmation
+
+Scope:
+Add deterministic candidate claim extraction from classified observations while
+preserving the rule that extraction is not confirmation.
+
+Fixes / documentation added:
+
+- Added `CandidateClaim`, `CandidateClaimOrigin`, `ClaimExtractionPolicy`,
+  `ClaimExtractionWarning`, and `ClaimExtractionResult`.
+- Added `ClaimExtractionEngine`.
+- Added `docs/ADR-017-claim-extraction-without-confirmation.md`.
+- Updated architecture, memory model, code walkthrough, and AI debt docs.
+
+Verification:
+
+- `python -m pytest`
+
 ## 2026-05-30: Phase 14 Observation And Interpretation Separation
 
 Scope:

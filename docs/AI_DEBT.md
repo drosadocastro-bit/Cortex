@@ -103,6 +103,25 @@ Must not do:
 Do not treat an observation-type label as truth, source reliability, or claim
 confirmation.
 
+## Claim Extraction Debt
+
+Risk:
+Extracted candidate claims may be mistaken for supported claims, especially when
+future LLM extraction produces fluent claim text.
+
+Current mitigation:
+`ClaimExtractionEngine` creates `CandidateClaim` records only. They start
+unsupported with confidence `0.0`, preserve origin and provenance, and carry
+warnings that extraction is not confirmation.
+
+Future trigger:
+Before adding LLM-assisted claim extraction, extracted claims must retain source
+spans, observation type, provenance ids, uncertainty notes, and review status.
+
+Must not do:
+Do not create support edges, increase claim confidence, or mark a claim
+supported merely because it was extracted from text.
+
 ## Similarity Debt
 
 Risk:

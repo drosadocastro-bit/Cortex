@@ -26,6 +26,12 @@ The label and marker notes travel into evidence metadata so downstream layers do
 not need to guess whether a span was observed, interpreted, reported, or
 speculated.
 
+Phase 15 adds deterministic candidate claim extraction. `ClaimExtractionEngine`
+can create `CandidateClaim` records from classified observations, but extracted
+claims begin unsupported with confidence `0.0`. Claim extraction preserves
+origin, source observation id, evidence id, provenance ids, and warnings. It
+does not create support, graph edges, or confirmation.
+
 ## Provenance Extraction
 
 `ProvenanceExtractor` creates a `ProvenanceRecord` for every ingested evidence

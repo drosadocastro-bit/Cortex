@@ -12,6 +12,7 @@ The main experimental path is:
 raw input
 -> ingestion / normalization
 -> evidence / provenance / lineage
+-> candidate claim extraction
 -> memory / graph / claims
 -> associative retrieval / attention
 -> activated context
@@ -43,6 +44,11 @@ lineage records, and contamination flags. Ingestion does not confirm claims or
 create graph support. Observation classification separates direct observation,
 interpretation, speculation, reported claims, metadata statements, and unknown
 spans before records move downstream.
+
+Candidate claim extraction:
+Classified observations can seed `CandidateClaim` records for review. Candidate
+claims are not support, confirmation, or graph relationships. They start
+unsupported and preserve their observation origin and provenance.
 
 Cognitive state:
 Memory, graph, claim matrix, source trust, contradiction pressure, and temporal

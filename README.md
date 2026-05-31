@@ -62,6 +62,9 @@ The initial framework provides:
 - Observation-vs-interpretation separation at intake, preserving direct
   observations, interpretations, speculation, reported claims, metadata
   statements, and unknown spans.
+- Candidate claim extraction that turns classified observations into
+  unsupported review candidates without creating support, graph edges, or
+  confirmation.
 - Sensory intake safeguards: ingestion does not confirm claims or create graph
   edges automatically.
 - A bounded local cognitive reasoning layer that operates on activated context
@@ -140,6 +143,7 @@ Roswell-uap-cortex/
       attention_gate.py
       attention_guardrails.py
       claim_matrix.py
+      claim_extraction.py
       citations.py
       cli.py
       context_builder.py
@@ -206,6 +210,7 @@ Roswell-uap-cortex/
     test_phase13_2_hygiene.py
     test_phase13_adversarial.py
     test_phase14_observation_classification.py
+    test_phase15_claim_extraction.py
   pyproject.toml
   README.md
 ```

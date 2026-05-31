@@ -14,6 +14,7 @@ from roswell_uap_cortex.claim_matrix import (
     ClaimMatrixEngine,
     ClaimMatrixEntry,
 )
+from roswell_uap_cortex.claim_extraction import ClaimExtractionEngine
 from roswell_uap_cortex.citations import CitationFormatter
 from roswell_uap_cortex.compression import CompressedMemory, SemanticCompressionEngine
 from roswell_uap_cortex.contamination import ContaminationDetector, ContaminationEngine
@@ -64,7 +65,13 @@ from roswell_uap_cortex.models import (
     AttentionSignal,
     AttentionWarning,
     AttentionWarningType,
+    CandidateClaim,
+    CandidateClaimOrigin,
     Claim,
+    ClaimExtractionPolicy,
+    ClaimExtractionResult,
+    ClaimExtractionWarning,
+    ClaimExtractionWarningType,
     ClaimMatrixStatus,
     ClaimNode,
     CognitiveArtifact,
@@ -191,7 +198,14 @@ __all__ = [
     "AttentionSignal",
     "AttentionWarning",
     "AttentionWarningType",
+    "CandidateClaim",
+    "CandidateClaimOrigin",
     "Claim",
+    "ClaimExtractionEngine",
+    "ClaimExtractionPolicy",
+    "ClaimExtractionResult",
+    "ClaimExtractionWarning",
+    "ClaimExtractionWarningType",
     "ClaimEvidenceContribution",
     "ClaimMatrixEngine",
     "ClaimMatrixEntry",

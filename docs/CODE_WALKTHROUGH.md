@@ -65,6 +65,25 @@ What it does not do:
 ingestion. The classifier records markers and notes on `ExtractedObservation`,
 then ingestion copies those fields into evidence metadata.
 
+## Candidate Claim Extraction
+
+`claim_extraction.py` contains `ClaimExtractionEngine`.
+
+It reads classified `ExtractedObservation` records and optional evidence and
+provenance maps. It produces `CandidateClaim` records for review.
+
+Candidate claims preserve:
+
+- source observation id
+- source evidence id
+- provenance ids
+- observation type
+- origin such as `from_reported_claim` or `from_speculation`
+- extraction warnings
+
+Every candidate claim starts unsupported with confidence `0.0`. Extraction does
+not create graph edges, support relationships, or claim confirmation.
+
 ## Provenance, Lineage, And Contamination
 
 `provenance.py` creates mandatory provenance records.

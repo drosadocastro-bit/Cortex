@@ -14,7 +14,10 @@ Stable framework primitives include:
 - core enums such as `RelationshipType`, `ClaimMatrixStatus`,
   `TimelineDatePrecision`, and `ArtifactType`
 - engines on the canonical path such as `IngestionNormalizer`,
-  `RelationshipGraphEngine`, `TimelineEngine`, `ClaimMatrixEngine`,
+  `ClaimExtractionEngine`, `ClaimNormalizer`, `ClaimEvidenceEvaluator`,
+  `ClaimReviewEngine`, `SourceReviewEngine`, `RelationshipGraphEngine`,
+  `WorkingMemoryEngine`, `ReviewSessionEngine`, `SessionPersistenceStore`,
+  `ReviewBundleBuilder`, `TimelineEngine`, `ClaimMatrixEngine`,
   `AssociativeRetrievalEngine`, `AttentionEngine`, `CognitiveReasoningEngine`,
   `DiscourseEngine`, `SnapshotBuilder`, `PersistenceStore`, and
   `EvaluationHarness`
@@ -29,6 +32,7 @@ These are useful but should be treated as extension points:
 - mock embedding and mock reasoning components
 - attention policies
 - reality-boundary registry helpers
+- docket formatters and priority helpers used to present review state
 
 ## Experimental / Testing Exports
 

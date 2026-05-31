@@ -171,6 +171,56 @@ class ClaimEvaluationWarningType(str, Enum):
     EVALUATION_NOT_TRUTH = "evaluation_not_truth"
 
 
+class ReviewPriority(str, Enum):
+    """Claim review priority; not truth confidence or operational urgency."""
+
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    URGENT = "urgent"
+
+
+class ReviewRecommendationType(str, Enum):
+    """Bounded review recommendations that do not confirm or reject claims."""
+
+    PRESERVE_UNSUPPORTED = "preserve_unsupported"
+    REVIEW_CONTRADICTION = "review_contradiction"
+    VERIFY_PROVENANCE = "verify_provenance"
+    CHECK_SOURCE_INDEPENDENCE = "check_source_independence"
+    REVIEW_SPECULATIVE_OR_REPORTED = "review_speculative_or_reported"
+    HUMAN_REVIEW = "human_review"
+
+
+class SourceReviewPriority(str, Enum):
+    """Source review priority; not source truth or rejection."""
+
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    URGENT = "urgent"
+
+
+class SourceReviewRecommendationType(str, Enum):
+    """Bounded recommendations for source reliability review."""
+
+    PRESERVE_SOURCE_UNCERTAINTY = "preserve_source_uncertainty"
+    VERIFY_PROVENANCE = "verify_provenance"
+    REVIEW_LINEAGE = "review_lineage"
+    CHECK_CONTAMINATION = "check_contamination"
+    REVIEW_SOURCE_TRUST_INPUTS = "review_source_trust_inputs"
+    HUMAN_REVIEW = "human_review"
+
+
+class ReviewDecisionType(str, Enum):
+    """Human-review annotation type; not a truth decision."""
+
+    REVIEWED = "reviewed"
+    DEFERRED = "deferred"
+    KEEP_UNRESOLVED = "keep_unresolved"
+    REQUEST_MORE_PROVENANCE = "request_more_provenance"
+    REQUEST_SOURCE_REVIEW = "request_source_review"
+
+
 class LineageType(str, Enum):
     """Ingestion lineage classification."""
 
@@ -595,6 +645,117 @@ class LoadResult:
     envelope: PersistenceEnvelope | None = None
     warnings: list[str] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
+    success: bool = True
+
+
+@dataclass(slots=True)
+class SessionAuditRecord:
+    """One deterministic review-session audit event."""
+
+    event_type: str
+    session_id: str
+    item_id: str | None = None
+    item_type: str | None = None
+    notes: list[str] = field(default_factory=list)
+    created_at: datetime = field(default_factory=lambda: datetime(1970, 1, 1, tzinfo=timezone.utc))
+    record_id: str = ""
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        if not self.record_id:
+            self.record_id = str(uuid5(NAMESPACE_URL, f"session-audit:{self.session_id}:{self.event_type}:{self.item_type}:{self.item_id}:{'|'.join(self.notes)}"))
+
+
+@dataclass(slots=True)
+class SessionAuditTrail:
+    """Ordered audit records for review-session workflow."""
+
+    session_id: str
+    records: list[SessionAuditRecord] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class SessionPersistenceEnvelope:
+    """Persisted session state plus audit trail."""
+
+    manifest: PersistenceManifest
+    sessions: list["ReviewSession"] = field(default_factory=list)
+    audit_trails: list[SessionAuditTrail] = field(default_factory=list)
+    records: dict[str, list[PersistenceRecord]] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
+class SessionSaveResult:
+    """Result of saving session persistence data."""
+
+    path: str
+    envelope: SessionPersistenceEnvelope
+    checksum: str
+    warnings: list[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+    success: bool = True
+
+
+@dataclass(slots=True)
+class SessionLoadResult:
+    """Result of loading session persistence data."""
+
+    path: str
+    envelope: SessionPersistenceEnvelope | None = None
+    warnings: list[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+    success: bool = True
+
+
+@dataclass(slots=True)
+class ReviewBundleWarning:
+    """Warning emitted while building or formatting a review bundle."""
+
+    warning_type: str
+    message: str
+    related_ids: set[str] = field(default_factory=set)
+
+
+@dataclass(slots=True)
+class ReviewBundleSection:
+    """A deterministic section in an exportable review bundle."""
+
+    section_id: str
+    title: str
+    items: list[str] = field(default_factory=list)
+    related_ids: set[str] = field(default_factory=set)
+    warnings: list[ReviewBundleWarning] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ReviewBundleManifest:
+    """Manifest for review bundle exports."""
+
+    bundle_id: str
+    created_at: datetime = field(default_factory=lambda: datetime(1970, 1, 1, tzinfo=timezone.utc))
+    schema_version: str = "phase-22-review-bundle-v1"
+    section_counts: dict[str, int] = field(default_factory=dict)
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ReviewBundle:
+    """Structured review bundle; not a final report or conclusion."""
+
+    manifest: ReviewBundleManifest
+    sections: list[ReviewBundleSection] = field(default_factory=list)
+    warnings: list[ReviewBundleWarning] = field(default_factory=list)
+    limitations: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ReviewBundleExportResult:
+    """Result of formatting/exporting a review bundle."""
+
+    bundle: ReviewBundle
+    content: str = ""
+    warnings: list[ReviewBundleWarning] = field(default_factory=list)
     success: bool = True
 
 
@@ -1219,6 +1380,92 @@ class ClaimEvaluationResult:
 
 
 @dataclass(slots=True)
+class EvidenceAssessmentSummary:
+    """Compact evidence assessment summary for claim review dockets."""
+
+    evidence_id: str
+    assessment_type: ClaimEvidenceAssessmentType | str
+    support_score: float = 0.0
+    contradiction_score: float = 0.0
+    uncertainty_score: float = 0.0
+    independence_score: float = 0.0
+    provenance_ids: set[str] = field(default_factory=set)
+    lineage_id: str | None = None
+    reason_codes: list[str] = field(default_factory=list)
+    warning_types: list[ClaimEvaluationWarningType] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.assessment_type, str):
+            self.assessment_type = ClaimEvidenceAssessmentType(self.assessment_type)
+        self.support_score = max(0.0, min(1.0, self.support_score))
+        self.contradiction_score = max(0.0, min(1.0, self.contradiction_score))
+        self.uncertainty_score = max(0.0, min(1.0, self.uncertainty_score))
+        self.independence_score = max(0.0, min(1.0, self.independence_score))
+
+
+@dataclass(slots=True)
+class ReviewRecommendation:
+    """A cautious next-step recommendation for human review."""
+
+    recommendation_type: ReviewRecommendationType | str
+    message: str
+    related_ids: set[str] = field(default_factory=set)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.recommendation_type, str):
+            self.recommendation_type = ReviewRecommendationType(self.recommendation_type)
+
+
+@dataclass(slots=True)
+class ClaimReviewItem:
+    """Review item for one normalized claim."""
+
+    normalized_claim_id: str
+    canonical_topic: str
+    canonical_text: str
+    priority: ReviewPriority | str = ReviewPriority.LOW
+    priority_score: float = 0.0
+    support_summaries: list[EvidenceAssessmentSummary] = field(default_factory=list)
+    contradiction_summaries: list[EvidenceAssessmentSummary] = field(default_factory=list)
+    uncertainty_summaries: list[EvidenceAssessmentSummary] = field(default_factory=list)
+    irrelevant_evidence_ids: set[str] = field(default_factory=set)
+    provenance_ids: set[str] = field(default_factory=set)
+    lineage_ids: set[str] = field(default_factory=set)
+    warning_types: list[ClaimEvaluationWarningType] = field(default_factory=list)
+    recommendations: list[ReviewRecommendation] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+    unsupported: bool = True
+    confidence: float = 0.0
+
+    def __post_init__(self) -> None:
+        if isinstance(self.priority, str):
+            self.priority = ReviewPriority(self.priority)
+        self.priority_score = max(0.0, min(1.0, self.priority_score))
+        self.confidence = max(0.0, min(1.0, self.confidence))
+
+
+@dataclass(slots=True)
+class ClaimReviewDocket:
+    """Deterministic claim review package; presentation, not truth state."""
+
+    docket_id: str
+    title: str
+    items: list[ClaimReviewItem] = field(default_factory=list)
+    citations: list[DiscourseCitation] = field(default_factory=list)
+    warnings: list[ClaimEvaluationWarning] = field(default_factory=list)
+    recommendations: list[ReviewRecommendation] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ClaimReviewQueue:
+    """Priority-ordered review dockets."""
+
+    dockets: list[ClaimReviewDocket] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
 class Claim:
     """An assertion derived from evidence, with explicit uncertainty."""
 
@@ -1511,6 +1758,180 @@ class SourceTrust:
     source_risk_score: float = 0.5
     uncertainty_notes: str = ""
     updated_at: datetime = field(default_factory=utc_now)
+
+
+@dataclass(slots=True)
+class SourceReliabilitySignal:
+    """Positive source-review signal; not proof the source is true."""
+
+    signal_type: str
+    score: float = 0.0
+    message: str = ""
+    related_ids: set[str] = field(default_factory=set)
+
+    def __post_init__(self) -> None:
+        self.score = max(0.0, min(1.0, self.score))
+
+
+@dataclass(slots=True)
+class SourceRiskSignal:
+    """Source-review risk signal; not source rejection."""
+
+    signal_type: str
+    score: float = 0.0
+    message: str = ""
+    related_ids: set[str] = field(default_factory=set)
+
+    def __post_init__(self) -> None:
+        self.score = max(0.0, min(1.0, self.score))
+
+
+@dataclass(slots=True)
+class SourceReviewRecommendation:
+    """A bounded source-review recommendation."""
+
+    recommendation_type: SourceReviewRecommendationType | str
+    message: str
+    related_ids: set[str] = field(default_factory=set)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.recommendation_type, str):
+            self.recommendation_type = SourceReviewRecommendationType(self.recommendation_type)
+
+
+@dataclass(slots=True)
+class SourceReviewItem:
+    """Review item for one source id."""
+
+    source_id: str
+    priority: SourceReviewPriority | str = SourceReviewPriority.LOW
+    priority_score: float = 0.0
+    reliability_score: float = 0.0
+    risk_score: float = 0.0
+    evidence_ids: set[str] = field(default_factory=set)
+    provenance_ids: set[str] = field(default_factory=set)
+    lineage_ids: set[str] = field(default_factory=set)
+    contamination_flags: set[ContaminationFlagType] = field(default_factory=set)
+    reliability_signals: list[SourceReliabilitySignal] = field(default_factory=list)
+    risk_signals: list[SourceRiskSignal] = field(default_factory=list)
+    recommendations: list[SourceReviewRecommendation] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.priority, str):
+            self.priority = SourceReviewPriority(self.priority)
+        self.priority_score = max(0.0, min(1.0, self.priority_score))
+        self.reliability_score = max(0.0, min(1.0, self.reliability_score))
+        self.risk_score = max(0.0, min(1.0, self.risk_score))
+        self.contamination_flags = {
+            ContaminationFlagType(flag) if isinstance(flag, str) else flag
+            for flag in self.contamination_flags
+        }
+
+
+@dataclass(slots=True)
+class SourceReviewDocket:
+    """Deterministic source review package; not source truth or rejection."""
+
+    docket_id: str
+    title: str
+    items: list[SourceReviewItem] = field(default_factory=list)
+    citations: list[DiscourseCitation] = field(default_factory=list)
+    recommendations: list[SourceReviewRecommendation] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ReviewFocus:
+    """Current focus of a review session."""
+
+    query: str = ""
+    focus_ids: set[str] = field(default_factory=set)
+    claim_topics: set[str] = field(default_factory=set)
+    source_ids: set[str] = field(default_factory=set)
+    evidence_ids: set[str] = field(default_factory=set)
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ReviewedItem:
+    """A human-review annotation that does not mutate the reviewed record."""
+
+    item_id: str
+    item_type: str
+    reviewed_at: datetime = field(default_factory=lambda: datetime(1970, 1, 1, tzinfo=timezone.utc))
+    notes: list[str] = field(default_factory=list)
+    decision_id: str | None = None
+
+
+@dataclass(slots=True)
+class DeferredItem:
+    """A deferred review item that remains visible."""
+
+    item_id: str
+    item_type: str
+    reason: str = ""
+    deferred_at: datetime = field(default_factory=lambda: datetime(1970, 1, 1, tzinfo=timezone.utc))
+    decision_id: str | None = None
+
+
+@dataclass(slots=True)
+class ReviewDecision:
+    """A deterministic review annotation, not confirmation or rejection."""
+
+    item_id: str
+    item_type: str
+    decision_type: ReviewDecisionType | str
+    notes: list[str] = field(default_factory=list)
+    reviewer: str = "human"
+    decision_id: str = ""
+    created_at: datetime = field(default_factory=lambda: datetime(1970, 1, 1, tzinfo=timezone.utc))
+
+    def __post_init__(self) -> None:
+        if isinstance(self.decision_type, str):
+            self.decision_type = ReviewDecisionType(self.decision_type)
+        if not self.decision_id:
+            self.decision_id = str(uuid5(NAMESPACE_URL, f"review-decision:{self.item_type}:{self.item_id}:{self.decision_type.value}:{'|'.join(self.notes)}"))
+
+
+@dataclass(slots=True)
+class ReviewSessionState:
+    """Active working-memory state for a review session."""
+
+    active_focus: ReviewFocus = field(default_factory=ReviewFocus)
+    active_claim_docket_ids: set[str] = field(default_factory=set)
+    active_source_docket_ids: set[str] = field(default_factory=set)
+    active_context_ids: set[str] = field(default_factory=set)
+    reviewed_items: list[ReviewedItem] = field(default_factory=list)
+    deferred_items: list[DeferredItem] = field(default_factory=list)
+    unresolved_item_ids: set[str] = field(default_factory=set)
+    uncertainty_notes: list[str] = field(default_factory=list)
+    contradiction_ids: set[str] = field(default_factory=set)
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class SessionDelta:
+    """Deterministic description of a review-session update."""
+
+    session_id: str
+    added_reviewed_ids: set[str] = field(default_factory=set)
+    added_deferred_ids: set[str] = field(default_factory=set)
+    added_unresolved_ids: set[str] = field(default_factory=set)
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ReviewSession:
+    """A review session over working memory; annotation state only."""
+
+    session_id: str
+    title: str
+    state: ReviewSessionState = field(default_factory=ReviewSessionState)
+    decisions: list[ReviewDecision] = field(default_factory=list)
+    created_at: datetime = field(default_factory=lambda: datetime(1970, 1, 1, tzinfo=timezone.utc))
+    updated_at: datetime = field(default_factory=lambda: datetime(1970, 1, 1, tzinfo=timezone.utc))
+    notes: list[str] = field(default_factory=list)
 
 
 @dataclass(slots=True)

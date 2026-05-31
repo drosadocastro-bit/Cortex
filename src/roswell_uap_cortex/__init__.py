@@ -21,6 +21,7 @@ from roswell_uap_cortex.claim_evaluation_guardrails import ClaimEvidenceGuardrai
 from roswell_uap_cortex.claim_matrix_integration import ClaimMatrixIntegrator
 from roswell_uap_cortex.claim_normalization import ClaimNormalizer
 from roswell_uap_cortex.claim_normalization_guardrails import ClaimNormalizationGuardrails
+from roswell_uap_cortex.claim_review import ClaimReviewEngine
 from roswell_uap_cortex.citations import CitationFormatter
 from roswell_uap_cortex.compression import CompressedMemory, SemanticCompressionEngine
 from roswell_uap_cortex.contamination import ContaminationDetector, ContaminationEngine
@@ -30,6 +31,7 @@ from roswell_uap_cortex.correlation_guard import CorrelationGuard
 from roswell_uap_cortex.corroboration import CorroborationLayer
 from roswell_uap_cortex.discourse import DiscourseEngine
 from roswell_uap_cortex.discourse_guardrails import DiscourseGuardrails
+from roswell_uap_cortex.evidence_docket import EvidenceDocketFormatter
 from roswell_uap_cortex.evaluation import EvaluationHarness
 from roswell_uap_cortex.evaluation_guardrails import EvaluationGuardrails
 from roswell_uap_cortex.evaluation_report import EvaluationReportFormatter
@@ -92,6 +94,9 @@ from roswell_uap_cortex.models import (
     ClaimNormalizationResult,
     ClaimNormalizationWarning,
     ClaimNormalizationWarningType,
+    ClaimReviewDocket,
+    ClaimReviewItem,
+    ClaimReviewQueue,
     ClaimSupportSignal,
     ClaimUncertaintySignal,
     ClaimNode,
@@ -110,9 +115,11 @@ from roswell_uap_cortex.models import (
     DiscourseWarning,
     DiscourseWarningType,
     EntityNode,
+    EvidenceAssessmentSummary,
     EvidenceCategory,
     EvidenceItem,
     EvidenceLineageRecord,
+    DeferredItem,
     EmbeddingVector,
     EvaluationExpectedBehavior,
     EvaluationFailure,
@@ -157,6 +164,25 @@ from roswell_uap_cortex.models import (
     RelationshipEdge,
     RelationshipType,
     RetrievalContext,
+    ReviewBundle,
+    ReviewBundleExportResult,
+    ReviewBundleManifest,
+    ReviewBundleSection,
+    ReviewBundleWarning,
+    ReviewDecision,
+    ReviewDecisionType,
+    ReviewFocus,
+    ReviewPriority,
+    ReviewRecommendation,
+    ReviewRecommendationType,
+    ReviewedItem,
+    ReviewSession,
+    ReviewSessionState,
+    SessionAuditRecord,
+    SessionAuditTrail,
+    SessionLoadResult,
+    SessionPersistenceEnvelope,
+    SessionSaveResult,
     SemanticCluster,
     SemanticRecord,
     SemanticSimilarityResult,
@@ -164,9 +190,17 @@ from roswell_uap_cortex.models import (
     SemanticWarningType,
     SourceNode,
     SourceLineageRecord,
+    SourceReliabilitySignal,
+    SourceReviewDocket,
+    SourceReviewItem,
+    SourceReviewPriority,
+    SourceReviewRecommendation,
+    SourceReviewRecommendationType,
+    SourceRiskSignal,
     SourceTrust,
     SaveResult,
     SalienceScore,
+    SessionDelta,
     SnapshotMetadata,
     TimelineDatePrecision,
     UncertaintyNote,
@@ -177,7 +211,16 @@ from roswell_uap_cortex.provenance import ProvenanceExtractor
 from roswell_uap_cortex.reasoning import CognitiveReasoningEngine
 from roswell_uap_cortex.reality_boundary import RealityBoundaryEngine
 from roswell_uap_cortex.recursive_guard import RecursiveInferenceGuard
+from roswell_uap_cortex.review_bundle import ReviewBundleBuilder
+from roswell_uap_cortex.review_bundle_formatter import ReviewBundleFormatter
+from roswell_uap_cortex.review_bundle_guardrails import ReviewBundleGuardrails
+from roswell_uap_cortex.review_priority import ReviewPriorityEngine
+from roswell_uap_cortex.review_session import ReviewSessionEngine
+from roswell_uap_cortex.source_risk import SourceRiskProfiler
+from roswell_uap_cortex.source_review import SourceReviewEngine
+from roswell_uap_cortex.source_review_formatter import SourceReviewFormatter
 from roswell_uap_cortex.source_trust import SourceTrustEngine
+from roswell_uap_cortex.working_memory import WorkingMemoryEngine
 from roswell_uap_cortex.temporal import TemporalComparison, TemporalReasoningHelper
 from roswell_uap_cortex.text import SimpleTokenizer
 from roswell_uap_cortex.timeline import TimelineEngine
@@ -190,6 +233,10 @@ from roswell_uap_cortex.salience_policy import SaliencePolicyEngine
 from roswell_uap_cortex.semantic import SemanticSimilarityEngine
 from roswell_uap_cortex.semantic_clustering import SemanticClusterEngine
 from roswell_uap_cortex.semantic_guardrails import SemanticContaminationGuard
+from roswell_uap_cortex.session_audit import SessionAuditLogger
+from roswell_uap_cortex.session_audit_formatter import SessionAuditFormatter
+from roswell_uap_cortex.session_formatter import SessionFormatter
+from roswell_uap_cortex.session_persistence import SESSION_SCHEMA_VERSION, SessionPersistenceStore
 from roswell_uap_cortex.snapshot import SCHEMA_VERSION, SnapshotBuilder
 from roswell_uap_cortex.snapshot_validator import SnapshotValidationResult, SnapshotValidator
 
@@ -251,6 +298,10 @@ __all__ = [
     "ClaimNormalizationWarning",
     "ClaimNormalizationWarningType",
     "ClaimNormalizer",
+    "ClaimReviewDocket",
+    "ClaimReviewEngine",
+    "ClaimReviewItem",
+    "ClaimReviewQueue",
     "ClaimSupportSignal",
     "ClaimUncertaintySignal",
     "ClaimNode",
@@ -280,8 +331,11 @@ __all__ = [
     "DiscourseSection",
     "DiscourseWarning",
     "DiscourseWarningType",
+    "DeferredItem",
     "EntityNode",
+    "EvidenceAssessmentSummary",
     "EvidenceCategory",
+    "EvidenceDocketFormatter",
     "EmbeddingBackend",
     "EmbeddingVector",
     "EvidenceIndependenceInput",
@@ -362,6 +416,29 @@ __all__ = [
     "RelationshipGraphEngine",
     "RelationshipType",
     "RetrievalContext",
+    "ReviewBundle",
+    "ReviewBundleBuilder",
+    "ReviewBundleExportResult",
+    "ReviewBundleFormatter",
+    "ReviewBundleGuardrails",
+    "ReviewBundleManifest",
+    "ReviewBundleSection",
+    "ReviewBundleWarning",
+    "ReviewDecision",
+    "ReviewDecisionType",
+    "ReviewFocus",
+    "ReviewPriority",
+    "ReviewPriorityEngine",
+    "ReviewRecommendation",
+    "ReviewRecommendationType",
+    "ReviewedItem",
+    "ReviewSession",
+    "ReviewSessionEngine",
+    "ReviewSessionState",
+    "SessionAuditFormatter",
+    "SessionAuditLogger",
+    "SessionAuditRecord",
+    "SessionAuditTrail",
     "SemanticCompressionEngine",
     "SemanticCluster",
     "SemanticClusterEngine",
@@ -378,12 +455,29 @@ __all__ = [
     "SalienceScore",
     "SCHEMA_VERSION",
     "ScenarioFactory",
+    "SessionDelta",
+    "SessionFormatter",
+    "SessionLoadResult",
+    "SessionPersistenceEnvelope",
+    "SessionPersistenceStore",
+    "SESSION_SCHEMA_VERSION",
+    "SessionSaveResult",
     "SnapshotBuilder",
     "SnapshotMetadata",
     "SnapshotValidationResult",
     "SnapshotValidator",
     "SourceNode",
     "SourceLineageRecord",
+    "SourceReliabilitySignal",
+    "SourceReviewDocket",
+    "SourceReviewEngine",
+    "SourceReviewFormatter",
+    "SourceReviewItem",
+    "SourceReviewPriority",
+    "SourceReviewRecommendation",
+    "SourceReviewRecommendationType",
+    "SourceRiskProfiler",
+    "SourceRiskSignal",
     "SourceTrust",
     "SourceTrustEngine",
     "TemporalComparison",
@@ -392,5 +486,6 @@ __all__ = [
     "TimelineEngine",
     "UncertaintyNote",
     "UncertaintyFormatter",
+    "WorkingMemoryEngine",
     "utc_now",
 ]

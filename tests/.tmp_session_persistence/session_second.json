@@ -1,0 +1,233 @@
+{
+  "audit_trails": [
+    {
+      "notes": [
+        "audit trail records workflow events only; not evidence or truth state"
+      ],
+      "records": [
+        {
+          "created_at": "1970-01-01T00:00:00+00:00",
+          "event_type": "decision:deferred",
+          "item_id": "claim-1",
+          "item_type": "claim",
+          "metadata": {},
+          "notes": [
+            "needs provenance"
+          ],
+          "record_id": "5f1ec195-1491-511d-8465-977bf7a0fdbe",
+          "session_id": "e7ae3474-0af0-5d32-bf21-f3e9e957a36f"
+        },
+        {
+          "created_at": "1970-01-01T00:00:00+00:00",
+          "event_type": "session_report",
+          "item_id": null,
+          "item_type": null,
+          "metadata": {},
+          "notes": [
+            "session report formatted"
+          ],
+          "record_id": "2ec0ab86-c9a2-543c-a6fa-f750e5ebe5c3",
+          "session_id": "e7ae3474-0af0-5d32-bf21-f3e9e957a36f"
+        },
+        {
+          "created_at": "1970-01-01T00:00:00+00:00",
+          "event_type": "session_started",
+          "item_id": null,
+          "item_type": null,
+          "metadata": {},
+          "notes": [
+            "Session Persistence"
+          ],
+          "record_id": "6b84e3f7-1b7d-559d-b60d-4d26ec60ca9a",
+          "session_id": "e7ae3474-0af0-5d32-bf21-f3e9e957a36f"
+        }
+      ],
+      "session_id": "e7ae3474-0af0-5d32-bf21-f3e9e957a36f"
+    }
+  ],
+  "manifest": {
+    "format": "json_session_snapshot",
+    "metadata": {
+      "checksum": "568865ab64cdb06c0d56273a3de14c3b510840119f41007fd8ed24aa707bc981",
+      "created_at": "1970-01-01T00:00:00+00:00",
+      "notes": [
+        "session persistence envelope; annotations are not truth state"
+      ],
+      "record_counts": {
+        "audit_trails": 1,
+        "sessions": 1
+      },
+      "schema_version": "phase-21-session-v1",
+      "snapshot_id": "e01f5bf1-8e94-570d-baae-47ed48196403"
+    },
+    "saved_by": "roswell_uap_cortex"
+  },
+  "records": {
+    "audit_trails": [
+      {
+        "payload": {
+          "notes": [
+            "audit trail records workflow events only; not evidence or truth state"
+          ],
+          "records": [
+            {
+              "created_at": "1970-01-01T00:00:00+00:00",
+              "event_type": "decision:deferred",
+              "item_id": "claim-1",
+              "item_type": "claim",
+              "metadata": {},
+              "notes": [
+                "needs provenance"
+              ],
+              "record_id": "5f1ec195-1491-511d-8465-977bf7a0fdbe",
+              "session_id": "e7ae3474-0af0-5d32-bf21-f3e9e957a36f"
+            },
+            {
+              "created_at": "1970-01-01T00:00:00+00:00",
+              "event_type": "session_report",
+              "item_id": null,
+              "item_type": null,
+              "metadata": {},
+              "notes": [
+                "session report formatted"
+              ],
+              "record_id": "2ec0ab86-c9a2-543c-a6fa-f750e5ebe5c3",
+              "session_id": "e7ae3474-0af0-5d32-bf21-f3e9e957a36f"
+            },
+            {
+              "created_at": "1970-01-01T00:00:00+00:00",
+              "event_type": "session_started",
+              "item_id": null,
+              "item_type": null,
+              "metadata": {},
+              "notes": [
+                "Session Persistence"
+              ],
+              "record_id": "6b84e3f7-1b7d-559d-b60d-4d26ec60ca9a",
+              "session_id": "e7ae3474-0af0-5d32-bf21-f3e9e957a36f"
+            }
+          ],
+          "session_id": "e7ae3474-0af0-5d32-bf21-f3e9e957a36f"
+        },
+        "record_id": null,
+        "record_type": "SessionAuditTrail",
+        "unknown_fields": {}
+      }
+    ],
+    "sessions": [
+      {
+        "payload": {
+          "created_at": "1970-01-01T00:00:00+00:00",
+          "decisions": [
+            {
+              "created_at": "1970-01-01T00:00:00+00:00",
+              "decision_id": "683501d0-825d-5b89-8bf2-3d1973dd16b5",
+              "decision_type": "deferred",
+              "item_id": "claim-1",
+              "item_type": "claim",
+              "notes": [
+                "needs provenance"
+              ],
+              "reviewer": "human"
+            }
+          ],
+          "notes": [
+            "review session annotations are not evidence, claim confirmation, or source rejection"
+          ],
+          "session_id": "e7ae3474-0af0-5d32-bf21-f3e9e957a36f",
+          "state": {
+            "active_claim_docket_ids": [],
+            "active_context_ids": [],
+            "active_focus": {
+              "claim_topics": [],
+              "evidence_ids": [],
+              "focus_ids": [],
+              "notes": [],
+              "query": "session persistence",
+              "source_ids": []
+            },
+            "active_source_docket_ids": [],
+            "contradiction_ids": [],
+            "deferred_items": [
+              {
+                "decision_id": "683501d0-825d-5b89-8bf2-3d1973dd16b5",
+                "deferred_at": "1970-01-01T00:00:00+00:00",
+                "item_id": "claim-1",
+                "item_type": "claim",
+                "reason": "needs provenance"
+              }
+            ],
+            "notes": [
+              "working memory is review state only; it does not mutate evidence, claims, sources, or graph"
+            ],
+            "reviewed_items": [],
+            "uncertainty_notes": [],
+            "unresolved_item_ids": [
+              "claim-1"
+            ]
+          },
+          "title": "Session Persistence",
+          "updated_at": "1970-01-01T00:00:00+00:00"
+        },
+        "record_id": null,
+        "record_type": "ReviewSession",
+        "unknown_fields": {}
+      }
+    ]
+  },
+  "sessions": [
+    {
+      "created_at": "1970-01-01T00:00:00+00:00",
+      "decisions": [
+        {
+          "created_at": "1970-01-01T00:00:00+00:00",
+          "decision_id": "683501d0-825d-5b89-8bf2-3d1973dd16b5",
+          "decision_type": "deferred",
+          "item_id": "claim-1",
+          "item_type": "claim",
+          "notes": [
+            "needs provenance"
+          ],
+          "reviewer": "human"
+        }
+      ],
+      "notes": [
+        "review session annotations are not evidence, claim confirmation, or source rejection"
+      ],
+      "session_id": "e7ae3474-0af0-5d32-bf21-f3e9e957a36f",
+      "state": {
+        "active_claim_docket_ids": [],
+        "active_context_ids": [],
+        "active_focus": {
+          "claim_topics": [],
+          "evidence_ids": [],
+          "focus_ids": [],
+          "notes": [],
+          "query": "session persistence",
+          "source_ids": []
+        },
+        "active_source_docket_ids": [],
+        "contradiction_ids": [],
+        "deferred_items": [
+          {
+            "decision_id": "683501d0-825d-5b89-8bf2-3d1973dd16b5",
+            "deferred_at": "1970-01-01T00:00:00+00:00",
+            "item_id": "claim-1",
+            "item_type": "claim",
+            "reason": "needs provenance"
+          }
+        ],
+        "notes": [
+          "working memory is review state only; it does not mutate evidence, claims, sources, or graph"
+        ],
+        "reviewed_items": [],
+        "uncertainty_notes": [],
+        "unresolved_item_ids": [
+          "claim-1"
+        ]
+      },
+      "title": "Session Persistence",
+      "updated_at": "1970-01-01T00:00:00+00:00"
+    }
+  ]
+}

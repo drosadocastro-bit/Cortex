@@ -45,6 +45,37 @@ possible contradiction, uncertainty, irrelevant, or needs-review assessments.
 These assessments are review signals. They do not confirm claims, disprove
 claims, create graph edges, or mutate evidence.
 
+Phase 18 adds claim review dockets. `ClaimReviewEngine` packages normalized
+claims and evidence assessments into `ClaimReviewDocket` records for human
+inspection. `ReviewPriorityEngine` orders attention by contradiction pressure,
+missing provenance, same-lineage repetition, speculative or reported evidence,
+and uncertainty. Review priority is not truth confidence.
+
+Phase 19 adds source reliability review dockets. `SourceReviewEngine` groups
+evidence by source id and packages provenance ids, lineage ids, contamination
+flags, reliability signals, risk signals, and recommendations into
+`SourceReviewDocket` records. Source review is not source truth, source
+rejection, or claim confirmation.
+
+Phase 20 adds working memory and review session state. `WorkingMemoryEngine`
+collects claim dockets, source dockets, activated context, reasoning output,
+and discourse output into `ReviewSessionState`. `ReviewSessionEngine` records
+review decisions and deterministic deltas. These session records are workflow
+annotations, not evidence, claim confirmation, source rejection, or graph
+mutation.
+
+Phase 21 adds session persistence and audit trails. `SessionPersistenceStore`
+saves `ReviewSession` and `SessionAuditTrail` records into deterministic local
+JSON with manifest metadata, schema version, record counts, and checksum.
+`SessionAuditLogger` records workflow events only. Loading a session snapshot
+does not create evidence, claims, source truth, or graph edges.
+
+Phase 22 adds review bundles. `ReviewBundleBuilder` composes sessions, claim
+dockets, source dockets, audit trails, unresolved items, deferred items,
+uncertainty notes, contradictions, provenance references, and limitations into
+structured export packets. A bundle is not a final report and does not resolve
+claims or sources.
+
 ## Provenance Extraction
 
 `ProvenanceExtractor` creates a `ProvenanceRecord` for every ingested evidence
@@ -174,6 +205,11 @@ contradiction remain separated, while mixed high support and contradiction
 pressure becomes review pressure. Repeated same-lineage paraphrases are
 downgraded before confidence is computed.
 
+`ClaimReviewDocket` turns those assessment signals into a compact review
+package with support summaries, contradiction summaries, uncertainty summaries,
+citations, warnings, and recommendations. It does not change claim status or
+create evidence relationships.
+
 ## Source Independence
 
 `IndependenceScorer` helps distinguish independent corroboration from repeated
@@ -185,6 +221,27 @@ medium-low because missing provenance is not confirmation.
 claim-matrix, or retrieval layers. Derivative records and repeated source URIs
 share visible lineage metadata so later independence scoring can treat them
 cautiously.
+
+`SourceRiskProfiler` uses provenance visibility, derivative lineage, repeated
+source URIs, same-lineage repetition, contamination flags, speculative or
+reported content, and source-trust risk inputs to build bounded source-risk
+signals. These signals guide review; they do not accept or reject a source.
+
+## Working Memory
+
+Working memory is the active review workspace. It tracks what is currently in
+focus, which dockets are active, which context ids are present, which items
+have been reviewed, which items have been deferred, and which contradictions or
+uncertainties remain unresolved.
+
+Deferral is not deletion. Review is not confirmation. Session deltas describe
+workflow changes only.
+
+Session audit trails preserve review history across runs. They describe what
+the workflow did, not what external reality is.
+
+Review bundles are memory exports for inspection. They are useful for future UI
+and sharing, but they remain bounded review state rather than conclusions.
 
 ## Contamination Flags
 

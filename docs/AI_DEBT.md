@@ -166,6 +166,110 @@ Must not do:
 Do not promote a claim, create support graph edges, or mutate evidence merely
 because an evaluator found lexical, semantic, or narrative alignment.
 
+## Claim Review Debt
+
+Risk:
+Review queues and dockets may make high-priority items look more believable or
+more important than low-priority items.
+
+Current mitigation:
+`ClaimReviewEngine` packages assessment signals for inspection without mutating
+claims, evidence, or graph state. `ReviewPriorityEngine` labels priority as a
+review signal, and `EvidenceDocketFormatter` states that dockets do not confirm
+or reject claims.
+
+Future trigger:
+Before adding a web UI, reporting layer, or interactive review workflow,
+rendered dockets must preserve support, contradiction, uncertainty, provenance,
+lineage, and recommendations as separate sections.
+
+Must not do:
+Do not display claim review priority as truth confidence, evidence validity, or
+an instruction to resolve a claim automatically.
+
+## Source Review Debt
+
+Risk:
+Source reliability review may be mistaken for source acceptance, source
+rejection, or claim confirmation.
+
+Current mitigation:
+`SourceReviewEngine` creates review dockets only. `SourceRiskProfiler` emits
+bounded risk signals from provenance, lineage, contamination, observation type,
+and source-trust inputs. `SourceReviewFormatter` states that source review is
+not source truth or source rejection.
+
+Future trigger:
+Before adding a UI, larger ingestion pipeline, live inference, or source
+ranking display, source review must keep reliability signals, risk signals,
+citations, lineage, contamination flags, and recommendations visibly separate.
+
+Must not do:
+Do not treat a high source reliability signal as proof, or a high source risk
+signal as automatic rejection of all evidence from that source.
+
+## Review Session Debt
+
+Risk:
+Review-session decisions may be mistaken for claim resolution, source
+acceptance, source rejection, or evidence mutation.
+
+Current mitigation:
+`WorkingMemoryEngine` builds active session state from existing dockets and
+context without mutating records. `ReviewSessionEngine` records decisions as
+workflow annotations only, and `SessionFormatter` states that session decisions
+are not claim confirmation, source rejection, or evidence mutation.
+
+Future trigger:
+Before adding UI, multi-user collaboration, persistence of sessions, or live
+inference handoff, session decisions must remain separate from evidence,
+claims, source trust, graph edges, and discourse.
+
+Must not do:
+Do not treat a reviewed item as confirmed, a deferred item as irrelevant, or a
+session delta as a truth-state change.
+
+## Session Persistence Debt
+
+Risk:
+Persisted sessions and audit trails may be mistaken for evidence history or
+truth-state history instead of review workflow history.
+
+Current mitigation:
+`SessionPersistenceStore` stores sessions and audit trails in a separate local
+JSON envelope. It validates schema version, record counts, and checksum.
+`SessionAuditFormatter` includes limitations, and loading a session snapshot
+does not create evidence, claims, source truth, or graph edges.
+
+Future trigger:
+Before adding UI session restore, collaborative review, or database-backed
+sessions, session audit events must remain visibly separate from evidence,
+claim status, source trust, graph state, and discourse.
+
+Must not do:
+Do not treat an audit event, reviewed item, or persisted decision as proof that
+an external event happened or that a claim/source was resolved.
+
+## Review Bundle Debt
+
+Risk:
+Exported Markdown bundles may appear like official findings or final reports.
+
+Current mitigation:
+`ReviewBundleBuilder` keeps sessions, claim dockets, source dockets, audit
+trails, uncertainty, contradictions, provenance, and limitations in separate
+sections. `ReviewBundleGuardrails` warns on certainty-inflating language and
+missing provenance or limitations.
+
+Future trigger:
+Before adding UI export, PDF output, generated summaries, or public sharing,
+bundle renderers must preserve limitations, provenance, uncertainty, deferred
+items, and unresolved contradictions.
+
+Must not do:
+Do not label a review bundle as a final report, confirmed finding, validated
+claim, or source rejection.
+
 ## Similarity Debt
 
 Risk:

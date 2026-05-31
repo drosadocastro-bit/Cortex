@@ -19,6 +19,18 @@ dynamic execution, or unsafe deserialization patterns. The third looks for
 encoding artifacts in documentation through the hygiene test without embedding
 the artifact markers in this file.
 
+## Phase 14-18 Claim Pipeline Check
+
+After claim extraction, normalization, evaluation, and review docket work, run:
+
+```powershell
+python -m pytest tests/test_phase18_2_consolidation.py
+```
+
+This verifies that the claim pipeline remains ordered, non-mutating, and
+documented. It also checks the Phase 14-18 modules for the same risky network,
+process, dynamic execution, and unsafe deserialization patterns.
+
 ## Dependency Surface
 
 Project dependencies are defined in `pyproject.toml`, not by the global Python
@@ -43,6 +55,10 @@ Snapshot loading reads JSON and reconstructs project records. It must never:
 
 `PersistenceStore`, `Serializer`, `SnapshotValidator`, and
 `PersistenceGuardrails` should remain the safety boundary for local snapshots.
+
+Session persistence follows the same local JSON discipline. `SessionPersistenceStore`
+must never execute loaded data or apply review decisions to evidence, claims,
+source trust, graph records, or truth state automatically.
 
 ## CLI Safety
 

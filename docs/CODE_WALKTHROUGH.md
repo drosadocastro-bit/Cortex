@@ -61,9 +61,10 @@ What it does not do:
 - it does not call an LLM
 - it does not decide whether the raw input is true
 
-`observation_classifier.py` contains the deterministic marker rules used by
-ingestion. The classifier records markers and notes on `ExtractedObservation`,
-then ingestion copies those fields into evidence metadata.
+`observation_classifier.py` contains `ObservationClassifier`, the deterministic
+marker rules used by ingestion. The classifier records markers and notes on
+`ExtractedObservation`, then ingestion copies those fields into evidence
+metadata.
 
 ## Candidate Claim Extraction
 
@@ -134,6 +135,93 @@ checks for negation, mutually exclusive terms, and date mismatch.
 results, but it still keeps support and contradiction separate. Duplicate
 same-lineage evidence is grouped before scoring and does not create independent
 corroboration.
+
+## Claim Review Workflow
+
+`claim_review.py` contains `ClaimReviewEngine`.
+
+It turns normalized claims plus `ClaimEvaluationResult` records into
+`ClaimReviewDocket` packages for human inspection. A docket keeps possible
+support, possible contradiction, uncertainty, irrelevant evidence, citations,
+lineage ids, warning types, and recommendations separate.
+
+`review_priority.py` contains `ReviewPriorityEngine`. It scores review priority
+from contradiction visibility, missing provenance, same-lineage repetition,
+speculative or reported evidence, low independence, and uncertainty signals.
+Review priority is not truth confidence.
+
+`evidence_docket.py` contains `EvidenceDocketFormatter`. It renders compact
+deterministic text and repeats the boundary that dockets do not confirm or
+reject claims.
+
+## Source Reliability Review
+
+`source_review.py` contains `SourceReviewEngine`.
+
+It groups `EvidenceItem` records by source id and builds `SourceReviewDocket`
+packages. A source docket keeps evidence ids, provenance ids, lineage ids,
+contamination flags, reliability signals, risk signals, and recommendations
+separate.
+
+`source_risk.py` contains `SourceRiskProfiler`. It creates bounded risk
+signals from missing provenance, derivative lineage, repeated source URIs,
+same-lineage repetition, contamination flags, speculative or reported content,
+and source-trust risk inputs.
+
+`source_review_formatter.py` contains `SourceReviewFormatter`. It renders the
+docket while preserving the boundary that source review is not source truth,
+source rejection, or claim confirmation.
+
+## Working Memory And Review Sessions
+
+`working_memory.py` contains `WorkingMemoryEngine`.
+
+It builds `ReviewSessionState` from claim dockets, source dockets, activated
+context, reasoning output, and discourse output. The state tracks active focus
+ids, active docket ids, active context ids, reviewed items, deferred items,
+unresolved items, contradiction ids, and uncertainty notes.
+
+`review_session.py` contains `ReviewSessionEngine`. It starts deterministic
+sessions, resumes existing session state, and records `ReviewDecision`
+annotations. Decisions can mark items reviewed, deferred, unresolved, or in
+need of more provenance or source review. They do not confirm claims or reject
+sources.
+
+`session_formatter.py` contains `SessionFormatter`, which renders compact
+session reports while repeating the boundary that session state is workflow
+annotation only.
+
+## Session Persistence And Audit
+
+`session_audit.py` contains `SessionAuditLogger`.
+
+It creates deterministic audit records for session starts, resumes, decisions,
+and report-formatting events. Audit records describe workflow activity only.
+
+`session_persistence.py` contains `SessionPersistenceStore`. It saves
+`ReviewSession` and `SessionAuditTrail` records into local JSON with a manifest,
+schema version, record counts, deterministic snapshot id, and checksum. Loading
+does not apply decisions to evidence, claims, sources, or graph records.
+
+`session_audit_formatter.py` contains `SessionAuditFormatter`, which renders
+audit events and their limitations.
+
+## Review Bundles
+
+`review_bundle.py` contains `ReviewBundleBuilder`.
+
+It composes a `ReviewSession`, claim review dockets, source review dockets, and
+an optional audit trail into a structured `ReviewBundle`. The bundle has
+sections for session summary, active focus, dockets, unresolved items, deferred
+items, uncertainty, contradictions, provenance, audit trail, and limitations.
+
+`review_bundle_guardrails.py` contains `ReviewBundleGuardrails`. It warns about
+certainty-inflating language and missing provenance, audit, contradiction, or
+limitation sections.
+
+`review_bundle_formatter.py` contains `ReviewBundleFormatter`, which renders
+the bundle as bounded Markdown. The output is a review packet, not a final
+report.
 
 ## Provenance, Lineage, And Contamination
 
@@ -316,11 +404,16 @@ Start with:
 2. `ingestion.py`
 3. `claim_matrix.py`, `graph.py`, and `timeline.py`
 4. `claim_evaluation.py`
-5. `associative.py` and `attention.py`
-6. `context_builder.py` and `reasoning.py`
-7. `discourse.py`
-8. `persistence.py` and `snapshot.py`
-9. `evaluation.py`, `adversarial.py`, and `hard_adversarial.py`
+5. `claim_review.py`
+6. `source_review.py`
+7. `working_memory.py` and `review_session.py`
+8. `session_persistence.py` and `session_audit.py`
+9. `review_bundle.py`
+10. `associative.py` and `attention.py`
+11. `context_builder.py` and `reasoning.py`
+12. `discourse.py`
+13. `persistence.py` and `snapshot.py`
+14. `evaluation.py`, `adversarial.py`, and `hard_adversarial.py`
 
 That order follows the main architecture path and makes the framework easier to
 understand.

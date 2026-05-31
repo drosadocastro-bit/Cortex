@@ -1,5 +1,162 @@
 # Maintenance Log
 
+## 2026-05-31: Phase 22 Review Export And Report Bundles
+
+Scope:
+Compose sessions, claim dockets, source dockets, audit trails, unresolved
+items, uncertainty, provenance, contradictions, and limitations into
+deterministic Markdown-ready review packets.
+
+Fixes / documentation added:
+
+- Added `ReviewBundleBuilder`, `ReviewBundleFormatter`, and
+  `ReviewBundleGuardrails`.
+- Added review bundle, bundle section, bundle manifest, export result, and
+  warning models.
+- Added tests for deterministic bundle building, required sections, limitations,
+  certainty-language guardrails, missing provenance warnings, no session/docket
+  mutation, and no graph-edge creation.
+- Added `docs/ADR-024-review-export-and-report-bundles.md`.
+- Updated architecture, memory model, code walkthrough, README, public API, and
+  AI debt docs.
+
+Verification:
+
+- `python -m pytest`
+
+## 2026-05-31: Phase 21 Session Persistence And Audit Trail
+
+Scope:
+Persist review sessions and audit trails while preserving the boundary that
+session annotations are workflow records, not evidence or truth state.
+
+Fixes / documentation added:
+
+- Added `SessionAuditLogger`, `SessionPersistenceStore`, and
+  `SessionAuditFormatter`.
+- Added session audit record, audit trail, session persistence envelope, session
+  save result, and session load result models.
+- Added deterministic local JSON save/load with schema version, record counts,
+  checksum, and limitations.
+- Added tests for deterministic save/load, audit ordering, decision/deferred/
+  unresolved round-trip, checksum detection, schema rejection, unknown-field
+  preservation, formatter limitations, no graph mutation on load, and
+  deterministic JSON output.
+- Added `docs/ADR-023-session-persistence-and-audit-trail.md`.
+- Updated architecture, memory model, code walkthrough, README, public API, AI
+  debt, and debugging/security docs.
+
+Verification:
+
+- `python -m pytest`
+
+## 2026-05-31: Phase 20 Working Memory And Review Session State
+
+Scope:
+Add deterministic active review-session state that tracks focus, reviewed
+items, deferred items, unresolved contradictions, uncertainty notes, and
+session deltas without mutating investigative records.
+
+Fixes / documentation added:
+
+- Added `WorkingMemoryEngine`, `ReviewSessionEngine`, and `SessionFormatter`.
+- Added review session, session state, review focus, reviewed item, deferred
+  item, review decision, review decision type, and session delta models.
+- Added tests for deterministic session starts, docket entry into working
+  memory, reviewed/deferred tracking, unresolved contradiction visibility,
+  uncertainty preservation, deterministic deltas, resume behavior, no claim or
+  source truth promotion, formatter boundary language, and no graph/evidence
+  mutation.
+- Added `docs/ADR-022-working-memory-and-review-session-state.md`.
+- Updated architecture, memory model, code walkthrough, README, public API, and
+  AI debt docs.
+
+Verification:
+
+- `python -m pytest`
+
+## 2026-05-31: Phase 19 Source Reliability Review Layer
+
+Scope:
+Add deterministic source review dockets that summarize provenance, lineage,
+contamination, trust inputs, source risk, and reliability signals without
+accepting or rejecting sources.
+
+Fixes / documentation added:
+
+- Added `SourceReviewEngine`, `SourceRiskProfiler`, and
+  `SourceReviewFormatter`.
+- Added source review docket, item, reliability signal, risk signal,
+  recommendation, and priority models.
+- Added tests for source grouping, provenance gaps, derivative lineage,
+  repeated source URI, contamination flags, speculative/reported content,
+  source trust signals, claim/source boundary separation, no mutation,
+  formatter language, and deterministic ordering.
+- Added `docs/ADR-021-source-reliability-review-layer.md`.
+- Updated architecture, memory model, code walkthrough, README, public API, and
+  AI debt docs.
+
+Verification:
+
+- `python -m pytest`
+
+## 2026-05-31: Phase 18.2 Architecture, Debugging, And Security Hygiene II
+
+Scope:
+Consolidate the Phase 14-18 claim pipeline before adding more reasoning or
+retrieval features.
+
+Findings:
+
+- The claim pipeline remains clear:
+  observation classification -> candidate claim extraction -> claim
+  normalization -> claim evidence evaluation -> claim review dockets.
+- No Phase 14-18 module matched the checked network, process, dynamic
+  execution, pickle, or unsafe YAML-loading patterns.
+- No new dependency, LLM/API call, vector database, UI, or autonomous workflow
+  was introduced.
+- `__init__.py` remains broad; this is still a documented transitional API
+  choice.
+
+Fixes / documentation added:
+
+- Added `tests/test_phase18_2_consolidation.py`.
+- Added `docs/PHASE_18_2_CONSOLIDATION.md`.
+- Updated `docs/DEBUGGING_AND_SECURITY.md` with the claim-pipeline hygiene
+  check.
+- Updated `docs/PUBLIC_API.md` to classify claim-pipeline and review exports.
+- Updated `docs/CODE_WALKTHROUGH.md` to name `ObservationClassifier`
+  explicitly.
+
+Verification:
+
+- `python -m pytest`
+
+## 2026-05-31: Phase 18 Claim Review Workflow
+
+Scope:
+Package normalized claims and claim evaluation assessments into deterministic
+review dockets for human inspection.
+
+Fixes / documentation added:
+
+- Added `ClaimReviewEngine`, `ReviewPriorityEngine`, and
+  `EvidenceDocketFormatter`.
+- Added claim review docket, review item, evidence assessment summary, queue,
+  priority, and recommendation models.
+- Added review tests for contradiction priority, unsupported claim preservation,
+  separated support and contradiction, same-lineage warnings, provenance
+  citations, missing provenance priority, speculative/reported labels,
+  deterministic queue ordering, bounded formatter language, and no graph-edge
+  creation.
+- Added `docs/ADR-020-claim-review-workflow.md`.
+- Updated architecture, memory model, code walkthrough, README, and AI debt
+  docs.
+
+Verification:
+
+- `python -m pytest`
+
 ## 2026-05-30: Phase 17 Claim Support And Contradiction Evaluation
 
 Scope:

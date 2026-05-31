@@ -73,6 +73,21 @@ The initial framework provides:
   claims.
 - Evaluation guardrails that preserve the distinction between possible support,
   possible contradiction, uncertainty, irrelevance, and needs-review pressure.
+- Claim review dockets that package normalized claims, evidence assessments,
+  provenance, lineage, uncertainty, warnings, and bounded review
+  recommendations for human inspection.
+- Source reliability review dockets that expose provenance quality, lineage
+  risk, contamination flags, trust inputs, repeated source usage, and bounded
+  source-review recommendations without accepting or rejecting sources.
+- Working memory and review session state for tracking active focus, reviewed
+  items, deferred items, unresolved contradictions, uncertainty notes, and
+  deterministic session deltas without mutating investigative records.
+- Session persistence and audit trails that save review sessions, decisions,
+  deferred items, unresolved state, and workflow events as deterministic local
+  JSON without creating evidence, claims, source truth, or graph edges on load.
+- Review bundle exports that compose sessions, claim dockets, source dockets,
+  unresolved items, uncertainty, provenance, audit trails, and limitations into
+  deterministic Markdown-ready review packets without creating final reports.
 - Sensory intake safeguards: ingestion does not confirm claims or create graph
   edges automatically.
 - A bounded local cognitive reasoning layer that operates on activated context
@@ -137,6 +152,7 @@ Roswell-uap-cortex/
     HARD_ADVERSARIAL_REMEDIATION.md
     MAINTENANCE_LOG.md
     MEMORY_MODEL.md
+    PHASE_18_2_CONSOLIDATION.md
     PROBLEM_STATEMENT.md
     PUBLIC_API.md
   src/
@@ -158,12 +174,14 @@ Roswell-uap-cortex/
       claim_matrix_integration.py
       claim_normalization.py
       claim_normalization_guardrails.py
+      claim_review.py
       citations.py
       cli.py
       context_builder.py
       correlation_guard.py
       discourse.py
       discourse_guardrails.py
+      evidence_docket.py
       evaluation.py
       evaluation_guardrails.py
       evaluation_report.py
@@ -194,18 +212,31 @@ Roswell-uap-cortex/
       reasoning.py
       reality_boundary.py
       recursive_guard.py
+      review_bundle.py
+      review_bundle_formatter.py
+      review_bundle_guardrails.py
+      review_priority.py
+      review_session.py
       salience_policy.py
       semantic.py
       semantic_clustering.py
       semantic_guardrails.py
       serialization.py
       scenarios.py
+      session_audit.py
+      session_audit_formatter.py
+      session_formatter.py
+      session_persistence.py
       snapshot.py
       snapshot_validator.py
+      source_risk.py
+      source_review.py
+      source_review_formatter.py
       temporal.py
       text.py
       timeline.py
       uncertainty.py
+      working_memory.py
   tests/
     test_memory_merge.py
     test_phase2_evidence_trust.py
@@ -227,6 +258,12 @@ Roswell-uap-cortex/
     test_phase15_claim_extraction.py
     test_phase16_claim_normalization.py
     test_phase17_claim_evaluation.py
+    test_phase18_2_consolidation.py
+    test_phase18_claim_review.py
+    test_phase19_source_review.py
+    test_phase20_working_memory.py
+    test_phase21_session_persistence.py
+    test_phase22_review_bundle.py
   pyproject.toml
   README.md
 ```

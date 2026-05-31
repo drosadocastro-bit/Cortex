@@ -19,6 +19,7 @@ from roswell_uap_cortex.models import (
     LineageType,
     RawInput,
 )
+from roswell_uap_cortex.observation_classifier import ObservationClassifier
 from roswell_uap_cortex.provenance import ProvenanceExtractor
 
 
@@ -29,6 +30,7 @@ class IngestionNormalizer:
     provenance_extractor: ProvenanceExtractor = field(default_factory=ProvenanceExtractor)
     lineage_tracker: LineageTracker = field(default_factory=LineageTracker)
     contamination_detector: ContaminationDetector = field(default_factory=ContaminationDetector)
+    observation_classifier: ObservationClassifier = field(default_factory=ObservationClassifier)
 
     def ingest(self, raw_input: RawInput) -> IngestionResult:
         observations = self._extract_observations(raw_input)
@@ -42,11 +44,14 @@ class IngestionNormalizer:
 
         if not observations:
             observations = [
-                ExtractedObservation(
-                    input_id=raw_input.input_id,
-                    text="",
-                    sequence=0,
-                    extraction_notes=["empty raw_text produced no substantive observation"],
+                self.observation_classifier.classify(
+                    ExtractedObservation(
+                        input_id=raw_input.input_id,
+                        text="",
+                        sequence=0,
+                        extraction_notes=["empty raw_text produced no substantive observation"],
+                    ),
+                    raw_input.input_type,
                 )
             ]
             result.observations = observations
@@ -88,13 +93,16 @@ class IngestionNormalizer:
             if not text:
                 continue
             observations.append(
-                ExtractedObservation(
-                    input_id=raw_input.input_id,
-                    text=text,
-                    sequence=index,
-                    start_offset=match.start(),
-                    end_offset=match.end(),
-                    extraction_notes=["deterministic sentence-like span"],
+                self.observation_classifier.classify(
+                    ExtractedObservation(
+                        input_id=raw_input.input_id,
+                        text=text,
+                        sequence=index,
+                        start_offset=match.start(),
+                        end_offset=match.end(),
+                        extraction_notes=["deterministic sentence-like span"],
+                    ),
+                    raw_input.input_type,
                 )
             )
         return observations
@@ -121,6 +129,11 @@ class IngestionNormalizer:
             "declared_event_hint": raw_input.declared_event_hint,
             "extraction_method": "deterministic_sentence_split",
             "observation_id": observation.id,
+            "observation_type": observation.observation_type.value,
+            "interpretation_markers": list(observation.interpretation_markers),
+            "speculation_markers": list(observation.speculation_markers),
+            "reported_speech_markers": list(observation.reported_speech_markers),
+            "classification_notes": list(observation.classification_notes),
         }
         metadata.update(raw_input.metadata)
 

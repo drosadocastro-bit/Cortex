@@ -19,6 +19,13 @@ Ingestion does not create claim confirmations, support edges, or truth
 assertions. It records what was supplied and preserves uncertainty for later
 reasoning.
 
+Phase 14 adds deterministic observation classification at sensory intake.
+`ObservationClassifier` labels extracted spans as direct observation,
+interpretation, speculation, reported claim, metadata statement, or unknown.
+The label and marker notes travel into evidence metadata so downstream layers do
+not need to guess whether a span was observed, interpreted, reported, or
+speculated.
+
 ## Provenance Extraction
 
 `ProvenanceExtractor` creates a `ProvenanceRecord` for every ingested evidence

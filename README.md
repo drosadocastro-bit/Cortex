@@ -7,7 +7,7 @@ noisy, unstructured evidence domains.
 
 This project is exploratory and educational in nature. It is **not intended for
 operational analysis, automated truth determination, or production deployment**.
-It is a testbed for uncertainty-preserving extraction and reasoning — a
+It is a testbed for uncertainty-preserving extraction and reasoning - a
 cognitive architecture experiment rather than a finished system.
 
 The framework attempts to model brain-inspired mechanisms such as memory,
@@ -18,7 +18,7 @@ authoritative conclusions.
 
 This project does not claim truth. Its purpose is to preserve uncertainty while
 organizing evidence, claims, memory, contradictions, timelines, graph context,
-and source trust — retaining provenance, lineage, contamination risk, and
+and source trust - retaining provenance, lineage, contamination risk, and
 epistemic tension throughout.
 
 The framework is intentionally skeletal at this stage:
@@ -59,6 +59,9 @@ The initial framework provides:
 - A deterministic ingestion layer that normalizes raw inputs into evidence,
   observations, provenance, source lineage, contamination flags, and ingestion
   warnings.
+- Observation-vs-interpretation separation at intake, preserving direct
+  observations, interpretations, speculation, reported claims, metadata
+  statements, and unknown spans.
 - Sensory intake safeguards: ingestion does not confirm claims or create graph
   edges automatically.
 - A bounded local cognitive reasoning layer that operates on activated context
@@ -116,7 +119,9 @@ Roswell-uap-cortex/
     AI_DEBT.md
     ADVERSARIAL_FINDINGS.md
     ARCHITECTURE.md
+    CODE_WALKTHROUGH.md
     DEBUGGING_AND_SECURITY.md
+    GOVERNANCE.md
     HARD_ADVERSARIAL_FINDINGS.md
     HARD_ADVERSARIAL_REMEDIATION.md
     MAINTENANCE_LOG.md
@@ -164,6 +169,7 @@ Roswell-uap-cortex/
       metrics.py
       narrative.py
       networkx_backend.py
+      observation_classifier.py
       persistence.py
       persistence_guardrails.py
       provenance.py
@@ -199,6 +205,7 @@ Roswell-uap-cortex/
     test_phase13_1_hard_adversarial.py
     test_phase13_2_hygiene.py
     test_phase13_adversarial.py
+    test_phase14_observation_classification.py
   pyproject.toml
   README.md
 ```
@@ -224,3 +231,12 @@ formation and decay.
 The system should help investigators ask better questions, notice uncertainty,
 surface contradictions, and retain provenance. It should not present uncertain
 claims as established fact.
+
+## Understanding The Code
+
+See [`docs/CODE_WALKTHROUGH.md`](docs/CODE_WALKTHROUGH.md) for a maintainer
+walkthrough of how the modules work together.
+
+See [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) for the recurring rule that every
+five major phases should pause feature expansion for architecture
+consolidation, debugging, and security hygiene.

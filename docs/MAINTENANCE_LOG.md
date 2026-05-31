@@ -33,8 +33,47 @@ Verification:
 
 - `python -m pytest`
 
+## 2026-05-30: Phase 14 Observation And Interpretation Separation
+
+Scope:
+Add deterministic observation classification at ingestion so direct
+observation, interpretation, speculation, reported claims, metadata statements,
+and unknown spans remain distinct.
+
+Fixes / documentation added:
+
+- Added `ObservationType`.
+- Added `ObservationClassifier`.
+- Extended `ExtractedObservation` with classification markers and notes.
+- Propagated classification metadata into ingested `EvidenceItem` records.
+- Added `docs/ADR-016-observation-interpretation-separation.md`.
+- Updated architecture, memory model, code walkthrough, and AI debt docs.
+
+Verification:
+
+- `python -m pytest`
+
 Notes:
 
 The broad public API remains in place for compatibility. Future cleanup should
 split foundational, extension, experimental, and testing surfaces deliberately
 rather than removing exports opportunistically.
+
+## 2026-05-30: Governance And Code Walkthrough
+
+Scope:
+Document the recurring consolidation cadence and add a maintainer-oriented
+walkthrough explaining what the code does.
+
+Fixes / documentation added:
+
+- Added `docs/GOVERNANCE.md`.
+- Added `docs/CODE_WALKTHROUGH.md`.
+- Linked the recurring consolidation rule from `docs/ARCHITECTURE.md`.
+- Linked the walkthrough and governance docs from `README.md`.
+- Replaced two README em dashes with ASCII hyphens for consistency with the
+  repository's ASCII-first editing style.
+
+Verification:
+
+- `python -m pytest`

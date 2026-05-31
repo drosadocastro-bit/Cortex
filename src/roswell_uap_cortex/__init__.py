@@ -45,6 +45,7 @@ from roswell_uap_cortex.memory import MemoryDecayEngine
 from roswell_uap_cortex.metrics import EpistemicMetrics
 from roswell_uap_cortex.mock_reasoner import MockReasoner
 from roswell_uap_cortex.networkx_backend import NetworkXGraphBackend
+from roswell_uap_cortex.observation_classifier import ObservationClassifier
 from roswell_uap_cortex.models import (
     ActivatedContext,
     AdversarialAttackVector,
@@ -109,6 +110,7 @@ from roswell_uap_cortex.models import (
     LoadResult,
     MemoryRecord,
     OWASPLLMRisk,
+    ObservationType,
     PersistenceEnvelope,
     PersistenceManifest,
     PersistenceRecord,
@@ -276,6 +278,8 @@ __all__ = [
     "NarrativeBuilder",
     "NetworkXGraphBackend",
     "OWASPLLMRisk",
+    "ObservationClassifier",
+    "ObservationType",
     "PersistenceEnvelope",
     "PersistenceGuardrails",
     "PersistenceManifest",

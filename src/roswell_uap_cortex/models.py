@@ -99,6 +99,17 @@ class RawInputType(str, Enum):
     UNKNOWN = "unknown"
 
 
+class ObservationType(str, Enum):
+    """How an extracted span relates to observation, interpretation, or report."""
+
+    DIRECT_OBSERVATION = "direct_observation"
+    INTERPRETATION = "interpretation"
+    SPECULATION = "speculation"
+    REPORTED_CLAIM = "reported_claim"
+    METADATA_STATEMENT = "metadata_statement"
+    UNKNOWN = "unknown"
+
+
 class LineageType(str, Enum):
     """Ingestion lineage classification."""
 
@@ -854,9 +865,16 @@ class ExtractedObservation:
     start_offset: int | None = None
     end_offset: int | None = None
     evidence_id: str | None = None
+    observation_type: ObservationType = ObservationType.UNKNOWN
+    interpretation_markers: list[str] = field(default_factory=list)
+    speculation_markers: list[str] = field(default_factory=list)
+    reported_speech_markers: list[str] = field(default_factory=list)
+    classification_notes: list[str] = field(default_factory=list)
     extraction_notes: list[str] = field(default_factory=list)
 
     def __post_init__(self) -> None:
+        if isinstance(self.observation_type, str):
+            self.observation_type = ObservationType(self.observation_type)
         if not self.id:
             self.id = str(uuid5(NAMESPACE_URL, f"observation:{self.input_id}:{self.sequence}:{self.text}"))
 

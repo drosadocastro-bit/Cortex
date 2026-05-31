@@ -83,6 +83,26 @@ missing-provenance cases.
 Must not do:
 Do not confirm, support, or rank claims during ingestion.
 
+## Observation Classification Debt
+
+Risk:
+Deterministic marker rules may misclassify subtle language, especially when
+direct observation and interpretation appear in the same sentence.
+
+Current mitigation:
+`ObservationClassifier` preserves marker lists and classification notes.
+Unknown or mixed spans remain explicit instead of being promoted into direct
+observation.
+
+Future trigger:
+Before adding LLM-assisted extraction, richer NLP parsing, OCR, transcripts, or
+media perception, fixtures must include ambiguous observation/interpretation
+boundaries and reported-speech variants.
+
+Must not do:
+Do not treat an observation-type label as truth, source reliability, or claim
+confirmation.
+
 ## Similarity Debt
 
 Risk:

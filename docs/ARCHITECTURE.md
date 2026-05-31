@@ -23,6 +23,14 @@ raw input
 Every major subsystem should either fit this path or be documented as an
 auxiliary or experimental extension.
 
+## Consolidation Cadence
+
+Every five major phases, Cortex should pause feature expansion for an
+architecture consolidation, debugging, and security hygiene pass. These pauses
+are part of the design discipline, not cleanup afterthoughts.
+
+See `docs/GOVERNANCE.md` for the recurring consolidation rule and checklist.
+
 ## Layers
 
 Core domain models:
@@ -32,7 +40,9 @@ These are intentionally simple, serializable, and deterministic.
 Ingestion, provenance, and lineage:
 Raw inputs are normalized into evidence, observations, provenance records,
 lineage records, and contamination flags. Ingestion does not confirm claims or
-create graph support.
+create graph support. Observation classification separates direct observation,
+interpretation, speculation, reported claims, metadata statements, and unknown
+spans before records move downstream.
 
 Cognitive state:
 Memory, graph, claim matrix, source trust, contradiction pressure, and temporal

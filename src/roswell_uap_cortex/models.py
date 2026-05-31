@@ -146,6 +146,31 @@ class ClaimNormalizationWarningType(str, Enum):
     UNSUPPORTED_TOPIC_ONLY = "unsupported_topic_only"
 
 
+class ClaimEvidenceAssessmentType(str, Enum):
+    """Claim/evidence relation signal type; not truth or disproof."""
+
+    POSSIBLE_SUPPORT = "possible_support"
+    POSSIBLE_CONTRADICTION = "possible_contradiction"
+    UNCERTAIN = "uncertain"
+    IRRELEVANT = "irrelevant"
+    NEEDS_REVIEW = "needs_review"
+
+
+class ClaimEvaluationWarningType(str, Enum):
+    """Warnings emitted by claim evidence assessment."""
+
+    SUPPORT_NOT_CONFIRMATION = "support_not_confirmation"
+    CONTRADICTION_NOT_DISPROOF = "contradiction_not_disproof"
+    SAME_LINEAGE_NOT_CORROBORATION = "same_lineage_not_corroboration"
+    REPEATED_PARAPHRASE_NOT_INDEPENDENCE = "repeated_paraphrase_not_independence"
+    SPECULATIVE_EVIDENCE_CAUTION = "speculative_evidence_caution"
+    REPORTED_CLAIM_CAUTION = "reported_claim_caution"
+    METADATA_NOT_EVENT_TRUTH = "metadata_not_event_truth"
+    MISSING_PROVENANCE = "missing_provenance"
+    NEEDS_REVIEW = "needs_review"
+    EVALUATION_NOT_TRUTH = "evaluation_not_truth"
+
+
 class LineageType(str, Enum):
     """Ingestion lineage classification."""
 
@@ -1108,6 +1133,88 @@ class ClaimMatrixIntegrationResult:
     registered_topics: set[str] = field(default_factory=set)
     claim_node_ids: set[str] = field(default_factory=set)
     warnings: list[ClaimNormalizationWarning] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ClaimEvaluationWarning:
+    """Warning attached to a claim/evidence assessment."""
+
+    warning_type: ClaimEvaluationWarningType | str
+    message: str
+    related_ids: set[str] = field(default_factory=set)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.warning_type, str):
+            self.warning_type = ClaimEvaluationWarningType(self.warning_type)
+
+
+@dataclass(slots=True)
+class ClaimSupportSignal:
+    """Possible support signal; not confirmation."""
+
+    evidence_id: str
+    score: float = 0.0
+    reason_codes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ClaimContradictionSignal:
+    """Possible contradiction signal; not disproof."""
+
+    evidence_id: str
+    score: float = 0.0
+    reason_codes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ClaimUncertaintySignal:
+    """Uncertainty signal that should remain visible."""
+
+    evidence_id: str
+    score: float = 0.0
+    reason_codes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ClaimEvidenceAssessment:
+    """Deterministic relation assessment between a normalized claim and evidence."""
+
+    normalized_claim_id: str
+    evidence_id: str
+    observation_id: str | None = None
+    provenance_ids: set[str] = field(default_factory=set)
+    lineage_id: str | None = None
+    support_score: float = 0.0
+    contradiction_score: float = 0.0
+    uncertainty_score: float = 0.0
+    independence_score: float = 0.0
+    assessment_type: ClaimEvidenceAssessmentType = ClaimEvidenceAssessmentType.IRRELEVANT
+    reason_codes: list[str] = field(default_factory=list)
+    warnings: list[ClaimEvaluationWarning] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ClaimEvaluationPolicy:
+    """Thresholds for conservative evidence assessment."""
+
+    support_threshold: float = 0.35
+    contradiction_threshold: float = 0.35
+    review_threshold: float = 0.35
+    speculative_support_cap: float = 0.3
+    reported_support_cap: float = 0.45
+    metadata_support_cap: float = 0.0
+
+
+@dataclass(slots=True)
+class ClaimEvaluationResult:
+    """Claim evidence assessments and warnings."""
+
+    assessments: list[ClaimEvidenceAssessment] = field(default_factory=list)
+    support_signals: list[ClaimSupportSignal] = field(default_factory=list)
+    contradiction_signals: list[ClaimContradictionSignal] = field(default_factory=list)
+    uncertainty_signals: list[ClaimUncertaintySignal] = field(default_factory=list)
+    warnings: list[ClaimEvaluationWarning] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
 
 

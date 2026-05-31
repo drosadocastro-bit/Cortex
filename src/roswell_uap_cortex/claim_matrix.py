@@ -9,6 +9,7 @@ from datetime import date
 from roswell_uap_cortex.independence import EvidenceIndependenceInput, IndependenceScorer
 from roswell_uap_cortex.memory import _clamp
 from roswell_uap_cortex.models import ClaimMatrixStatus, ClaimNode
+from roswell_uap_cortex.models import ClaimEvaluationResult, ClaimEvidenceAssessmentType
 
 
 @dataclass(slots=True)
@@ -111,6 +112,34 @@ class ClaimMatrixEngine:
             entry.contradicting_evidence.append(contribution)
         return self.evaluate(canonical_topic)
 
+    def register_evidence_assessments(
+        self,
+        canonical_topic: str,
+        evaluation: ClaimEvaluationResult,
+    ) -> ClaimMatrixEntry:
+        entry = self.entries.setdefault(
+            canonical_topic,
+            ClaimMatrixEntry(canonical_topic=canonical_topic),
+        )
+        for assessment in evaluation.assessments:
+            contribution = ClaimEvidenceContribution(
+                evidence_id=assessment.evidence_id,
+                source_id=assessment.evidence_id,
+                confidence=max(assessment.support_score, assessment.contradiction_score),
+                source_trust=0.5,
+                lineage_id=assessment.lineage_id,
+            )
+            if assessment.assessment_type is ClaimEvidenceAssessmentType.POSSIBLE_SUPPORT:
+                if all(item.evidence_id != contribution.evidence_id for item in entry.supporting_evidence):
+                    entry.supporting_evidence.append(contribution)
+            elif assessment.assessment_type in {
+                ClaimEvidenceAssessmentType.POSSIBLE_CONTRADICTION,
+                ClaimEvidenceAssessmentType.NEEDS_REVIEW,
+            }:
+                if all(item.evidence_id != contribution.evidence_id for item in entry.contradicting_evidence):
+                    entry.contradicting_evidence.append(contribution)
+        return self.evaluate(canonical_topic)
+
     def evaluate(self, canonical_topic: str) -> ClaimMatrixEntry:
         entry = self.entries.setdefault(
             canonical_topic,
@@ -156,11 +185,10 @@ class ClaimMatrixEngine:
         total = 0.0
         for grouped in by_independent_key.values():
             strongest = max(_clamp(item.confidence) * _clamp(item.source_trust) for item in grouped)
-            duplicate_bonus = 0.05 * max(len(grouped) - 1, 0)
             independence = self.independence_scorer.score_group(
                 [item.independence_input() for item in grouped]
             )
-            total += strongest * (0.65 + independence * 0.35) + duplicate_bonus
+            total += strongest * (0.65 + independence * 0.35)
         return _clamp(total)
 
     def _source_trust_average(self, evidence: list[ClaimEvidenceContribution]) -> float:

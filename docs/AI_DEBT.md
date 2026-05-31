@@ -143,6 +143,29 @@ Must not do:
 Do not treat normalized claim grouping, repeated phrasing, or canonical topic
 registration as corroboration.
 
+## Claim Evaluation Debt
+
+Risk:
+Future claim evaluators may turn possible support into confirmation, possible
+contradiction into disproof, or mixed evidence into an overconfident status.
+
+Current mitigation:
+`ClaimEvidenceEvaluator` emits bounded assessment records and warnings.
+`ClaimContradictionEvaluator` detects only deterministic contradiction signals,
+and `ClaimEvidenceGuardrails` labels support, contradiction, speculation,
+reported claims, metadata, missing provenance, and same-lineage repetition as
+review constraints.
+
+Future trigger:
+Before adding semantic matching, LLM-assisted comparison, richer temporal
+reasoning, or graph-backed claim evaluation, new tests must show that support
+does not confirm, contradiction does not disprove, and same-lineage paraphrases
+do not inflate confidence.
+
+Must not do:
+Do not promote a claim, create support graph edges, or mutate evidence merely
+because an evaluator found lexical, semantic, or narrative alignment.
+
 ## Similarity Debt
 
 Risk:

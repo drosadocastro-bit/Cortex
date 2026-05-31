@@ -1,5 +1,29 @@
 # Maintenance Log
 
+## 2026-05-30: Phase 17 Claim Support And Contradiction Evaluation
+
+Scope:
+Compare normalized claims with evidence records as bounded review signals while
+preserving the rule that support is not confirmation and contradiction is not
+disproof.
+
+Fixes / documentation added:
+
+- Added `ClaimEvidenceEvaluator`, `ClaimContradictionEvaluator`, and
+  `ClaimEvidenceGuardrails`.
+- Added claim assessment, support, contradiction, uncertainty, policy, and
+  warning models.
+- Added `ClaimMatrixEngine.register_evidence_assessments()` for conservative
+  matrix integration of possible support and contradiction signals.
+- Removed duplicate same-lineage confidence bonus from claim matrix scoring.
+- Added `docs/ADR-019-claim-support-and-contradiction-evaluation.md`.
+- Updated architecture, memory model, code walkthrough, README, and AI debt
+  docs.
+
+Verification:
+
+- `python -m pytest`
+
 ## 2026-05-29: Phase 13.2 Architecture, Debugging, And Security Hygiene
 
 Scope:

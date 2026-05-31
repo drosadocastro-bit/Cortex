@@ -106,6 +106,35 @@ normalized claims as unsupported candidate topics in `ClaimMatrixEngine`.
 Integration does not add supporting evidence, contradiction evidence, graph
 edges, or confidence.
 
+## Claim Evidence Evaluation
+
+`claim_evaluation.py` contains `ClaimEvidenceEvaluator`.
+
+It compares `NormalizedClaim` records with `EvidenceItem` records and produces
+bounded assessment records:
+
+- possible support
+- possible contradiction
+- uncertain
+- irrelevant
+- needs review
+
+The evaluator uses deterministic token overlap, observation classification,
+provenance visibility, lineage visibility, and contradiction markers. It emits
+warnings when support must not be read as confirmation, contradiction must not
+be read as disproof, provenance is missing, evidence is speculative or
+reported, metadata is being evaluated, or same-lineage repetition is present.
+
+`claim_contradiction_evaluator.py` contains small deterministic contradiction
+checks for negation, mutually exclusive terms, and date mismatch.
+
+`claim_evaluation_guardrails.py` keeps the output language cautious.
+
+`ClaimMatrixEngine.register_evidence_assessments()` can consume assessment
+results, but it still keeps support and contradiction separate. Duplicate
+same-lineage evidence is grouped before scoring and does not create independent
+corroboration.
+
 ## Provenance, Lineage, And Contamination
 
 `provenance.py` creates mandatory provenance records.
@@ -286,11 +315,12 @@ Start with:
 1. `models.py`
 2. `ingestion.py`
 3. `claim_matrix.py`, `graph.py`, and `timeline.py`
-4. `associative.py` and `attention.py`
-5. `context_builder.py` and `reasoning.py`
-6. `discourse.py`
-7. `persistence.py` and `snapshot.py`
-8. `evaluation.py`, `adversarial.py`, and `hard_adversarial.py`
+4. `claim_evaluation.py`
+5. `associative.py` and `attention.py`
+6. `context_builder.py` and `reasoning.py`
+7. `discourse.py`
+8. `persistence.py` and `snapshot.py`
+9. `evaluation.py`, `adversarial.py`, and `hard_adversarial.py`
 
 That order follows the main architecture path and makes the framework easier to
 understand.

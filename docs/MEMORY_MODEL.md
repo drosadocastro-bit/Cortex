@@ -39,6 +39,12 @@ candidate ids, evidence ids, provenance ids, lineage ids, and origin types.
 topics only. It does not create support evidence, contradiction evidence, graph
 edges, or confidence.
 
+Phase 17 adds deterministic claim evidence evaluation. `ClaimEvidenceEvaluator`
+compares normalized claims with evidence records and emits possible support,
+possible contradiction, uncertainty, irrelevant, or needs-review assessments.
+These assessments are review signals. They do not confirm claims, disprove
+claims, create graph edges, or mutate evidence.
+
 ## Provenance Extraction
 
 `ProvenanceExtractor` creates a `ProvenanceRecord` for every ingested evidence
@@ -161,6 +167,12 @@ status labels such as `unsupported`, `weakly_supported`, `contested`,
 `supported`, and `unresolved`.
 
 This preserves contradiction instead of forcing premature resolution.
+
+`ClaimEvidenceEvaluator` can feed bounded assessment results into the claim
+matrix through `register_evidence_assessments()`. Possible support and possible
+contradiction remain separated, while mixed high support and contradiction
+pressure becomes review pressure. Repeated same-lineage paraphrases are
+downgraded before confidence is computed.
 
 ## Source Independence
 

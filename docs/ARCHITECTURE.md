@@ -14,6 +14,7 @@ raw input
 -> evidence / provenance / lineage
 -> candidate claim extraction
 -> claim normalization / unsupported topic registration
+-> claim evidence evaluation / support and contradiction review
 -> memory / graph / claims
 -> associative retrieval / attention
 -> activated context
@@ -55,6 +56,12 @@ Claim normalization:
 Candidate claims can be grouped under deterministic canonical keys and
 registered in the claim matrix as unsupported topics. Normalization organizes
 candidate claims, but it does not validate them or create support.
+
+Claim support and contradiction evaluation:
+Normalized claims can be compared with evidence records to produce possible
+support, possible contradiction, uncertainty, irrelevant, or needs-review
+signals. These are review signals only. They do not decide truth, mutate
+evidence, create support graph edges, or erase contradiction pressure.
 
 Cognitive state:
 Memory, graph, claim matrix, source trust, contradiction pressure, and temporal
@@ -99,6 +106,8 @@ These layers should preserve the same epistemic rules as the core path.
 - Contradictions are valuable state.
 - Unknown or fuzzy dates must not become false exact dates.
 - Repetition is not independent corroboration.
+- Support is not confirmation.
+- Contradiction is not disproof.
 - Semantic similarity is not confirmation.
 - Discourse is not evidence.
 - Salience is review priority, not belief.

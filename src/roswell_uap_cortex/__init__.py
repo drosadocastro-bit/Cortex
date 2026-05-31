@@ -15,6 +15,9 @@ from roswell_uap_cortex.claim_matrix import (
     ClaimMatrixEntry,
 )
 from roswell_uap_cortex.claim_extraction import ClaimExtractionEngine
+from roswell_uap_cortex.claim_contradiction_evaluator import ClaimContradictionEvaluator
+from roswell_uap_cortex.claim_evaluation import ClaimEvidenceEvaluator
+from roswell_uap_cortex.claim_evaluation_guardrails import ClaimEvidenceGuardrails
 from roswell_uap_cortex.claim_matrix_integration import ClaimMatrixIntegrator
 from roswell_uap_cortex.claim_normalization import ClaimNormalizer
 from roswell_uap_cortex.claim_normalization_guardrails import ClaimNormalizationGuardrails
@@ -76,12 +79,21 @@ from roswell_uap_cortex.models import (
     ClaimExtractionResult,
     ClaimExtractionWarning,
     ClaimExtractionWarningType,
+    ClaimContradictionSignal,
+    ClaimEvaluationPolicy,
+    ClaimEvaluationResult,
+    ClaimEvaluationWarning,
+    ClaimEvaluationWarningType,
+    ClaimEvidenceAssessment,
+    ClaimEvidenceAssessmentType,
     ClaimMatrixIntegrationResult,
     ClaimMatrixStatus,
     ClaimNormalizationPolicy,
     ClaimNormalizationResult,
     ClaimNormalizationWarning,
     ClaimNormalizationWarningType,
+    ClaimSupportSignal,
+    ClaimUncertaintySignal,
     ClaimNode,
     CognitiveArtifact,
     CognitiveSeparationState,
@@ -212,11 +224,21 @@ __all__ = [
     "CandidateClaimOrigin",
     "Claim",
     "ClaimCanonicalKey",
+    "ClaimContradictionEvaluator",
+    "ClaimContradictionSignal",
+    "ClaimEvaluationPolicy",
+    "ClaimEvaluationResult",
+    "ClaimEvaluationWarning",
+    "ClaimEvaluationWarningType",
     "ClaimExtractionEngine",
     "ClaimExtractionPolicy",
     "ClaimExtractionResult",
     "ClaimExtractionWarning",
     "ClaimExtractionWarningType",
+    "ClaimEvidenceAssessment",
+    "ClaimEvidenceAssessmentType",
+    "ClaimEvidenceEvaluator",
+    "ClaimEvidenceGuardrails",
     "ClaimEvidenceContribution",
     "ClaimMatrixEngine",
     "ClaimMatrixEntry",
@@ -229,6 +251,8 @@ __all__ = [
     "ClaimNormalizationWarning",
     "ClaimNormalizationWarningType",
     "ClaimNormalizer",
+    "ClaimSupportSignal",
+    "ClaimUncertaintySignal",
     "ClaimNode",
     "CognitiveArtifact",
     "CognitiveArtifactRegistry",

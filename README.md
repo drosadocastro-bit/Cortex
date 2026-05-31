@@ -68,6 +68,11 @@ The initial framework provides:
 - Claim normalization and matrix integration that groups candidate claims under
   canonical topics while preserving origin, provenance, lineage, unsupported
   status, and zero confidence.
+- Claim support and contradiction evaluation that compares normalized claims
+  against evidence as bounded review signals without confirming or disproving
+  claims.
+- Evaluation guardrails that preserve the distinction between possible support,
+  possible contradiction, uncertainty, irrelevance, and needs-review pressure.
 - Sensory intake safeguards: ingestion does not confirm claims or create graph
   edges automatically.
 - A bounded local cognitive reasoning layer that operates on activated context
@@ -145,6 +150,9 @@ Roswell-uap-cortex/
       attention.py
       attention_gate.py
       attention_guardrails.py
+      claim_contradiction_evaluator.py
+      claim_evaluation.py
+      claim_evaluation_guardrails.py
       claim_matrix.py
       claim_extraction.py
       claim_matrix_integration.py
@@ -218,6 +226,7 @@ Roswell-uap-cortex/
     test_phase14_observation_classification.py
     test_phase15_claim_extraction.py
     test_phase16_claim_normalization.py
+    test_phase17_claim_evaluation.py
   pyproject.toml
   README.md
 ```

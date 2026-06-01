@@ -1,5 +1,34 @@
 # Maintenance Log
 
+## 2026-05-31: Phase 23.2 Demo, Session, And Export Consolidation
+
+Scope:
+Consolidate the Phase 19-23 review/session/export/demo arc before UI-readiness
+work.
+
+Findings:
+
+- The source review -> working memory -> session -> audit -> bundle -> demo arc
+  is coherent and ready for UI view-model work.
+- Session persistence remains separate from evidence snapshot persistence.
+- Review bundles remain review packets, not final reports.
+- Demo workspace remains synthetic-only and suitable as the first UI fixture.
+- Bundle guardrails no longer over-trigger on the word `provenance`.
+
+Fixes / documentation added:
+
+- Added `tests/test_phase23_2_consolidation.py`.
+- Added `docs/PHASE_23_2_CONSOLIDATION.md`.
+- Added `docs/UI_READINESS_NOTES.md`.
+- Updated `docs/DEBUGGING_AND_SECURITY.md` with the Phase 19-23 check.
+- Updated `docs/PUBLIC_API.md` with public API caution for future UI view
+  models.
+- Updated `docs/AI_DEBT.md` to clarify future UI/reporting constraints.
+
+Verification:
+
+- `python -m pytest`
+
 ## 2026-05-31: Phase 23 Synthetic Demo Workspace
 
 Scope:

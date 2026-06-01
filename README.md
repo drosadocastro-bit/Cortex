@@ -156,8 +156,10 @@ Roswell-uap-cortex/
     MAINTENANCE_LOG.md
     MEMORY_MODEL.md
     PHASE_18_2_CONSOLIDATION.md
+    PHASE_23_2_CONSOLIDATION.md
     PROBLEM_STATEMENT.md
     PUBLIC_API.md
+    UI_READINESS_NOTES.md
   src/
     roswell_uap_cortex/
       __init__.py
@@ -270,6 +272,7 @@ Roswell-uap-cortex/
     test_phase21_session_persistence.py
     test_phase22_review_bundle.py
     test_phase23_demo_workspace.py
+    test_phase23_2_consolidation.py
   pyproject.toml
   README.md
 ```

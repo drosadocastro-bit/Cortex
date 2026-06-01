@@ -31,6 +31,19 @@ This verifies that the claim pipeline remains ordered, non-mutating, and
 documented. It also checks the Phase 14-18 modules for the same risky network,
 process, dynamic execution, and unsafe deserialization patterns.
 
+## Phase 19-23 Review And Demo Check
+
+After source review, working memory, session persistence, bundle export, and
+demo workspace work, run:
+
+```powershell
+python -m pytest tests/test_phase23_2_consolidation.py
+```
+
+This verifies that demo data remains synthetic, review bundles preserve
+limitations, session loads do not apply decisions to graph state, and bundle
+guardrails do not confuse `provenance` with certainty language.
+
 ## Dependency Surface
 
 Project dependencies are defined in `pyproject.toml`, not by the global Python

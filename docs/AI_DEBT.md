@@ -373,12 +373,16 @@ uncertainty, contradiction, or provenance.
 Current mitigation:
 No web UI exists yet. `DiscourseEngine` produces deterministic structured
 sections with citations, contradictions, weak associations, speculative labels,
-missing information, and review-required status.
+missing information, and review-required status. The review/session/export/demo
+arc now provides dockets, working memory, audit trails, review bundles, and a
+synthetic demo fixture that future UI should render without inventing truth
+semantics.
 
 Future trigger:
 Before building a web interface or generated reports, every rendered claim view
 must preserve the same discourse sections, citations, reasoning warnings,
-contradictions, and uncertainty notes.
+contradictions, uncertainty notes, review decisions, audit limitations, and
+synthetic-demo labels.
 
 Must not do:
 Do not present a contested or weakly supported claim as a resolved finding.

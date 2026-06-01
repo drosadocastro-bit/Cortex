@@ -57,6 +57,10 @@ into explicit namespaces such as:
 Do not export every new class by default. Prefer internal modules unless a class
 is needed by tests, examples, documented external use, or the canonical flow.
 
+The review/session/export/demo arc increased the number of public symbols.
+Future UI view models should avoid further broadening the root API unless a
+symbol is truly part of the documented canonical path.
+
 ## Compatibility Note
 
 For now, broad exports remain in place so existing tests and examples continue

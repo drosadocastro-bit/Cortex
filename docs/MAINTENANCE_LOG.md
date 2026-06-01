@@ -1,5 +1,33 @@
 # Maintenance Log
 
+## 2026-05-31: Phase 23 Synthetic Demo Workspace
+
+Scope:
+Add a fully synthetic demo workspace that exercises the canonical Cortex path
+without real UAP data.
+
+Fixes / documentation added:
+
+- Added `DemoWorkspaceBuilder` and `DemoWorkspaceGuardrails`.
+- Added demo workspace, manifest, and result models.
+- Added a synthetic scenario with a primary-style note, contradiction,
+  derivative repost, speculative contamination, and incomplete anonymous
+  source.
+- Added tests for deterministic build output, synthetic-only source ids,
+  evidence/provenance/lineage production, candidate and normalized claims,
+  claim/source dockets, session/audit/bundle output, contradiction and
+  uncertainty coverage, contamination and derivative signals, guardrail
+  rejection of non-synthetic sources, no graph-edge creation, and bundle
+  formatting.
+- Added `docs/ADR-025-synthetic-demo-workspace.md`.
+- Added `docs/DEMO_WORKSPACE.md`.
+- Updated architecture, memory model, code walkthrough, README, public API, and
+  AI debt docs.
+
+Verification:
+
+- `python -m pytest`
+
 ## 2026-05-31: Phase 22 Review Export And Report Bundles
 
 Scope:

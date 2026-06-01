@@ -93,7 +93,7 @@ class ReviewBundleBuilder:
             ids.add(docket.docket_id)
             for item in docket.items:
                 items.append(
-                    f"{item.canonical_topic}: support={len(item.support_summaries)} contradiction={len(item.contradiction_summaries)} uncertainty={len(item.uncertainty_summaries)}"
+                    f"{item.normalized_claim_id}:{item.canonical_topic}: support={len(item.support_summaries)} contradiction={len(item.contradiction_summaries)} uncertainty={len(item.uncertainty_summaries)}"
                 )
         return ReviewBundleSection("claim_dockets", "Claim Review Dockets", items or ["none"], ids)
 

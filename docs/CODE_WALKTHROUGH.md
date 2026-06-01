@@ -223,6 +223,18 @@ limitation sections.
 the bundle as bounded Markdown. The output is a review packet, not a final
 report.
 
+## Synthetic Demo Workspace
+
+`demo_workspace.py` contains `DemoWorkspaceBuilder`.
+
+It creates a tiny synthetic-only workspace and runs the canonical path from
+raw inputs to formatted review bundle. The scenario includes a primary-style
+note, contradiction, derivative repost, speculative contamination, and an
+incomplete anonymous source.
+
+`demo_workspace_guardrails.py` contains `DemoWorkspaceGuardrails`, which
+rejects non-synthetic demo sources.
+
 ## Provenance, Lineage, And Contamination
 
 `provenance.py` creates mandatory provenance records.
@@ -409,11 +421,12 @@ Start with:
 7. `working_memory.py` and `review_session.py`
 8. `session_persistence.py` and `session_audit.py`
 9. `review_bundle.py`
-10. `associative.py` and `attention.py`
-11. `context_builder.py` and `reasoning.py`
-12. `discourse.py`
-13. `persistence.py` and `snapshot.py`
-14. `evaluation.py`, `adversarial.py`, and `hard_adversarial.py`
+10. `demo_workspace.py`
+11. `associative.py` and `attention.py`
+12. `context_builder.py` and `reasoning.py`
+13. `discourse.py`
+14. `persistence.py` and `snapshot.py`
+15. `evaluation.py`, `adversarial.py`, and `hard_adversarial.py`
 
 That order follows the main architecture path and makes the framework easier to
 understand.

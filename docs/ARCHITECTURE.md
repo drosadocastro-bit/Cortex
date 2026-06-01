@@ -20,6 +20,7 @@ raw input
 -> working memory / review session state
 -> session persistence / audit trail
 -> review bundle export
+-> synthetic demo workspace
 -> memory / graph / claims
 -> associative retrieval / attention
 -> activated context
@@ -96,6 +97,11 @@ Review bundles compose sessions, dockets, audit trails, unresolved items,
 uncertainty, provenance, contradictions, and limitations into structured
 Markdown-ready review packets. A bundle is not a final report or conclusion.
 
+Synthetic demo workspace:
+The demo workspace runs a tiny synthetic-only fixture through the canonical
+path. It exists for testing, documentation, and future UI rendering, not
+real-world validation.
+
 Cognitive state:
 Memory, graph, claim matrix, source trust, contradiction pressure, and temporal
 ordering preserve investigative structure without deciding truth.
@@ -146,6 +152,7 @@ These layers should preserve the same epistemic rules as the core path.
 - Review session decisions are not claim confirmation or source rejection.
 - Audit trails are workflow history, not evidence.
 - Review bundles are not final reports.
+- Demo workspaces are not real investigations.
 - Semantic similarity is not confirmation.
 - Discourse is not evidence.
 - Salience is review priority, not belief.

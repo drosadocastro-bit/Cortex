@@ -270,6 +270,25 @@ Must not do:
 Do not label a review bundle as a final report, confirmed finding, validated
 claim, or source rejection.
 
+## Demo Workspace Debt
+
+Risk:
+Synthetic demo output may be mistaken for real-world evidence, system
+validation, or an example investigation result.
+
+Current mitigation:
+`DemoWorkspaceBuilder` uses synthetic-only raw inputs and
+`DemoWorkspaceGuardrails` rejects non-synthetic source identifiers. Demo docs
+state that the workspace is an architecture exercise only.
+
+Future trigger:
+Before using the demo in UI, screenshots, presentations, or public docs, labels
+must state that all content is synthetic and not real-world validation.
+
+Must not do:
+Do not mix real UAP data into the demo workspace or describe demo output as a
+finding.
+
 ## Similarity Debt
 
 Risk:

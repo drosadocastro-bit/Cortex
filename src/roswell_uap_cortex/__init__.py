@@ -31,6 +31,8 @@ from roswell_uap_cortex.correlation_guard import CorrelationGuard
 from roswell_uap_cortex.corroboration import CorroborationLayer
 from roswell_uap_cortex.discourse import DiscourseEngine
 from roswell_uap_cortex.discourse_guardrails import DiscourseGuardrails
+from roswell_uap_cortex.demo_workspace import DemoWorkspaceBuilder
+from roswell_uap_cortex.demo_workspace_guardrails import DemoWorkspaceGuardrails
 from roswell_uap_cortex.evidence_docket import EvidenceDocketFormatter
 from roswell_uap_cortex.evaluation import EvaluationHarness
 from roswell_uap_cortex.evaluation_guardrails import EvaluationGuardrails
@@ -114,6 +116,9 @@ from roswell_uap_cortex.models import (
     DiscourseSection,
     DiscourseWarning,
     DiscourseWarningType,
+    DemoWorkspace,
+    DemoWorkspaceManifest,
+    DemoWorkspaceResult,
     EntityNode,
     EvidenceAssessmentSummary,
     EvidenceCategory,
@@ -331,6 +336,11 @@ __all__ = [
     "DiscourseSection",
     "DiscourseWarning",
     "DiscourseWarningType",
+    "DemoWorkspace",
+    "DemoWorkspaceBuilder",
+    "DemoWorkspaceGuardrails",
+    "DemoWorkspaceManifest",
+    "DemoWorkspaceResult",
     "DeferredItem",
     "EntityNode",
     "EvidenceAssessmentSummary",

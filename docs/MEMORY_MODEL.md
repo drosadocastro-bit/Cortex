@@ -76,6 +76,12 @@ uncertainty notes, contradictions, provenance references, and limitations into
 structured export packets. A bundle is not a final report and does not resolve
 claims or sources.
 
+Phase 23 adds a synthetic demo workspace. `DemoWorkspaceBuilder` creates tiny
+synthetic raw inputs and runs them through ingestion, claim extraction,
+normalization, evaluation, claim/source review, working memory, audit, and
+review bundle export. The demo is architecture exercise only, not real-world
+validation.
+
 ## Provenance Extraction
 
 `ProvenanceExtractor` creates a `ProvenanceRecord` for every ingested evidence
@@ -242,6 +248,9 @@ the workflow did, not what external reality is.
 
 Review bundles are memory exports for inspection. They are useful for future UI
 and sharing, but they remain bounded review state rather than conclusions.
+
+The demo workspace is useful for future UI because it gives a safe canonical
+session to render without touching real data.
 
 ## Contamination Flags
 

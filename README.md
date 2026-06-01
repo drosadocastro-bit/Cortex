@@ -88,6 +88,8 @@ The initial framework provides:
 - Review bundle exports that compose sessions, claim dockets, source dockets,
   unresolved items, uncertainty, provenance, audit trails, and limitations into
   deterministic Markdown-ready review packets without creating final reports.
+- A fully synthetic demo workspace that runs the canonical Cortex path from raw
+  inputs through review bundle output without real UAP data.
 - Sensory intake safeguards: ingestion does not confirm claims or create graph
   edges automatically.
 - A bounded local cognitive reasoning layer that operates on activated context
@@ -146,6 +148,7 @@ Roswell-uap-cortex/
     ADVERSARIAL_FINDINGS.md
     ARCHITECTURE.md
     CODE_WALKTHROUGH.md
+    DEMO_WORKSPACE.md
     DEBUGGING_AND_SECURITY.md
     GOVERNANCE.md
     HARD_ADVERSARIAL_FINDINGS.md
@@ -181,6 +184,8 @@ Roswell-uap-cortex/
       correlation_guard.py
       discourse.py
       discourse_guardrails.py
+      demo_workspace.py
+      demo_workspace_guardrails.py
       evidence_docket.py
       evaluation.py
       evaluation_guardrails.py
@@ -264,6 +269,7 @@ Roswell-uap-cortex/
     test_phase20_working_memory.py
     test_phase21_session_persistence.py
     test_phase22_review_bundle.py
+    test_phase23_demo_workspace.py
   pyproject.toml
   README.md
 ```

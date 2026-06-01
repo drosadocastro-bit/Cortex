@@ -760,6 +760,43 @@ class ReviewBundleExportResult:
 
 
 @dataclass(slots=True)
+class DemoWorkspaceManifest:
+    """Manifest for a fully synthetic demo workspace."""
+
+    demo_id: str
+    title: str = "Synthetic Cortex Demo Workspace"
+    synthetic_only: bool = True
+    schema_version: str = "phase-23-demo-workspace-v1"
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class DemoWorkspace:
+    """Synthetic raw workspace inputs for demonstration only."""
+
+    manifest: DemoWorkspaceManifest
+    raw_inputs: list["RawInput"] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class DemoWorkspaceResult:
+    """Canonical synthetic demo output across the Cortex pipeline."""
+
+    workspace: DemoWorkspace
+    ingestion_results: list["IngestionResult"] = field(default_factory=list)
+    candidate_claims: list["CandidateClaim"] = field(default_factory=list)
+    normalized_claims: list["NormalizedClaim"] = field(default_factory=list)
+    claim_evaluation: "ClaimEvaluationResult | None" = None
+    claim_review_docket: "ClaimReviewDocket | None" = None
+    source_review_docket: "SourceReviewDocket | None" = None
+    review_session: "ReviewSession | None" = None
+    audit_trail: SessionAuditTrail | None = None
+    review_bundle: ReviewBundle | None = None
+    formatted_bundle: str = ""
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
 class EvaluationInput:
     """Artifacts inspected by the deterministic evaluation harness."""
 

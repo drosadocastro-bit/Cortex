@@ -177,9 +177,14 @@ from roswell_uap_cortex.models import (
     ReviewDecision,
     ReviewDecisionType,
     ReviewFocus,
+    ReviewInfluenceResult,
+    ReviewInfluenceScope,
+    ReviewInfluenceWarning,
+    ReviewInfluenceWarningType,
     ReviewPriority,
     ReviewRecommendation,
     ReviewRecommendationType,
+    ReviewStateSignal,
     ReviewedItem,
     ReviewSession,
     ReviewSessionState,
@@ -219,6 +224,8 @@ from roswell_uap_cortex.recursive_guard import RecursiveInferenceGuard
 from roswell_uap_cortex.review_bundle import ReviewBundleBuilder
 from roswell_uap_cortex.review_bundle_formatter import ReviewBundleFormatter
 from roswell_uap_cortex.review_bundle_guardrails import ReviewBundleGuardrails
+from roswell_uap_cortex.review_context import ReviewContextAdapter
+from roswell_uap_cortex.review_influence import ReviewInfluencePolicy
 from roswell_uap_cortex.review_priority import ReviewPriorityEngine
 from roswell_uap_cortex.review_session import ReviewSessionEngine
 from roswell_uap_cortex.source_risk import SourceRiskProfiler
@@ -437,10 +444,17 @@ __all__ = [
     "ReviewDecision",
     "ReviewDecisionType",
     "ReviewFocus",
+    "ReviewContextAdapter",
+    "ReviewInfluencePolicy",
+    "ReviewInfluenceResult",
+    "ReviewInfluenceScope",
+    "ReviewInfluenceWarning",
+    "ReviewInfluenceWarningType",
     "ReviewPriority",
     "ReviewPriorityEngine",
     "ReviewRecommendation",
     "ReviewRecommendationType",
+    "ReviewStateSignal",
     "ReviewedItem",
     "ReviewSession",
     "ReviewSessionEngine",

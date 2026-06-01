@@ -86,6 +86,12 @@ The review workflow is mapped separately in `docs/WORKFLOW_MAP.md` to keep
 claim dockets, source dockets, working memory, review sessions, audit trails,
 bundles, and demo output from duplicating responsibility or implying truth.
 
+Phase 24 adds a review-to-reasoning boundary. `ReviewInfluencePolicy` converts
+review workflow state into attention, context, and discourse hints.
+`ReviewContextAdapter` carries those hints as visibility and uncertainty notes.
+These hints do not mutate evidence, confirm claims, alter source trust, create
+graph edges, or change claim matrix confidence.
+
 ## Provenance Extraction
 
 `ProvenanceExtractor` creates a `ProvenanceRecord` for every ingested evidence

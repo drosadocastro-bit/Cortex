@@ -90,6 +90,9 @@ The initial framework provides:
   deterministic Markdown-ready review packets without creating final reports.
 - A fully synthetic demo workspace that runs the canonical Cortex path from raw
   inputs through review bundle output without real UAP data.
+- Review-to-reasoning boundary contracts that allow review workflow state to
+  guide attention, context visibility, and discourse annotations without
+  becoming evidence, claim confidence, source truth, or graph support.
 - Sensory intake safeguards: ingestion does not confirm claims or create graph
   edges automatically.
 - A bounded local cognitive reasoning layer that operates on activated context
@@ -159,6 +162,7 @@ Roswell-uap-cortex/
     PHASE_23_2_CONSOLIDATION.md
     PROBLEM_STATEMENT.md
     PUBLIC_API.md
+    REVIEW_REASONING_BOUNDARY.md
     UI_READINESS_NOTES.md
     WORKFLOW_MAP.md
   src/
@@ -223,6 +227,8 @@ Roswell-uap-cortex/
       review_bundle.py
       review_bundle_formatter.py
       review_bundle_guardrails.py
+      review_context.py
+      review_influence.py
       review_priority.py
       review_session.py
       salience_policy.py
@@ -274,6 +280,8 @@ Roswell-uap-cortex/
     test_phase22_review_bundle.py
     test_phase23_demo_workspace.py
     test_phase23_2_consolidation.py
+    test_phase23_3_workflow_map.py
+    test_phase24_review_reasoning_boundary.py
   pyproject.toml
   README.md
 ```

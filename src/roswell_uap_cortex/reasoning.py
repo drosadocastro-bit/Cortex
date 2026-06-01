@@ -15,6 +15,7 @@ from roswell_uap_cortex.models import (
     ProvenanceRecord,
     ReasoningOutput,
     ReasoningRequest,
+    ReviewInfluenceResult,
     SourceLineageRecord,
 )
 
@@ -36,6 +37,7 @@ class CognitiveReasoningEngine:
         memories_by_id: dict[str, MemoryRecord] | None = None,
         provenance_by_evidence_id: dict[str, ProvenanceRecord] | None = None,
         lineage_by_evidence_id: dict[str, SourceLineageRecord] | None = None,
+        review_influence: ReviewInfluenceResult | None = None,
     ) -> ReasoningOutput:
         context = self.context_builder.build(
             request.activated_context,
@@ -45,6 +47,7 @@ class CognitiveReasoningEngine:
             memories_by_id=memories_by_id,
             provenance_by_evidence_id=provenance_by_evidence_id,
             lineage_by_evidence_id=lineage_by_evidence_id,
+            review_influence=review_influence,
             max_items=request.max_context_items,
         )
         output = self.adapter.reason(context)

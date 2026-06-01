@@ -17,7 +17,8 @@ Stable framework primitives include:
   `ClaimExtractionEngine`, `ClaimNormalizer`, `ClaimEvidenceEvaluator`,
   `ClaimReviewEngine`, `SourceReviewEngine`, `RelationshipGraphEngine`,
   `WorkingMemoryEngine`, `ReviewSessionEngine`, `SessionPersistenceStore`,
-  `ReviewBundleBuilder`, `DemoWorkspaceBuilder`, `TimelineEngine`, `ClaimMatrixEngine`,
+  `ReviewBundleBuilder`, `ReviewInfluencePolicy`, `ReviewContextAdapter`,
+  `DemoWorkspaceBuilder`, `TimelineEngine`, `ClaimMatrixEngine`,
   `AssociativeRetrievalEngine`, `AttentionEngine`, `CognitiveReasoningEngine`,
   `DiscourseEngine`, `SnapshotBuilder`, `PersistenceStore`, and
   `EvaluationHarness`

@@ -13,6 +13,7 @@ from roswell_uap_cortex.models import (
     MemoryRecord,
     ProvenanceRecord,
     ReasoningContext,
+    ReviewInfluenceResult,
     SourceLineageRecord,
     UncertaintyNote,
 )
@@ -36,6 +37,7 @@ class ContextWindowBuilder:
         provenance_by_evidence_id: dict[str, ProvenanceRecord] | None = None,
         lineage_by_evidence_id: dict[str, SourceLineageRecord] | None = None,
         attention_decision: AttentionDecision | None = None,
+        review_influence: ReviewInfluenceResult | None = None,
         max_items: int | None = None,
     ) -> ReasoningContext:
         evidence_by_id = evidence_by_id or {}
@@ -55,6 +57,15 @@ class ContextWindowBuilder:
         evidence_ids = set(activated_context.activated_evidence_ids)
         claim_ids = set(activated_context.activated_claim_ids)
         memory_ids = set(activated_context.activated_memory_ids)
+        if review_influence is not None:
+            influenced_ids = (
+                review_influence.prioritized_ids
+                | review_influence.must_include_ids
+                | review_influence.unresolved_ids
+            )
+            evidence_ids.update(influenced_ids & set(evidence_by_id))
+            claim_ids.update(influenced_ids & set(claims_by_id))
+            memory_ids.update(influenced_ids & set(memories_by_id))
 
         for candidate in selected_candidates:
             evidence_ids.update(candidate.evidence_ids)
@@ -82,6 +93,19 @@ class ContextWindowBuilder:
             UncertaintyNote(note=note, severity="caution")
             for note in activated_context.uncertainty_notes
         ]
+        if review_influence is not None:
+            for note in review_influence.uncertainty_notes:
+                notes.append(UncertaintyNote(note=note, related_ids=set(review_influence.unresolved_ids)))
+            for annotation in review_influence.discourse_annotations:
+                notes.append(UncertaintyNote(note=annotation, severity="review"))
+            for warning in review_influence.warnings:
+                notes.append(
+                    UncertaintyNote(
+                        note=warning.message,
+                        related_ids=set(warning.related_ids),
+                        severity="review_boundary",
+                    )
+                )
         if len(selected_evidence) < len(evidence_ids):
             notes.append(
                 UncertaintyNote(

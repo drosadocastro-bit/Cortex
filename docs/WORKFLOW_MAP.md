@@ -22,6 +22,8 @@ raw input
 -> review session
 -> audit trail
 -> review bundle
+-> review influence hints
+-> bounded reasoning / discourse visibility
 -> synthetic demo / future UI display
 ```
 
@@ -120,6 +122,10 @@ A future UI should display this workflow state rather than invent a parallel
 workflow. The first UI layer should probably be a small view-model layer that
 adapts existing dockets, sessions, audit trails, and bundles into screen-ready
 objects.
+
+Review influence is documented in `docs/REVIEW_REASONING_BOUNDARY.md`. Review
+state may guide attention, context selection, and discourse visibility, but it
+must not become evidence, confidence, source truth, or graph support.
 
 The UI should not:
 

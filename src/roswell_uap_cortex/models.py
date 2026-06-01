@@ -221,6 +221,27 @@ class ReviewDecisionType(str, Enum):
     REQUEST_SOURCE_REVIEW = "request_source_review"
 
 
+class ReviewInfluenceScope(str, Enum):
+    """Where review workflow annotations may have bounded influence."""
+
+    ATTENTION = "attention"
+    CONTEXT = "context"
+    DISCOURSE = "discourse"
+
+
+class ReviewInfluenceWarningType(str, Enum):
+    """Warnings that keep review workflow influence from becoming truth."""
+
+    REVIEW_STATE_NOT_TRUTH = "review_state_not_truth"
+    REVIEWED_NOT_CONFIRMED = "reviewed_not_confirmed"
+    DEFERRED_NOT_ERASED = "deferred_not_erased"
+    SOURCE_RISK_NOT_REJECTION = "source_risk_not_rejection"
+    PRIORITY_NOT_CONFIDENCE = "priority_not_confidence"
+    BUNDLE_NOT_REASONING_INPUT = "bundle_not_reasoning_input"
+    AUDIT_NOT_EVIDENCE = "audit_not_evidence"
+    PROVENANCE_GAP_VISIBLE = "provenance_gap_visible"
+
+
 class LineageType(str, Enum):
     """Ingestion lineage classification."""
 
@@ -1929,6 +1950,55 @@ class ReviewDecision:
             self.decision_type = ReviewDecisionType(self.decision_type)
         if not self.decision_id:
             self.decision_id = str(uuid5(NAMESPACE_URL, f"review-decision:{self.item_type}:{self.item_id}:{self.decision_type.value}:{'|'.join(self.notes)}"))
+
+
+@dataclass(slots=True)
+class ReviewStateSignal:
+    """A review workflow signal allowed to guide attention, context, or discourse."""
+
+    signal_type: str
+    item_id: str
+    item_type: str = "unknown"
+    allowed_scopes: set[ReviewInfluenceScope | str] = field(default_factory=set)
+    priority: float = 0.0
+    notes: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        self.allowed_scopes = {
+            ReviewInfluenceScope(scope) if isinstance(scope, str) else scope
+            for scope in self.allowed_scopes
+        }
+        self.priority = max(0.0, min(1.0, self.priority))
+
+
+@dataclass(slots=True)
+class ReviewInfluenceWarning:
+    """Boundary warning emitted while adapting review state for downstream use."""
+
+    warning_type: ReviewInfluenceWarningType | str
+    message: str
+    related_ids: set[str] = field(default_factory=set)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.warning_type, str):
+            self.warning_type = ReviewInfluenceWarningType(self.warning_type)
+
+
+@dataclass(slots=True)
+class ReviewInfluenceResult:
+    """Read-only influence contract from review workflow to later layers."""
+
+    signals: list[ReviewStateSignal] = field(default_factory=list)
+    prioritized_ids: set[str] = field(default_factory=set)
+    must_include_ids: set[str] = field(default_factory=set)
+    deferred_ids: set[str] = field(default_factory=set)
+    unresolved_ids: set[str] = field(default_factory=set)
+    provenance_gap_ids: set[str] = field(default_factory=set)
+    source_review_warning_ids: set[str] = field(default_factory=set)
+    contradiction_ids: set[str] = field(default_factory=set)
+    uncertainty_notes: list[str] = field(default_factory=list)
+    discourse_annotations: list[str] = field(default_factory=list)
+    warnings: list[ReviewInfluenceWarning] = field(default_factory=list)
 
 
 @dataclass(slots=True)

@@ -108,6 +108,12 @@ The demo workspace runs a tiny synthetic-only fixture through the canonical
 path. It exists for testing, documentation, and future UI rendering, not
 real-world validation.
 
+Review-to-reasoning boundary:
+Review workflow state can guide attention, context selection, unresolved item
+visibility, deferred item visibility, and discourse annotations. It cannot
+mutate evidence, confirm claims, change source trust, create graph edges, or
+turn audit/bundle records into evidence. See `docs/REVIEW_REASONING_BOUNDARY.md`.
+
 Cognitive state:
 Memory, graph, claim matrix, source trust, contradiction pressure, and temporal
 ordering preserve investigative structure without deciding truth.
@@ -159,6 +165,7 @@ These layers should preserve the same epistemic rules as the core path.
 - Audit trails are workflow history, not evidence.
 - Review bundles are not final reports.
 - Demo workspaces are not real investigations.
+- Review workflow annotations guide attention only; they are not truth signals.
 - Semantic similarity is not confirmation.
 - Discourse is not evidence.
 - Salience is review priority, not belief.

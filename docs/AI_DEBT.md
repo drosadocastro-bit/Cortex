@@ -289,6 +289,29 @@ Must not do:
 Do not mix real UAP data into the demo workspace or describe demo output as a
 finding.
 
+## Review-To-Reasoning Boundary Debt
+
+Risk:
+Human-review workflow state can accidentally become hidden reasoning input.
+Reviewed items may look confirmed, deferred items may disappear, source-risk
+flags may look like rejection, and bundle/audit records may be mistaken for
+evidence.
+
+Current mitigation:
+`ReviewInfluencePolicy` converts review state into bounded attention, context,
+and discourse hints. `ReviewContextAdapter` carries those hints as uncertainty
+and visibility notes. Tests assert that reviewed claims do not gain confidence,
+deferred items remain visible, source risk is not rejection, session decisions
+do not create graph edges, and bundles do not alter claim matrix state.
+
+Future trigger:
+Before adding UI workflows, live LLM reasoning, or analyst-facing editing,
+review influence must remain explicit and auditable.
+
+Must not do:
+Do not treat review decisions, audit records, review bundles, or display
+priority as evidence, confirmation, source truth, or graph support.
+
 ## Similarity Debt
 
 Risk:

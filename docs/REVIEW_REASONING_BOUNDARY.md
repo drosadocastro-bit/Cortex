@@ -68,6 +68,29 @@ only.
 reasoning output still treats review state as uncertainty or review-boundary
 notes, not confirmation.
 
+## Typed Influence Summary
+
+`ReviewInfluenceResult` is intentionally inspectable. Its fields should remain
+visibility and annotation fields, not evidentiary weights.
+
+| Field | Meaning | Boundary |
+| --- | --- | --- |
+| `signals` | Typed review signals from focus, decisions, claim dockets, or source dockets | Signals are workflow annotations only |
+| `prioritized_ids` | Ids that may be ordered earlier for attention or context selection | Priority is not confidence |
+| `must_include_ids` | Ids that should remain visible because they are unresolved or high-review-pressure | Inclusion is not support |
+| `deferred_ids` | Ids deferred for later review or provenance work | Deferred is not erased or rejected |
+| `unresolved_ids` | Items still unresolved in the review workflow | Unresolved is not disproven |
+| `provenance_gap_ids` | Items with missing or fragile provenance visibility | Missing provenance lowers certainty, not truth |
+| `source_review_warning_ids` | Sources or source-linked items requiring review caution | Source risk is not source rejection |
+| `contradiction_ids` | Items whose contradictions should remain visible | Contradiction is not automatic disproof |
+| `uncertainty_notes` | Review-derived uncertainty notes carried into context and reasoning | Notes do not mutate records |
+| `discourse_annotations` | Human-readable review-status annotations | Display language is not evidence |
+| `warnings` | Boundary warnings about review influence | Warnings are guardrails, not conclusions |
+
+The most sensitive handoff is `ContextWindowBuilder`. It may use typed record
+maps to include matching evidence, claims, or memories, but it must stay narrow:
+review influence can affect inclusion and ordering, not evidentiary weighting.
+
 ## Analyst Loop Contract
 
 ```text

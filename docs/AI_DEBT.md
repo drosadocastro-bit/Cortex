@@ -306,11 +306,19 @@ do not create graph edges, and bundles do not alter claim matrix state.
 
 Future trigger:
 Before adding UI workflows, live LLM reasoning, or analyst-facing editing,
-review influence must remain explicit and auditable.
+review influence must remain explicit and auditable. If
+`ReviewInfluenceResult` grows, keep `docs/REVIEW_REASONING_BOUNDARY.md` updated
+with a schema-like typed influence summary.
 
 Must not do:
 Do not treat review decisions, audit records, review bundles, or display
 priority as evidence, confirmation, source truth, or graph support.
+
+Watchpoints:
+- `ContextWindowBuilder` must stay narrow: review influence can affect
+  inclusion and ordering, not evidentiary weighting.
+- `README.md` is becoming a capability ledger; reorganize Current Scope into
+  sections when readability starts to drop.
 
 ## Similarity Debt
 

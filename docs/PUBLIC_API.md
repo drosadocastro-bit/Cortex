@@ -61,6 +61,10 @@ The review/session/export/demo arc increased the number of public symbols.
 Future UI view models should avoid further broadening the root API unless a
 symbol is truly part of the documented canonical path.
 
+Use `docs/WORKFLOW_MAP.md` as the ownership reference before exporting new
+review workflow objects. New objects should have a clear home in cognitive core,
+review workflow, session/audit, export/demo, or evaluation.
+
 ## Compatibility Note
 
 For now, broad exports remain in place so existing tests and examples continue

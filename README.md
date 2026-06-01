@@ -160,6 +160,7 @@ Roswell-uap-cortex/
     PROBLEM_STATEMENT.md
     PUBLIC_API.md
     UI_READINESS_NOTES.md
+    WORKFLOW_MAP.md
   src/
     roswell_uap_cortex/
       __init__.py
@@ -303,6 +304,10 @@ claims as established fact.
 
 See [`docs/CODE_WALKTHROUGH.md`](docs/CODE_WALKTHROUGH.md) for a maintainer
 walkthrough of how the modules work together.
+
+See [`docs/WORKFLOW_MAP.md`](docs/WORKFLOW_MAP.md) for the review workflow map
+that separates cognitive core, review workflow, session/audit, export/demo, and
+evaluation responsibilities.
 
 See [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) for the recurring rule that every
 five major phases should pause feature expansion for architecture

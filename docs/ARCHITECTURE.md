@@ -32,6 +32,9 @@ raw input
 Every major subsystem should either fit this path or be documented as an
 auxiliary or experimental extension.
 
+See `docs/WORKFLOW_MAP.md` for the ownership map that separates cognitive core,
+review workflow, session/audit, export/demo, and evaluation responsibilities.
+
 ## Consolidation Cadence
 
 Every five major phases, Cortex should pause feature expansion for an
@@ -41,6 +44,9 @@ are part of the design discipline, not cleanup afterthoughts.
 See `docs/GOVERNANCE.md` for the recurring consolidation rule and checklist.
 
 ## Layers
+
+The workflow layers below are intentionally separated so review objects do not
+silently become cognitive evidence or final conclusions.
 
 Core domain models:
 `models.py` contains the dataclasses and enums used by the rest of the project.

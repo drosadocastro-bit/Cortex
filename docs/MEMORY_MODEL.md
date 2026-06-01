@@ -82,6 +82,10 @@ normalization, evaluation, claim/source review, working memory, audit, and
 review bundle export. The demo is architecture exercise only, not real-world
 validation.
 
+The review workflow is mapped separately in `docs/WORKFLOW_MAP.md` to keep
+claim dockets, source dockets, working memory, review sessions, audit trails,
+bundles, and demo output from duplicating responsibility or implying truth.
+
 ## Provenance Extraction
 
 `ProvenanceExtractor` creates a `ProvenanceRecord` for every ingested evidence

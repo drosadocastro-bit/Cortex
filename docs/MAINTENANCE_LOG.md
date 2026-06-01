@@ -1,5 +1,32 @@
 # Maintenance Log
 
+## 2026-05-31: Phase 25.2 Review Workflow, Presentation, Debugging, And Security Consolidation
+
+Scope:
+Consolidate the Phase 21-25 review workflow, review boundary, and presentation
+contract arc before any future UI work.
+
+Findings:
+
+- The synthetic demo -> presentation contract flow is deterministic.
+- Presentation view models preserve limitations, provenance, uncertainty,
+  contradiction, unresolved, deferred, and synthetic-only labels.
+- Review influence remains a visibility and ordering contract, not evidence
+  weighting or truth state.
+- Presentation grouping is documented as visual organization only.
+- Missing and unknown display values remain explicit rather than being
+  normalized into certainty.
+
+Fixes / documentation added:
+
+- Added `tests/test_phase25_2_consolidation.py`.
+- Added `docs/PHASE_25_2_CONSOLIDATION.md`.
+- Updated `docs/DEBUGGING_AND_SECURITY.md` with the Phase 21-25 check.
+
+Verification:
+
+- `python -m pytest`
+
 ## 2026-05-31: Phase 23.2 Demo, Session, And Export Consolidation
 
 Scope:

@@ -162,6 +162,7 @@ Roswell-uap-cortex/
     MEMORY_MODEL.md
     PHASE_18_2_CONSOLIDATION.md
     PHASE_23_2_CONSOLIDATION.md
+    PHASE_25_2_CONSOLIDATION.md
     PRESENTATION_CONTRACT.md
     PROBLEM_STATEMENT.md
     PUBLIC_API.md
@@ -289,6 +290,7 @@ Roswell-uap-cortex/
     test_phase23_3_workflow_map.py
     test_phase24_boundary_docs.py
     test_phase24_review_reasoning_boundary.py
+    test_phase25_2_consolidation.py
     test_phase25_presentation_contract.py
   pyproject.toml
   README.md

@@ -44,6 +44,21 @@ This verifies that demo data remains synthetic, review bundles preserve
 limitations, session loads do not apply decisions to graph state, and bundle
 guardrails do not confuse `provenance` with certainty language.
 
+## Phase 21-25 Review Workflow And Presentation Check
+
+After session persistence, review bundles, synthetic demo, review-to-reasoning
+boundary, and presentation-contract work, run:
+
+```powershell
+python -m pytest tests/test_phase25_2_consolidation.py
+```
+
+This verifies that the demo-to-presentation flow is deterministic, presentation
+builds do not mutate demo/session/bundle/docket state, review influence and
+presentation do not create truth state, missing and unknown display boundaries
+remain documented, and Phase 21-25 modules avoid network, process, dynamic
+execution, and unsafe deserialization patterns.
+
 ## Dependency Surface
 
 Project dependencies are defined in `pyproject.toml`, not by the global Python

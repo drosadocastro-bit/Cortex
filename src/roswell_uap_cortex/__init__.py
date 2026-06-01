@@ -31,6 +31,7 @@ from roswell_uap_cortex.correlation_guard import CorrelationGuard
 from roswell_uap_cortex.corroboration import CorroborationLayer
 from roswell_uap_cortex.discourse import DiscourseEngine
 from roswell_uap_cortex.discourse_guardrails import DiscourseGuardrails
+from roswell_uap_cortex.demo_presentation import DemoPresentationBuilder
 from roswell_uap_cortex.demo_workspace import DemoWorkspaceBuilder
 from roswell_uap_cortex.demo_workspace_guardrails import DemoWorkspaceGuardrails
 from roswell_uap_cortex.evidence_docket import EvidenceDocketFormatter
@@ -57,6 +58,8 @@ from roswell_uap_cortex.metrics import EpistemicMetrics
 from roswell_uap_cortex.mock_reasoner import MockReasoner
 from roswell_uap_cortex.networkx_backend import NetworkXGraphBackend
 from roswell_uap_cortex.observation_classifier import ObservationClassifier
+from roswell_uap_cortex.presentation import PresentationBuilder
+from roswell_uap_cortex.presentation_guardrails import PresentationGuardrails
 from roswell_uap_cortex.models import (
     ActivatedContext,
     AdversarialAttackVector,
@@ -99,6 +102,7 @@ from roswell_uap_cortex.models import (
     ClaimReviewDocket,
     ClaimReviewItem,
     ClaimReviewQueue,
+    ClaimReviewCardView,
     ClaimSupportSignal,
     ClaimUncertaintySignal,
     ClaimNode,
@@ -116,6 +120,7 @@ from roswell_uap_cortex.models import (
     DiscourseSection,
     DiscourseWarning,
     DiscourseWarningType,
+    DemoPresentation,
     DemoWorkspace,
     DemoWorkspaceManifest,
     DemoWorkspaceResult,
@@ -156,6 +161,7 @@ from roswell_uap_cortex.models import (
     PersistenceManifest,
     PersistenceRecord,
     ProvenanceRecord,
+    PresentationWarning,
     RawInput,
     RawInputType,
     ReasoningContext,
@@ -170,6 +176,7 @@ from roswell_uap_cortex.models import (
     RelationshipType,
     RetrievalContext,
     ReviewBundle,
+    BundlePreviewView,
     ReviewBundleExportResult,
     ReviewBundleManifest,
     ReviewBundleSection,
@@ -188,11 +195,13 @@ from roswell_uap_cortex.models import (
     ReviewedItem,
     ReviewSession,
     ReviewSessionState,
+    ReviewDashboardView,
     SessionAuditRecord,
     SessionAuditTrail,
     SessionLoadResult,
     SessionPersistenceEnvelope,
     SessionSaveResult,
+    SessionTimelineView,
     SemanticCluster,
     SemanticRecord,
     SemanticSimilarityResult,
@@ -202,6 +211,7 @@ from roswell_uap_cortex.models import (
     SourceLineageRecord,
     SourceReliabilitySignal,
     SourceReviewDocket,
+    SourceReviewCardView,
     SourceReviewItem,
     SourceReviewPriority,
     SourceReviewRecommendation,
@@ -214,6 +224,7 @@ from roswell_uap_cortex.models import (
     SnapshotMetadata,
     TimelineDatePrecision,
     UncertaintyNote,
+    WorkflowStageView,
     utc_now,
 )
 from roswell_uap_cortex.narrative import NarrativeBuilder
@@ -311,6 +322,7 @@ __all__ = [
     "ClaimNormalizationWarningType",
     "ClaimNormalizer",
     "ClaimReviewDocket",
+    "ClaimReviewCardView",
     "ClaimReviewEngine",
     "ClaimReviewItem",
     "ClaimReviewQueue",
@@ -343,6 +355,8 @@ __all__ = [
     "DiscourseSection",
     "DiscourseWarning",
     "DiscourseWarningType",
+    "DemoPresentation",
+    "DemoPresentationBuilder",
     "DemoWorkspace",
     "DemoWorkspaceBuilder",
     "DemoWorkspaceGuardrails",
@@ -414,6 +428,9 @@ __all__ = [
     "PersistenceManifest",
     "PersistenceRecord",
     "PersistenceStore",
+    "PresentationBuilder",
+    "PresentationGuardrails",
+    "PresentationWarning",
     "ProvenanceExtractor",
     "ProvenanceRecord",
     "RawInput",
@@ -434,6 +451,7 @@ __all__ = [
     "RelationshipType",
     "RetrievalContext",
     "ReviewBundle",
+    "BundlePreviewView",
     "ReviewBundleBuilder",
     "ReviewBundleExportResult",
     "ReviewBundleFormatter",
@@ -459,6 +477,7 @@ __all__ = [
     "ReviewSession",
     "ReviewSessionEngine",
     "ReviewSessionState",
+    "ReviewDashboardView",
     "SessionAuditFormatter",
     "SessionAuditLogger",
     "SessionAuditRecord",
@@ -486,6 +505,7 @@ __all__ = [
     "SessionPersistenceStore",
     "SESSION_SCHEMA_VERSION",
     "SessionSaveResult",
+    "SessionTimelineView",
     "SnapshotBuilder",
     "SnapshotMetadata",
     "SnapshotValidationResult",
@@ -494,6 +514,7 @@ __all__ = [
     "SourceLineageRecord",
     "SourceReliabilitySignal",
     "SourceReviewDocket",
+    "SourceReviewCardView",
     "SourceReviewEngine",
     "SourceReviewFormatter",
     "SourceReviewItem",
@@ -511,5 +532,6 @@ __all__ = [
     "UncertaintyNote",
     "UncertaintyFormatter",
     "WorkingMemoryEngine",
+    "WorkflowStageView",
     "utc_now",
 ]

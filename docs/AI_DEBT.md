@@ -320,6 +320,39 @@ Watchpoints:
 - `README.md` is becoming a capability ledger; reorganize Current Scope into
   sections when readability starts to drop.
 
+## Presentation Contract Debt
+
+Risk:
+Future UI or demo screens may rebuild workflow logic, hide uncertainty, turn
+display priority into confidence, or make a review bundle look like a final
+report.
+
+Current mitigation:
+`PresentationBuilder` creates read-only view models, `DemoPresentationBuilder`
+uses synthetic demo output as the first UI fixture, and
+`PresentationGuardrails` checks for synthetic labels, limitations, provenance,
+contradiction visibility, and certainty-inflating language.
+`docs/PRESENTATION_CONTRACT.md` states that grouping has no aggregation
+semantics and that absent data must remain visibly absent.
+
+Future trigger:
+Before adding actual UI screens, ensure the UI consumes presentation view
+models directly and does not duplicate claim, source, session, bundle, or
+reasoning logic.
+
+Must not do:
+Do not let presentation code create evidence, claims, graph edges, review
+decisions, claim confidence, source truth, or final reports.
+
+Watchpoints:
+- Keep presentation contracts boring: plain, deterministic, inspectable,
+  low-magic, and easy to test.
+- Do not let warning counts, grouped cards, or dashboard counts imply stronger
+  evidence, corroboration, independence, or truth.
+- If provenance, uncertainty, or contradiction display logic repeats, consider
+  first-class `ProvenanceReferenceView`, `UncertaintyPanelView`, or
+  `ContradictionPanelView`.
+
 ## Similarity Debt
 
 Risk:

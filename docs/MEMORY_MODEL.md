@@ -92,6 +92,13 @@ review workflow state into attention, context, and discourse hints.
 These hints do not mutate evidence, confirm claims, alter source trust, create
 graph edges, or change claim matrix confidence.
 
+Phase 25 adds read-only presentation view models. `PresentationBuilder` and
+`DemoPresentationBuilder` adapt review workflow and synthetic demo state into
+display-ready records. Presentation preserves unsupported claims,
+contradictions, deferred items, uncertainty, provenance, limitations, and
+synthetic labels without creating evidence, claims, graph edges, review
+decisions, or truth state.
+
 ## Provenance Extraction
 
 `ProvenanceExtractor` creates a `ProvenanceRecord` for every ingested evidence

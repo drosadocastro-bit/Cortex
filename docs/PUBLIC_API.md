@@ -18,7 +18,8 @@ Stable framework primitives include:
   `ClaimReviewEngine`, `SourceReviewEngine`, `RelationshipGraphEngine`,
   `WorkingMemoryEngine`, `ReviewSessionEngine`, `SessionPersistenceStore`,
   `ReviewBundleBuilder`, `ReviewInfluencePolicy`, `ReviewContextAdapter`,
-  `DemoWorkspaceBuilder`, `TimelineEngine`, `ClaimMatrixEngine`,
+  `DemoPresentationBuilder`, `PresentationBuilder`, `DemoWorkspaceBuilder`,
+  `TimelineEngine`, `ClaimMatrixEngine`,
   `AssociativeRetrievalEngine`, `AttentionEngine`, `CognitiveReasoningEngine`,
   `DiscourseEngine`, `SnapshotBuilder`, `PersistenceStore`, and
   `EvaluationHarness`
@@ -34,6 +35,7 @@ These are useful but should be treated as extension points:
 - attention policies
 - reality-boundary registry helpers
 - docket formatters and priority helpers used to present review state
+- presentation guardrails and view models used by the future UI contract
 
 ## Experimental / Testing Exports
 

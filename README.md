@@ -93,6 +93,8 @@ The initial framework provides:
 - Review-to-reasoning boundary contracts that allow review workflow state to
   guide attention, context visibility, and discourse annotations without
   becoming evidence, claim confidence, source truth, or graph support.
+- Read-only workflow view models and a synthetic demo presentation contract
+  that prepare future UI work without adding UI or presentation-side reasoning.
 - Sensory intake safeguards: ingestion does not confirm claims or create graph
   edges automatically.
 - A bounded local cognitive reasoning layer that operates on activated context
@@ -160,6 +162,7 @@ Roswell-uap-cortex/
     MEMORY_MODEL.md
     PHASE_18_2_CONSOLIDATION.md
     PHASE_23_2_CONSOLIDATION.md
+    PRESENTATION_CONTRACT.md
     PROBLEM_STATEMENT.md
     PUBLIC_API.md
     REVIEW_REASONING_BOUNDARY.md
@@ -191,6 +194,7 @@ Roswell-uap-cortex/
       correlation_guard.py
       discourse.py
       discourse_guardrails.py
+      demo_presentation.py
       demo_workspace.py
       demo_workspace_guardrails.py
       evidence_docket.py
@@ -220,6 +224,8 @@ Roswell-uap-cortex/
       observation_classifier.py
       persistence.py
       persistence_guardrails.py
+      presentation.py
+      presentation_guardrails.py
       provenance.py
       reasoning.py
       reality_boundary.py
@@ -281,7 +287,9 @@ Roswell-uap-cortex/
     test_phase23_demo_workspace.py
     test_phase23_2_consolidation.py
     test_phase23_3_workflow_map.py
+    test_phase24_boundary_docs.py
     test_phase24_review_reasoning_boundary.py
+    test_phase25_presentation_contract.py
   pyproject.toml
   README.md
 ```

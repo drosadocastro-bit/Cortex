@@ -66,14 +66,16 @@ The UI must preserve these labels and separations:
 
 ## First UI Fixture
 
-The first UI fixture should be `DemoWorkspaceBuilder`. It provides a complete
-synthetic session with claim dockets, source dockets, audit trail, review
-bundle, contradictions, uncertainty, contamination, and provenance references.
+The first UI fixture should be `DemoPresentationBuilder`. It wraps
+`DemoWorkspaceBuilder` output in read-only view models with claim cards, source
+cards, workflow stages, audit timeline, bundle preview, contradictions,
+uncertainty, limitations, synthetic labels, and provenance references.
 
 No real data should be used for the first UI.
 
 ## Suggested Phase Before UI
 
-Before building screens, add a UI readiness API/view-model layer that converts
-existing records into stable display models. The UI should consume those models
-instead of reaching into every internal dataclass directly.
+The view-model layer now exists. The UI should consume
+`DemoPresentation.dashboard` and its child views instead of reaching into every
+internal dataclass directly. See `docs/PRESENTATION_CONTRACT.md` for the
+display boundary.

@@ -104,6 +104,18 @@ investigation.
 `demo_workspace_guardrails.py`
 : Verifies that the demo stays synthetic and bounded.
 
+`presentation.py`
+: Converts review workflow state into read-only view models for display. It
+does not create evidence, decisions, graph edges, or reasoning outputs.
+
+`presentation_guardrails.py`
+: Checks presentation output for missing synthetic labels, missing limitations,
+missing provenance, hidden contradictions, and certainty-inflating language.
+
+`demo_presentation.py`
+: Converts the synthetic demo workspace into `DemoPresentation`, the first
+future UI fixture.
+
 ## Boundary Rules
 
 - A docket is a review package, not a decision.
@@ -126,6 +138,10 @@ objects.
 Review influence is documented in `docs/REVIEW_REASONING_BOUNDARY.md`. Review
 state may guide attention, context selection, and discourse visibility, but it
 must not become evidence, confidence, source truth, or graph support.
+
+Presentation is documented in `docs/PRESENTATION_CONTRACT.md`. View models may
+arrange workflow state for display, but they must not become workflow,
+reasoning, or truth state.
 
 The UI should not:
 

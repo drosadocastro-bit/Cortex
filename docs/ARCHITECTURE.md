@@ -114,6 +114,12 @@ visibility, deferred item visibility, and discourse annotations. It cannot
 mutate evidence, confirm claims, change source trust, create graph edges, or
 turn audit/bundle records into evidence. See `docs/REVIEW_REASONING_BOUNDARY.md`.
 
+Presentation contract:
+Workflow view models adapt sessions, dockets, audit trails, bundles, review
+influence, and the synthetic demo into display-ready records. Presentation is
+read-only and cannot create claims, evidence, graph edges, review decisions, or
+reasoning outputs. See `docs/PRESENTATION_CONTRACT.md`.
+
 Cognitive state:
 Memory, graph, claim matrix, source trust, contradiction pressure, and temporal
 ordering preserve investigative structure without deciding truth.
@@ -166,6 +172,7 @@ These layers should preserve the same epistemic rules as the core path.
 - Review bundles are not final reports.
 - Demo workspaces are not real investigations.
 - Review workflow annotations guide attention only; they are not truth signals.
+- Presentation view models are display state, not reasoning or evidence.
 - Semantic similarity is not confirmation.
 - Discourse is not evidence.
 - Salience is review priority, not belief.

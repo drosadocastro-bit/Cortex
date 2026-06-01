@@ -818,6 +818,124 @@ class DemoWorkspaceResult:
 
 
 @dataclass(slots=True)
+class PresentationWarning:
+    """Warning emitted for read-only presentation/view-model output."""
+
+    warning_type: str
+    message: str
+    related_ids: set[str] = field(default_factory=set)
+
+
+@dataclass(slots=True)
+class WorkflowStageView:
+    """Display-ready workflow stage; not executable workflow state."""
+
+    stage_id: str
+    title: str
+    status: str = "available"
+    summary: str = ""
+    related_ids: set[str] = field(default_factory=set)
+    warnings: list[PresentationWarning] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ClaimReviewCardView:
+    """Display-ready claim review card; not claim truth state."""
+
+    claim_id: str
+    canonical_topic: str
+    text: str
+    priority: str = "low"
+    priority_score: float = 0.0
+    unsupported: bool = True
+    confidence_label: str = "not_truth_confidence"
+    support_count: int = 0
+    contradiction_count: int = 0
+    uncertainty_count: int = 0
+    provenance_ids: set[str] = field(default_factory=set)
+    lineage_ids: set[str] = field(default_factory=set)
+    warnings: list[PresentationWarning] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        self.priority_score = max(0.0, min(1.0, self.priority_score))
+
+
+@dataclass(slots=True)
+class SourceReviewCardView:
+    """Display-ready source review card; not source acceptance or rejection."""
+
+    source_id: str
+    priority: str = "low"
+    priority_score: float = 0.0
+    risk_score: float = 0.0
+    reliability_score: float = 0.0
+    evidence_count: int = 0
+    provenance_ids: set[str] = field(default_factory=set)
+    lineage_ids: set[str] = field(default_factory=set)
+    contamination_flags: set[str] = field(default_factory=set)
+    warnings: list[PresentationWarning] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        self.priority_score = max(0.0, min(1.0, self.priority_score))
+        self.risk_score = max(0.0, min(1.0, self.risk_score))
+        self.reliability_score = max(0.0, min(1.0, self.reliability_score))
+
+
+@dataclass(slots=True)
+class SessionTimelineView:
+    """Display-ready review session timeline; not audit evidence."""
+
+    session_id: str
+    events: list[str] = field(default_factory=list)
+    reviewed_ids: set[str] = field(default_factory=set)
+    deferred_ids: set[str] = field(default_factory=set)
+    unresolved_ids: set[str] = field(default_factory=set)
+    warnings: list[PresentationWarning] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class BundlePreviewView:
+    """Display-ready review bundle preview; not a final report."""
+
+    bundle_id: str
+    section_titles: list[str] = field(default_factory=list)
+    limitations: list[str] = field(default_factory=list)
+    warnings: list[PresentationWarning] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ReviewDashboardView:
+    """Read-only dashboard-shaped view of review workflow state."""
+
+    title: str
+    synthetic_only: bool = False
+    stages: list[WorkflowStageView] = field(default_factory=list)
+    claim_cards: list[ClaimReviewCardView] = field(default_factory=list)
+    source_cards: list[SourceReviewCardView] = field(default_factory=list)
+    session_timeline: SessionTimelineView | None = None
+    bundle_preview: BundlePreviewView | None = None
+    unresolved_ids: set[str] = field(default_factory=set)
+    deferred_ids: set[str] = field(default_factory=set)
+    contradiction_ids: set[str] = field(default_factory=set)
+    uncertainty_notes: list[str] = field(default_factory=list)
+    provenance_refs: set[str] = field(default_factory=set)
+    warnings: list[PresentationWarning] = field(default_factory=list)
+    limitations: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class DemoPresentation:
+    """Synthetic demo presentation fixture for future UI work."""
+
+    demo_id: str
+    dashboard: ReviewDashboardView
+    formatted_bundle_preview: str = ""
+    boundary_notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
 class EvaluationInput:
     """Artifacts inspected by the deterministic evaluation harness."""
 

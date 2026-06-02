@@ -353,6 +353,50 @@ Watchpoints:
   first-class `ProvenanceReferenceView`, `UncertaintyPanelView`, or
   `ContradictionPanelView`.
 
+## Transferability Debt
+
+Risk:
+Cortex may be prematurely described as transferable to predictive maintenance
+or other aerospace-adjacent advising domains before enough synthetic evidence
+and boundary testing exists.
+
+Current mitigation:
+Phase 26 expands the synthetic scenario dataset and explicitly defers
+predictive maintenance transferability. `ScenarioDatasetBuilder` summarizes
+coverage as framework behavior coverage only.
+
+Future trigger:
+Only revisit transferability after more synthetic scenario results,
+adversarial findings, demo runs, and boundary evaluations exist.
+
+Must not do:
+Do not present synthetic scenario coverage as certification, operational safety
+evidence, maintenance-advisor validity, dispatch authority, airworthiness
+support, or replacement recommendation evidence.
+
+## Adversarial Calibration Debt
+
+Risk:
+Adversarial detectors may look better than they are if false positives, false
+negatives, true positives, and true negatives are not tracked explicitly.
+
+Current mitigation:
+Expanded adversarial scenarios include review-state laundering, presentation
+aggregation traps, missing-data prettification, transferability leaps,
+authority laundering, and multilingual certainty pressure. Calibration cases
+record true-positive, true-negative, false-positive, and false-negative buckets.
+`docs/ADVERSARIAL_CALIBRATION_BASELINE.md` locks the current imperfect baseline
+so false positives and false negatives remain visible.
+
+Future trigger:
+Before adding live LLM inference, multilingual ingestion, UI workflows, or
+external connectors, expand calibration examples and avoid tuning toward a
+perfect-looking score.
+
+Must not do:
+Do not treat adversarial resistance rate or calibration accuracy as real-world
+safety validation, certification evidence, or proof of multilingual robustness.
+
 ## Similarity Debt
 
 Risk:

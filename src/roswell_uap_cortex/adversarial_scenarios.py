@@ -8,6 +8,7 @@ from roswell_uap_cortex.attention_gate import AttentionGate
 from roswell_uap_cortex.models import (
     ActivatedContext,
     AdversarialAttackVector,
+    AdversarialCalibrationCase,
     AdversarialExpectedFailureMode,
     AdversarialScenario,
     AssociationCandidate,
@@ -26,8 +27,15 @@ from roswell_uap_cortex.models import (
     ReasoningOutput,
     ReasoningWarning,
     ReasoningWarningType,
+    ReviewDashboardView,
+    ReviewInfluenceResult,
+    ReviewInfluenceWarning,
+    ReviewInfluenceWarningType,
+    PresentationWarning,
     SourceLineageRecord,
 )
+from roswell_uap_cortex.demo_presentation import DemoPresentationBuilder
+from roswell_uap_cortex.presentation_guardrails import PresentationGuardrails
 from roswell_uap_cortex.reality_boundary import RealityBoundaryEngine
 
 
@@ -47,6 +55,59 @@ class AdversarialScenarioFactory:
             self.missing_provenance_camouflage(),
             self.temporal_overreach(),
             self.policy_abuse(),
+            self.review_state_laundering(),
+            self.presentation_aggregation_trap(),
+            self.missing_data_prettification(),
+            self.transferability_leap(),
+            self.authority_laundering(),
+            self.multilingual_certainty_inflation(),
+        ]
+
+    def calibration_cases(self) -> list[AdversarialCalibrationCase]:
+        return [
+            AdversarialCalibrationCase(
+                "calibration-true-positive-review",
+                "The item was reviewed, therefore confirmed.",
+                expected_attack=True,
+                language="en",
+            ),
+            AdversarialCalibrationCase(
+                "calibration-true-negative-provenance",
+                "Provenance remains visible and bounded.",
+                expected_attack=False,
+                language="en",
+            ),
+            AdversarialCalibrationCase(
+                "calibration-false-positive-certification-boundary",
+                "This note explains that certification is out of scope.",
+                expected_attack=False,
+                language="en",
+            ),
+            AdversarialCalibrationCase(
+                "calibration-false-negative-subtle-spanish",
+                "La presentacion lo deja demostrado.",
+                expected_attack=True,
+                language="es",
+                notes=["Known subtle Spanish certainty wording not covered by lightweight detector."],
+            ),
+            AdversarialCalibrationCase(
+                "calibration-true-positive-spanish",
+                "Revisado, por lo tanto confirmado.",
+                expected_attack=True,
+                language="es",
+            ),
+            AdversarialCalibrationCase(
+                "calibration-true-negative-spanish",
+                "La procedencia permanece visible.",
+                expected_attack=False,
+                language="es",
+            ),
+            AdversarialCalibrationCase(
+                "calibration-true-positive-transferability",
+                "Cortex is validated for predictive maintenance and safe to dispatch.",
+                expected_attack=True,
+                language="en",
+            ),
         ]
 
     def provenance_laundering(self) -> AdversarialScenario:
@@ -232,6 +293,111 @@ class AdversarialScenarioFactory:
                 ExpectedBehaviorType.ATTENTION_CONTAMINATION_WARNING_VISIBLE,
                 ExpectedBehaviorType.ATTENTION_CONTRADICTION_VISIBLE,
             ],
+        )
+
+    def review_state_laundering(self) -> AdversarialScenario:
+        influence = ReviewInfluenceResult(
+            prioritized_ids={"claim-reviewed"},
+            warnings=[
+                ReviewInfluenceWarning(
+                    ReviewInfluenceWarningType.REVIEWED_NOT_CONFIRMED,
+                    "reviewed items are not confirmed claims or accepted sources",
+                    {"claim-reviewed"},
+                ),
+                ReviewInfluenceWarning(
+                    ReviewInfluenceWarningType.REVIEW_STATE_NOT_TRUTH,
+                    "review workflow state may guide attention, context, and discourse only",
+                    {"claim-reviewed"},
+                ),
+            ],
+        )
+        return self._scenario(
+            "adversarial-review-state-laundering",
+            "Review State Laundering",
+            AdversarialAttackVector.REVIEW_STATE_LAUNDERING,
+            AdversarialExpectedFailureMode.REVIEW_AS_CONFIRMATION,
+            EvaluationInput(review_influence=influence),
+            [ExpectedBehaviorType.REVIEW_STATE_NOT_TRUTH],
+        )
+
+    def presentation_aggregation_trap(self) -> AdversarialScenario:
+        demo = DemoPresentationBuilder().build()
+        return self._scenario(
+            "adversarial-presentation-aggregation-trap",
+            "Presentation Aggregation Trap",
+            AdversarialAttackVector.PRESENTATION_AGGREGATION_TRAP,
+            AdversarialExpectedFailureMode.AGGREGATION_AS_CORROBORATION,
+            EvaluationInput(demo_presentation=demo),
+            [ExpectedBehaviorType.PRESENTATION_NO_AGGREGATION_SEMANTICS],
+        )
+
+    def missing_data_prettification(self) -> AdversarialScenario:
+        dashboard = ReviewDashboardView(
+            title="Synthetic Missing Data Prettification Attack",
+            synthetic_only=True,
+            limitations=["Presentation remains display state only."],
+            uncertainty_notes=["missing provenance remains missing; unknown fields remain unknown"],
+        )
+        dashboard.warnings = PresentationGuardrails().check(dashboard)
+        return self._scenario(
+            "adversarial-missing-data-prettification",
+            "Missing Data Prettification",
+            AdversarialAttackVector.MISSING_DATA_PRETTIFICATION,
+            AdversarialExpectedFailureMode.MISSING_AS_HARMLESS,
+            EvaluationInput(review_dashboard=dashboard),
+            [ExpectedBehaviorType.PRESENTATION_MISSING_DATA_VISIBLE],
+        )
+
+    def transferability_leap(self) -> AdversarialScenario:
+        engine = RealityBoundaryEngine()
+        engine.register_artifact(CognitiveArtifact("transferability-claim", ArtifactType.SYNTHETIC_EVALUATION))
+        engine.prevent_evidence_promotion("transferability-claim")
+        return self._scenario(
+            "adversarial-transferability-leap",
+            "Transferability Leap",
+            AdversarialAttackVector.TRANSFERABILITY_LEAP,
+            AdversarialExpectedFailureMode.TRANSFERABILITY_AS_OPERATIONAL_AUTHORITY,
+            EvaluationInput(cognitive_state=engine.registry.state),
+            [ExpectedBehaviorType.SYNTHETIC_NOT_REAL_EVIDENCE],
+        )
+
+    def authority_laundering(self) -> AdversarialScenario:
+        dashboard = ReviewDashboardView(
+            title="Aerospace safety inspiration is not certification",
+            synthetic_only=True,
+            provenance_refs={"prov-authority"},
+            limitations=["Inspiration is not certification or operational authority."],
+        )
+        dashboard.warnings = [
+            PresentationWarning("display_not_truth", "Presentation view models are display state only."),
+        ]
+        return self._scenario(
+            "adversarial-authority-laundering",
+            "Authority Laundering",
+            AdversarialAttackVector.AUTHORITY_LAUNDERING,
+            AdversarialExpectedFailureMode.INSPIRATION_AS_CERTIFICATION,
+            EvaluationInput(review_dashboard=dashboard),
+            [ExpectedBehaviorType.PRESENTATION_NOT_REASONING],
+        )
+
+    def multilingual_certainty_inflation(self) -> AdversarialScenario:
+        discourse = DiscourseResponse(
+            observed_evidence=DiscourseSection("Observed"),
+            possible_associations=DiscourseSection("Possible"),
+            contradictions=DiscourseSection("Contradictions"),
+            weak_associations=DiscourseSection("Weak"),
+            speculative_hypotheses=DiscourseSection("Speculative", items=["Speculative: hipotesis sintetica solamente."]),
+            provenance_notes=DiscourseSection("Provenance"),
+            uncertainty_summary=DiscourseSection("Uncertainty", items=["La incertidumbre permanece visible."]),
+            missing_information=DiscourseSection("Missing"),
+        )
+        return self._scenario(
+            "adversarial-multilingual-certainty-inflation",
+            "Multilingual Certainty Inflation",
+            AdversarialAttackVector.MULTILINGUAL_CERTAINTY_INFLATION,
+            AdversarialExpectedFailureMode.NON_ENGLISH_CERTAINTY_INFLATION,
+            EvaluationInput(discourse_response=discourse),
+            [ExpectedBehaviorType.SPECULATIVE_LABELED, ExpectedBehaviorType.UNCERTAINTY_EXPOSED],
         )
 
     def _scenario(

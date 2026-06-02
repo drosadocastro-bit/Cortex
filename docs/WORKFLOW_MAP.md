@@ -7,6 +7,8 @@ through the system and which layer owns each responsibility.
 The purpose is not to add another subsystem. The purpose is to prevent workflow
 objects from duplicating each other or blurring epistemic boundaries.
 
+For public exports and model ownership, see `docs/API_AND_MODEL_MAP.md`.
+
 ## Main Review Path
 
 ```text

@@ -71,3 +71,9 @@ Expected result:
   starts to drop.
 - Add first-class `ProvenanceReferenceView`, `UncertaintyPanelView`, or
   `ContradictionPanelView` only if display logic begins repeating.
+
+## Light Pruning Follow-Up
+
+The next safe refactor is documentation-first: clarify public surface and model
+ownership before moving files or reducing exports. `docs/API_AND_MODEL_MAP.md`
+captures that map without changing runtime behavior.

@@ -119,6 +119,9 @@ The initial framework provides:
   claims, graph edges, or truth state automatically.
 - A synthetic evaluation harness with epistemic metrics, deterministic reports,
   no-mutation checks, and mandatory limitations.
+- Expanded synthetic scenario coverage for review influence, presentation
+  boundaries, missing display data, and synthetic-demo presentation behavior
+  before any transferability claims.
 - Graph backend abstraction with NetworkX integration for deterministic
   traversal, contradiction lookup, lineage paths, subgraphs, and temporal links.
 - Conservative temporal helpers using `python-dateutil` behind wrappers that
@@ -150,6 +153,8 @@ The initial framework provides:
 Roswell-uap-cortex/
   docs/
     AI_DEBT.md
+    API_AND_MODEL_MAP.md
+    ADVERSARIAL_CALIBRATION_BASELINE.md
     ADVERSARIAL_FINDINGS.md
     ARCHITECTURE.md
     CODE_WALKTHROUGH.md
@@ -167,6 +172,7 @@ Roswell-uap-cortex/
     PROBLEM_STATEMENT.md
     PUBLIC_API.md
     REVIEW_REASONING_BOUNDARY.md
+    SYNTHETIC_SCENARIO_DATASET.md
     UI_READINESS_NOTES.md
     WORKFLOW_MAP.md
   src/
@@ -239,6 +245,7 @@ Roswell-uap-cortex/
       review_priority.py
       review_session.py
       salience_policy.py
+      scenario_dataset.py
       semantic.py
       semantic_clustering.py
       semantic_guardrails.py
@@ -291,7 +298,9 @@ Roswell-uap-cortex/
     test_phase24_boundary_docs.py
     test_phase24_review_reasoning_boundary.py
     test_phase25_2_consolidation.py
+    test_phase25_3_api_model_map.py
     test_phase25_presentation_contract.py
+    test_phase26_scenario_expansion.py
   pyproject.toml
   README.md
 ```
@@ -326,6 +335,9 @@ walkthrough of how the modules work together.
 See [`docs/WORKFLOW_MAP.md`](docs/WORKFLOW_MAP.md) for the review workflow map
 that separates cognitive core, review workflow, session/audit, export/demo, and
 evaluation responsibilities.
+
+See [`docs/API_AND_MODEL_MAP.md`](docs/API_AND_MODEL_MAP.md) for the current
+public surface and model ownership map before larger refactors.
 
 See [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) for the recurring rule that every
 five major phases should pause feature expansion for architecture

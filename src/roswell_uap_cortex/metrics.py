@@ -22,6 +22,9 @@ class EpistemicMetrics:
             "contamination_warning_rate": ExpectedBehaviorType.CONTAMINATION_WARNING_VISIBLE,
             "bounded_confidence_rate": ExpectedBehaviorType.CONFIDENCE_BOUNDED,
             "no_mutation_rate": ExpectedBehaviorType.NO_STATE_MUTATION,
+            "review_state_boundary_rate": ExpectedBehaviorType.REVIEW_STATE_NOT_TRUTH,
+            "presentation_boundary_rate": ExpectedBehaviorType.PRESENTATION_NOT_REASONING,
+            "synthetic_demo_presentation_rate": ExpectedBehaviorType.DEMO_PRESENTATION_SYNTHETIC_ONLY,
         }
         return [
             EvaluationMetric(name=name, value=self.rate(results, behavior))

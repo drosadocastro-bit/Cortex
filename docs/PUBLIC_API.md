@@ -4,6 +4,9 @@ The current `roswell_uap_cortex.__init__` exports are broad for convenience
 during early research phases. This is a transitional public surface, not a
 promise that every helper is foundational.
 
+See `docs/API_AND_MODEL_MAP.md` for the layer-by-layer ownership map. That map
+is documentation only; it does not change imports or package structure.
+
 ## Foundational Exports
 
 Stable framework primitives include:
@@ -43,6 +46,7 @@ These are intentionally available for tests and research workflows, but should
 not be treated as the main identity of the package:
 
 - synthetic scenario factories
+- scenario dataset summaries
 - adversarial and hard adversarial harnesses
 - report formatters
 - guardrail helper classes
@@ -67,6 +71,9 @@ symbol is truly part of the documented canonical path.
 Use `docs/WORKFLOW_MAP.md` as the ownership reference before exporting new
 review workflow objects. New objects should have a clear home in cognitive core,
 review workflow, session/audit, export/demo, or evaluation.
+
+Use `docs/API_AND_MODEL_MAP.md` before larger refactors. Prefer clearer maps
+over moving files until the architecture stabilizes further.
 
 ## Compatibility Note
 

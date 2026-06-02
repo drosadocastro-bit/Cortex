@@ -137,6 +137,8 @@ uncertainty visible.
 Persistence and evaluation:
 Snapshots preserve state as immutable local JSON records. Evaluation and
 adversarial harnesses test framework behavior, not real-world validity.
+Synthetic scenario expansion tracks coverage across epistemic, review,
+presentation, and boundary behaviors before any transferability claims.
 
 Reality boundary:
 Generated cognition, discourse, retrieval, semantic clusters, speculative
@@ -173,6 +175,7 @@ These layers should preserve the same epistemic rules as the core path.
 - Demo workspaces are not real investigations.
 - Review workflow annotations guide attention only; they are not truth signals.
 - Presentation view models are display state, not reasoning or evidence.
+- Synthetic scenario coverage is not certification or operational validation.
 - Semantic similarity is not confirmation.
 - Discourse is not evidence.
 - Salience is review priority, not belief.

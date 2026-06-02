@@ -63,6 +63,8 @@ from roswell_uap_cortex.presentation_guardrails import PresentationGuardrails
 from roswell_uap_cortex.models import (
     ActivatedContext,
     AdversarialAttackVector,
+    AdversarialCalibrationCase,
+    AdversarialCalibrationReport,
     AdversarialExpectedFailureMode,
     AdversarialFinding,
     AdversarialReport,
@@ -251,6 +253,7 @@ from roswell_uap_cortex.uncertainty import UncertaintyFormatter
 from roswell_uap_cortex.persistence import PersistenceStore
 from roswell_uap_cortex.persistence_guardrails import PersistenceGuardrails
 from roswell_uap_cortex.serialization import Serializer
+from roswell_uap_cortex.scenario_dataset import ScenarioDatasetBuilder, SyntheticScenarioDataset
 from roswell_uap_cortex.scenarios import ScenarioFactory
 from roswell_uap_cortex.salience_policy import SaliencePolicyEngine
 from roswell_uap_cortex.semantic import SemanticSimilarityEngine
@@ -266,6 +269,8 @@ from roswell_uap_cortex.snapshot_validator import SnapshotValidationResult, Snap
 __all__ = [
     "ActivatedContext",
     "AdversarialAttackVector",
+    "AdversarialCalibrationCase",
+    "AdversarialCalibrationReport",
     "AdversarialExpectedFailureMode",
     "AdversarialFinding",
     "AdversarialHarness",
@@ -497,6 +502,7 @@ __all__ = [
     "SaliencePolicyEngine",
     "SalienceScore",
     "SCHEMA_VERSION",
+    "ScenarioDatasetBuilder",
     "ScenarioFactory",
     "SessionDelta",
     "SessionFormatter",
@@ -525,6 +531,7 @@ __all__ = [
     "SourceRiskSignal",
     "SourceTrust",
     "SourceTrustEngine",
+    "SyntheticScenarioDataset",
     "TemporalComparison",
     "TemporalReasoningHelper",
     "TimelineDatePrecision",

@@ -27,6 +27,10 @@ from roswell_uap_cortex.models import (
     EvaluationInput,
     EvaluationScenario,
     ExpectedBehaviorType,
+    ReviewDashboardView,
+    ReviewInfluenceResult,
+    ReviewInfluenceWarning,
+    ReviewInfluenceWarningType,
     ReasoningObservation,
     ReasoningOutput,
     ReasoningWarning,
@@ -36,6 +40,10 @@ from roswell_uap_cortex.models import (
     UncertaintyNote,
 )
 from roswell_uap_cortex.attention_gate import AttentionGate
+from roswell_uap_cortex.demo_presentation import DemoPresentationBuilder
+from roswell_uap_cortex.demo_workspace import DemoWorkspaceBuilder
+from roswell_uap_cortex.presentation_guardrails import PresentationGuardrails
+from roswell_uap_cortex.review_influence import ReviewInfluencePolicy
 from roswell_uap_cortex.reality_boundary import RealityBoundaryEngine
 
 
@@ -58,6 +66,8 @@ class ScenarioFactory:
             *self.reality_boundary_scenarios(),
             *self.attention_scenarios(),
             *self.claim_normalization_scenarios(),
+            *self.review_influence_scenarios(),
+            *self.presentation_scenarios(),
         ]
 
     def graph_infrastructure_scenarios(self) -> list[EvaluationScenario]:
@@ -355,6 +365,101 @@ class ScenarioFactory:
                 ],
                 {"synthetic", "claim-normalization"},
             )
+        ]
+
+    def review_influence_scenarios(self) -> list[EvaluationScenario]:
+        demo = DemoWorkspaceBuilder().build()
+        influence = ReviewInfluencePolicy().evaluate(
+            demo.review_session,
+            claim_dockets=[demo.claim_review_docket],
+            source_dockets=[demo.source_review_docket],
+        )
+        deferred_influence = ReviewInfluenceResult(
+            deferred_ids={"deferred-review-item"},
+            unresolved_ids={"deferred-review-item"},
+            warnings=[
+                ReviewInfluenceWarning(
+                    ReviewInfluenceWarningType.DEFERRED_NOT_ERASED,
+                    "deferred review items remain unresolved and must not be erased",
+                    {"deferred-review-item"},
+                )
+            ],
+        )
+        return [
+            self._scenario(
+                "synthetic-review-state-not-truth",
+                "Review State Not Truth",
+                EvaluationInput(
+                    review_influence=influence,
+                    before_state_hash="review-influence",
+                    after_state_hash="review-influence",
+                ),
+                [
+                    ExpectedBehaviorType.REVIEW_STATE_NOT_TRUTH,
+                    ExpectedBehaviorType.NO_STATE_MUTATION,
+                ],
+                {"synthetic", "review-influence", "boundary"},
+            ),
+            self._scenario(
+                "synthetic-deferred-review-visible",
+                "Deferred Review Remains Visible",
+                EvaluationInput(review_influence=deferred_influence),
+                [ExpectedBehaviorType.DEFERRED_REVIEW_VISIBLE],
+                {"synthetic", "review-influence", "deferred"},
+            ),
+            self._scenario(
+                "synthetic-source-risk-not-rejection",
+                "Source Risk Not Rejection",
+                EvaluationInput(review_influence=influence),
+                [ExpectedBehaviorType.SOURCE_RISK_NOT_REJECTION],
+                {"synthetic", "review-influence", "source-risk"},
+            ),
+        ]
+
+    def presentation_scenarios(self) -> list[EvaluationScenario]:
+        demo_presentation = DemoPresentationBuilder().build()
+        missing_dashboard = ReviewDashboardView(
+            title="Synthetic Missing Presentation Fields",
+            synthetic_only=True,
+            limitations=["Presentation remains display state only."],
+        )
+        missing_dashboard.warnings = PresentationGuardrails().check(missing_dashboard)
+        return [
+            self._scenario(
+                "synthetic-presentation-not-reasoning",
+                "Presentation Is Not Reasoning",
+                EvaluationInput(
+                    demo_presentation=demo_presentation,
+                    before_state_hash="presentation",
+                    after_state_hash="presentation",
+                ),
+                [
+                    ExpectedBehaviorType.PRESENTATION_NOT_REASONING,
+                    ExpectedBehaviorType.NO_STATE_MUTATION,
+                ],
+                {"synthetic", "presentation", "boundary"},
+            ),
+            self._scenario(
+                "synthetic-presentation-no-aggregation",
+                "Presentation Grouping Has No Aggregation Semantics",
+                EvaluationInput(demo_presentation=demo_presentation),
+                [ExpectedBehaviorType.PRESENTATION_NO_AGGREGATION_SEMANTICS],
+                {"synthetic", "presentation", "aggregation"},
+            ),
+            self._scenario(
+                "synthetic-presentation-missing-data-visible",
+                "Presentation Missing Data Visible",
+                EvaluationInput(review_dashboard=missing_dashboard),
+                [ExpectedBehaviorType.PRESENTATION_MISSING_DATA_VISIBLE],
+                {"synthetic", "presentation", "missing-data"},
+            ),
+            self._scenario(
+                "synthetic-demo-presentation-only",
+                "Demo Presentation Synthetic Only",
+                EvaluationInput(demo_presentation=demo_presentation),
+                [ExpectedBehaviorType.DEMO_PRESENTATION_SYNTHETIC_ONLY],
+                {"synthetic", "presentation", "demo"},
+            ),
         ]
 
     def duplicate_source_repetition(self) -> EvaluationScenario:

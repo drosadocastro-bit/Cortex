@@ -10,7 +10,7 @@ from roswell_uap_cortex import (
 def test_adversarial_factory_returns_synthetic_attack_scenarios() -> None:
     scenarios = AdversarialScenarioFactory().all()
 
-    assert len(scenarios) == 10
+    assert len(scenarios) == 16
     assert all("synthetic" in scenario.tags for scenario in scenarios)
     assert all("adversarial" in scenario.tags for scenario in scenarios)
 
@@ -42,8 +42,8 @@ def test_adversarial_harness_runs_deterministically() -> None:
 def test_adversarial_findings_record_pass_fail_per_attack() -> None:
     report = AdversarialHarness().run(AdversarialScenarioFactory().all())
 
-    assert report.scenario_count == 10
-    assert report.resisted_count == 10
+    assert report.scenario_count == 16
+    assert report.resisted_count == 16
     assert report.resistance_rate == 1.0
     assert all(finding.triggered_behaviors for finding in report.findings)
     assert all(not finding.failed_behaviors for finding in report.findings)
@@ -90,3 +90,38 @@ def test_adversarial_report_formatting_is_deterministic() -> None:
     assert formatter.format(report) == formatter.format(report)
     assert "resistance_rate: 1.000" in formatter.format(report)
     assert "Findings" in formatter.format(report)
+
+
+def test_review_and_presentation_attacks_are_resisted() -> None:
+    factory = AdversarialScenarioFactory()
+    scenarios = [
+        factory.review_state_laundering(),
+        factory.presentation_aggregation_trap(),
+        factory.missing_data_prettification(),
+        factory.transferability_leap(),
+        factory.authority_laundering(),
+        factory.multilingual_certainty_inflation(),
+    ]
+    report = AdversarialHarness().run(scenarios)
+
+    assert report.scenario_count == 6
+    assert report.resisted_count == 6
+
+
+def test_adversarial_calibration_reports_confusion_matrix_buckets() -> None:
+    report = AdversarialHarness().calibrate(AdversarialScenarioFactory().calibration_cases())
+
+    assert report.true_positives >= 1
+    assert report.true_negatives >= 1
+    assert report.false_positives >= 1
+    assert report.false_negatives >= 1
+    assert 0.0 <= report.accuracy <= 1.0
+    assert any(case.language == "es" for case in report.cases)
+    assert any("False positives and false negatives" in limitation for limitation in report.limitations)
+
+
+def test_adversarial_detector_avoids_provenance_false_positive() -> None:
+    harness = AdversarialHarness()
+
+    assert not harness.detect_boundary_attack_text("Provenance remains visible.")
+    assert harness.detect_boundary_attack_text("Reviewed, therefore confirmed.")

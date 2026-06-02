@@ -330,6 +330,13 @@ class ExpectedBehaviorType(str, Enum):
     ATTENTION_SAME_LINEAGE_SUPPRESSED = "attention_same_lineage_suppressed"
     CLAIM_NORMALIZATION_NOT_VALIDATION = "claim_normalization_not_validation"
     NORMALIZED_CLAIMS_UNSUPPORTED = "normalized_claims_unsupported"
+    REVIEW_STATE_NOT_TRUTH = "review_state_not_truth"
+    DEFERRED_REVIEW_VISIBLE = "deferred_review_visible"
+    SOURCE_RISK_NOT_REJECTION = "source_risk_not_rejection"
+    PRESENTATION_NOT_REASONING = "presentation_not_reasoning"
+    PRESENTATION_NO_AGGREGATION_SEMANTICS = "presentation_no_aggregation_semantics"
+    PRESENTATION_MISSING_DATA_VISIBLE = "presentation_missing_data_visible"
+    DEMO_PRESENTATION_SYNTHETIC_ONLY = "demo_presentation_synthetic_only"
 
 
 class SemanticWarningType(str, Enum):
@@ -385,6 +392,12 @@ class AdversarialAttackVector(str, Enum):
     MISSING_PROVENANCE_CAMOUFLAGE = "missing_provenance_camouflage"
     TEMPORAL_OVERREACH = "temporal_overreach"
     POLICY_ABUSE = "policy_abuse"
+    REVIEW_STATE_LAUNDERING = "review_state_laundering"
+    PRESENTATION_AGGREGATION_TRAP = "presentation_aggregation_trap"
+    MISSING_DATA_PRETTIFICATION = "missing_data_prettification"
+    TRANSFERABILITY_LEAP = "transferability_leap"
+    AUTHORITY_LAUNDERING = "authority_laundering"
+    MULTILINGUAL_CERTAINTY_INFLATION = "multilingual_certainty_inflation"
 
 
 class AdversarialExpectedFailureMode(str, Enum):
@@ -400,6 +413,12 @@ class AdversarialExpectedFailureMode(str, Enum):
     PROVENANCE_GAP_HIDDEN = "provenance_gap_hidden"
     FABRICATED_TEMPORAL_PRECISION = "fabricated_temporal_precision"
     GUARDRAIL_DISABLED_BY_POLICY = "guardrail_disabled_by_policy"
+    REVIEW_AS_CONFIRMATION = "review_as_confirmation"
+    AGGREGATION_AS_CORROBORATION = "aggregation_as_corroboration"
+    MISSING_AS_HARMLESS = "missing_as_harmless"
+    TRANSFERABILITY_AS_OPERATIONAL_AUTHORITY = "transferability_as_operational_authority"
+    INSPIRATION_AS_CERTIFICATION = "inspiration_as_certification"
+    NON_ENGLISH_CERTAINTY_INFLATION = "non_english_certainty_inflation"
 
 
 class HardAdversarialOutcome(str, Enum):
@@ -949,6 +968,9 @@ class EvaluationInput:
     cognitive_state: CognitiveSeparationState | None = None
     attention_decision: AttentionDecision | None = None
     normalized_claims: list["NormalizedClaim"] = field(default_factory=list)
+    review_influence: ReviewInfluenceResult | None = None
+    review_dashboard: ReviewDashboardView | None = None
+    demo_presentation: DemoPresentation | None = None
     before_state_hash: str | None = None
     after_state_hash: str | None = None
 
@@ -1070,6 +1092,48 @@ class AdversarialReport:
         if not self.findings:
             return 0.0
         return self.resisted_count / len(self.findings)
+
+
+@dataclass(slots=True)
+class AdversarialCalibrationCase:
+    """One detector-calibration case for adversarial wording."""
+
+    case_id: str
+    text: str
+    expected_attack: bool
+    detected_attack: bool = False
+    language: str = "en"
+    notes: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class AdversarialCalibrationReport:
+    """Confusion-matrix style calibration for adversarial wording checks."""
+
+    cases: list[AdversarialCalibrationCase] = field(default_factory=list)
+    limitations: list[str] = field(default_factory=list)
+
+    @property
+    def true_positives(self) -> int:
+        return sum(1 for case in self.cases if case.expected_attack and case.detected_attack)
+
+    @property
+    def true_negatives(self) -> int:
+        return sum(1 for case in self.cases if not case.expected_attack and not case.detected_attack)
+
+    @property
+    def false_positives(self) -> int:
+        return sum(1 for case in self.cases if not case.expected_attack and case.detected_attack)
+
+    @property
+    def false_negatives(self) -> int:
+        return sum(1 for case in self.cases if case.expected_attack and not case.detected_attack)
+
+    @property
+    def accuracy(self) -> float:
+        if not self.cases:
+            return 0.0
+        return (self.true_positives + self.true_negatives) / len(self.cases)
 
 
 @dataclass(slots=True)

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import re
 
 from roswell_uap_cortex.evaluation_guardrails import EvaluationGuardrails
 from roswell_uap_cortex.metrics import EpistemicMetrics
@@ -16,6 +17,7 @@ from roswell_uap_cortex.models import (
     EvaluationResult,
     EvaluationScenario,
     ExpectedBehaviorType,
+    ReviewInfluenceWarningType,
     ReasoningWarningType,
 )
 
@@ -193,6 +195,102 @@ class EvaluationHarness:
             normalized = inputs.normalized_claims
             passed = bool(normalized) and all(claim.unsupported for claim in normalized)
             return passed, "normalized claims were not kept unsupported", set()
+        if behavior is ExpectedBehaviorType.REVIEW_STATE_NOT_TRUTH:
+            influence = inputs.review_influence
+            passed = bool(
+                influence
+                and any(
+                    warning.warning_type is ReviewInfluenceWarningType.REVIEW_STATE_NOT_TRUTH
+                    for warning in influence.warnings
+                )
+            )
+            return passed, "review state was not labeled as non-truth influence", set()
+        if behavior is ExpectedBehaviorType.DEFERRED_REVIEW_VISIBLE:
+            influence = inputs.review_influence
+            dashboard = inputs.review_dashboard
+            influence_visible = bool(
+                influence
+                and influence.deferred_ids
+                and influence.deferred_ids.issubset(influence.unresolved_ids | influence.deferred_ids)
+            )
+            dashboard_visible = bool(dashboard and dashboard.deferred_ids)
+            return influence_visible or dashboard_visible, "deferred review item was not visible", set()
+        if behavior is ExpectedBehaviorType.SOURCE_RISK_NOT_REJECTION:
+            influence = inputs.review_influence
+            dashboard = inputs.review_dashboard
+            influence_safe = bool(
+                influence
+                and influence.source_review_warning_ids
+                and any(
+                    warning.warning_type is ReviewInfluenceWarningType.SOURCE_RISK_NOT_REJECTION
+                    for warning in influence.warnings
+                )
+                and not any(
+                    phrase in note.casefold()
+                    for note in influence.uncertainty_notes
+                    for phrase in ("source is rejected", "source rejected", "automatic rejection")
+                )
+            )
+            dashboard_safe = bool(
+                dashboard
+                and dashboard.source_cards
+                and all(
+                    "rejected" not in " ".join(card.notes).casefold()
+                    for card in dashboard.source_cards
+                )
+            )
+            return influence_safe or dashboard_safe, "source risk appeared as rejection", set()
+        if behavior is ExpectedBehaviorType.PRESENTATION_NOT_REASONING:
+            dashboard = inputs.review_dashboard or (inputs.demo_presentation.dashboard if inputs.demo_presentation else None)
+            if not dashboard:
+                return False, "presentation dashboard missing", set()
+            warnings = {warning.warning_type for warning in dashboard.warnings}
+            flattened = " ".join(
+                [
+                    dashboard.title,
+                    *dashboard.uncertainty_notes,
+                    *dashboard.limitations,
+                    *(warning.message for warning in dashboard.warnings),
+                ]
+            ).casefold()
+            passed = "display_not_truth" in warnings and not any(
+                re.search(rf"(?<![a-z0-9]){re.escape(term)}(?![a-z0-9])", flattened)
+                for term in ("confirmed", "proven", "definitive")
+            )
+            return passed, "presentation appeared to reason or assert truth", set()
+        if behavior is ExpectedBehaviorType.PRESENTATION_NO_AGGREGATION_SEMANTICS:
+            dashboard = inputs.review_dashboard or (inputs.demo_presentation.dashboard if inputs.demo_presentation else None)
+            if not dashboard:
+                return False, "presentation dashboard missing", set()
+            text = " ".join(
+                [
+                    *dashboard.uncertainty_notes,
+                    *(note for card in dashboard.claim_cards for note in card.notes),
+                    *(note for card in dashboard.source_cards for note in card.notes),
+                ]
+            ).casefold()
+            passed = all(card.confidence_label == "not_truth_confidence" for card in dashboard.claim_cards) and not any(
+                term in text for term in ("corroborated by grouping", "independent because grouped", "stronger truth")
+            )
+            return passed, "presentation grouping implied aggregation semantics", set()
+        if behavior is ExpectedBehaviorType.PRESENTATION_MISSING_DATA_VISIBLE:
+            dashboard = inputs.review_dashboard or (inputs.demo_presentation.dashboard if inputs.demo_presentation else None)
+            if not dashboard:
+                return False, "presentation dashboard missing", set()
+            visible = bool(
+                any(warning.warning_type == "missing_provenance" for warning in dashboard.warnings)
+                or any("missing" in note.casefold() or "unknown" in note.casefold() for note in dashboard.uncertainty_notes)
+                or not dashboard.provenance_refs
+            )
+            return visible, "missing or unknown data was not visible", set()
+        if behavior is ExpectedBehaviorType.DEMO_PRESENTATION_SYNTHETIC_ONLY:
+            demo = inputs.demo_presentation
+            passed = bool(
+                demo
+                and demo.dashboard.synthetic_only
+                and any("synthetic" in note.casefold() for note in demo.boundary_notes)
+            )
+            return passed, "demo presentation was not clearly synthetic", set()
         if behavior in {
             ExpectedBehaviorType.SEMANTIC_SIMILARITY_NOT_CONFIRMATION,
             ExpectedBehaviorType.SEMANTIC_LINEAGE_ECHO_DOWNGRADED,

@@ -386,7 +386,9 @@ aggregation traps, missing-data prettification, transferability leaps,
 authority laundering, and multilingual certainty pressure. Calibration cases
 record true-positive, true-negative, false-positive, and false-negative buckets.
 `docs/ADVERSARIAL_CALIBRATION_BASELINE.md` locks the current imperfect baseline
-so false positives and false negatives remain visible.
+so false positives and false negatives remain visible. Phase 26.3 adds an error
+taxonomy plus precision, recall, false-positive-rate, and false-negative-rate
+metrics without tuning the detector toward a cleaner score.
 
 Future trigger:
 Before adding live LLM inference, multilingual ingestion, UI workflows, or
@@ -396,6 +398,7 @@ perfect-looking score.
 Must not do:
 Do not treat adversarial resistance rate or calibration accuracy as real-world
 safety validation, certification evidence, or proof of multilingual robustness.
+Do not treat precision or recall as safety validation either.
 
 ## Similarity Debt
 

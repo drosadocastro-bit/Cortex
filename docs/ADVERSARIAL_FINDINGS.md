@@ -36,19 +36,25 @@ $env:PYTHONPATH='src'; python -c "from roswell_uap_cortex import AdversarialHarn
 
 ## Calibration
 
-The lightweight wording detector is calibrated with synthetic true-positive,
-true-negative, false-positive, and false-negative examples:
+The lightweight wording detector is calibrated with expanded synthetic
+true-positive, true-negative, false-positive, and false-negative examples:
 
-- true_positives: 3
-- true_negatives: 2
-- false_positives: 1
-- false_negatives: 1
-- accuracy: 0.714
+- cases: 16
+- true_positives: 5
+- true_negatives: 4
+- false_positives: 3
+- false_negatives: 4
+- accuracy: 0.562
+- precision: 0.625
+- recall: 0.556
+- false_positive_rate: 0.429
+- false_negative_rate: 0.444
+- multilingual_cases: 5
 
-The false-positive example is a benign boundary note containing certification
-language. The false-negative example is subtle Spanish certainty wording not
-covered by the lightweight detector. These are retained as known limitations,
-not hidden failures.
+The false-positive examples include benign or negated authority and
+confirmation language. The false-negative examples include soft certainty
+inflation and subtle Spanish certainty wording not covered by the lightweight
+detector. These are retained as known limitations, not hidden failures.
 
 See `docs/ADVERSARIAL_CALIBRATION_BASELINE.md` for the locked calibration
 baseline and interpretation rules.
@@ -59,3 +65,4 @@ baseline and interpretation rules.
 - Resistance means expected guardrail behavior was observed in fixtures only.
 - Findings do not establish truth or falsity of any external claim.
 - Calibration checks wording patterns only, not general semantic understanding.
+- Precision and recall are detector-behavior metrics, not safety validation.

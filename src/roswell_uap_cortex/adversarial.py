@@ -35,6 +35,7 @@ class AdversarialHarness:
                 expected_attack=case.expected_attack,
                 detected_attack=self.detect_boundary_attack_text(case.text),
                 language=case.language,
+                error_type=case.error_type,
                 notes=list(case.notes),
             )
             for case in cases
@@ -45,6 +46,7 @@ class AdversarialHarness:
                 "Calibration checks wording patterns only, not general semantic understanding.",
                 "False positives and false negatives are retained as detector limitations.",
                 "Multilingual cases are synthetic and incomplete.",
+                "Precision and recall are behavior metrics, not real-world safety validation.",
             ],
         )
 

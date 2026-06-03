@@ -421,6 +421,21 @@ class AdversarialExpectedFailureMode(str, Enum):
     NON_ENGLISH_CERTAINTY_INFLATION = "non_english_certainty_inflation"
 
 
+class AdversarialCalibrationErrorType(str, Enum):
+    """Known wording-detector calibration categories."""
+
+    REVIEW_STATE_LAUNDERING = "review_state_laundering"
+    BENIGN_PROVENANCE_BOUNDARY = "benign_provenance_boundary"
+    OVERBROAD_AUTHORITY_LANGUAGE = "overbroad_authority_language"
+    SUBTLE_CERTAINTY_INFLATION = "subtle_certainty_inflation"
+    MULTILINGUAL_CERTAINTY = "multilingual_certainty"
+    NEGATED_CONFIRMATION_LANGUAGE = "negated_confirmation_language"
+    TRANSFERABILITY_PRESSURE = "transferability_pressure"
+    PRESENTATION_AGGREGATION_TRAP = "presentation_aggregation_trap"
+    BENIGN_SAFETY_BOUNDARY = "benign_safety_boundary"
+    TECHNICAL_INSPIRATION_BOUNDARY = "technical_inspiration_boundary"
+
+
 class HardAdversarialOutcome(str, Enum):
     """Honest outcomes for hard adversarial tests."""
 
@@ -1103,7 +1118,12 @@ class AdversarialCalibrationCase:
     expected_attack: bool
     detected_attack: bool = False
     language: str = "en"
+    error_type: AdversarialCalibrationErrorType | str = AdversarialCalibrationErrorType.SUBTLE_CERTAINTY_INFLATION
     notes: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.error_type, str):
+            self.error_type = AdversarialCalibrationErrorType(self.error_type)
 
 
 @dataclass(slots=True)
@@ -1134,6 +1154,42 @@ class AdversarialCalibrationReport:
         if not self.cases:
             return 0.0
         return (self.true_positives + self.true_negatives) / len(self.cases)
+
+    @property
+    def precision(self) -> float:
+        denominator = self.true_positives + self.false_positives
+        if denominator == 0:
+            return 0.0
+        return self.true_positives / denominator
+
+    @property
+    def recall(self) -> float:
+        denominator = self.true_positives + self.false_negatives
+        if denominator == 0:
+            return 0.0
+        return self.true_positives / denominator
+
+    @property
+    def false_positive_rate(self) -> float:
+        denominator = self.false_positives + self.true_negatives
+        if denominator == 0:
+            return 0.0
+        return self.false_positives / denominator
+
+    @property
+    def false_negative_rate(self) -> float:
+        denominator = self.false_negatives + self.true_positives
+        if denominator == 0:
+            return 0.0
+        return self.false_negatives / denominator
+
+    @property
+    def multilingual_case_count(self) -> int:
+        return sum(1 for case in self.cases if case.language != "en")
+
+    @property
+    def known_limitation_count(self) -> int:
+        return sum(1 for case in self.cases if case.notes)
 
 
 @dataclass(slots=True)

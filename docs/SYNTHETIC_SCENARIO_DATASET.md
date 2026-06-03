@@ -44,7 +44,8 @@ data visibility, and synthetic-only demo presentation.
 Adversarial calibration scenarios:
 : Review-state laundering, presentation aggregation traps, missing-data
 prettification, transferability leaps, authority laundering, multilingual
-certainty pressure, and true/false positive/negative calibration examples.
+certainty pressure, true/false positive/negative calibration examples, benign
+boundary language, negated confirmation, and soft certainty inflation.
 
 ## Dataset Summary Helper
 

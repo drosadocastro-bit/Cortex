@@ -138,6 +138,9 @@ The initial framework provides:
 - Adversarial epistemic stress testing with synthetic attacks for provenance
   laundering, semantic echo, discourse contamination, confidence inflation,
   contradiction suppression, speculation hardening, and policy abuse.
+- Adversarial calibration with explicit true-positive, true-negative,
+  false-positive, false-negative, precision, recall, and error-taxonomy
+  reporting so detector limits remain visible.
 - OWASP-inspired hard adversarial testing with honest outcomes including
   resisted, near-miss, expected-failure, unexpected-failure, and inconclusive
   results.
@@ -154,6 +157,7 @@ Roswell-uap-cortex/
   docs/
     AI_DEBT.md
     API_AND_MODEL_MAP.md
+    ADR-029-adversarial-calibration-expansion.md
     ADVERSARIAL_CALIBRATION_BASELINE.md
     ADVERSARIAL_FINDINGS.md
     ARCHITECTURE.md

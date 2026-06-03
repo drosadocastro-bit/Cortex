@@ -8,13 +8,25 @@ keep true positives, true negatives, false positives, and false negatives
 visible so future work cannot hide detector weakness behind a perfect-looking
 number.
 
-## Baseline Result
+Phase 26.2 established a small smoke baseline with accuracy `0.714`. Phase 26.3
+expands that into a harder calibration set with more benign boundary language,
+soft certainty inflation, negated confirmation wording, Spanish variants,
+presentation aggregation traps, and transferability pressure.
 
-- true positives: 3
-- true negatives: 2
-- false positives: 1
-- false negatives: 1
-- accuracy: 0.714
+## Expanded Baseline Result
+
+- calibration cases: 16
+- true positives: 5
+- true negatives: 4
+- false positives: 3
+- false negatives: 4
+- accuracy: 0.562
+- precision: 0.625
+- recall: 0.556
+- false positive rate: 0.429
+- false negative rate: 0.444
+- multilingual cases: 5
+- known limitation notes: 7
 
 This accuracy is not certification, operational validation, real-world safety evidence,
 or proof that Cortex is robust against multilingual adversarial input.
@@ -37,6 +49,46 @@ It is a deterministic synthetic baseline for framework-behavior calibration.
   about provenance visibility.
 - `calibration-true-positive-transferability`: detects transferability language
   that tries to turn Cortex into operational or dispatch authority.
+- `calibration-false-negative-soft-proof`: records soft proof language that is
+  not currently caught.
+- `calibration-true-positive-priority-truth`: detects review priority being
+  laundered into truth.
+- `calibration-true-positive-presentation-grouping`: detects presentation
+  grouping being laundered into corroboration.
+- `calibration-true-negative-safety-boundary`: does not flag a benign sentence
+  saying safety is not evaluated.
+- `calibration-false-positive-certification-negation`: records negated
+  certification language that is still overflagged.
+- `calibration-true-negative-technical-inspiration`: does not flag technical
+  inspiration language that stays within bounds.
+- `calibration-false-negative-spanish-confirma`: records a Spanish verb form
+  that is not currently caught.
+- `calibration-false-positive-spanish-negated-confirmed`: records negated
+  Spanish confirmation language that is overflagged.
+- `calibration-false-negative-safe-assumption`: records soft safe-assumption
+  wording that is not currently caught.
+
+## Error Taxonomy
+
+- `review_state_laundering`: review status or priority is framed as truth.
+- `benign_provenance_boundary`: provenance visibility language that should not
+  trigger an attack finding.
+- `overbroad_authority_language`: certification or authority words appear in a
+  bounded or negated sentence and may be overflagged.
+- `subtle_certainty_inflation`: soft wording such as proof, assumption, or
+  implication attempts to inflate certainty.
+- `multilingual_certainty`: non-English certainty pressure, currently covered
+  only by tiny synthetic examples.
+- `negated_confirmation_language`: confirmation words appear inside negation
+  and may be overflagged.
+- `transferability_pressure`: synthetic framework behavior is pushed toward
+  predictive-maintenance, dispatch, certification, or operational authority.
+- `presentation_aggregation_trap`: grouping or card layout is framed as
+  corroboration.
+- `benign_safety_boundary`: safety language that explicitly says safety is not
+  evaluated.
+- `technical_inspiration_boundary`: technical papers or concepts used as
+  bounded inspiration rather than authority.
 
 ## Interpretation Rules
 
@@ -56,13 +108,14 @@ certification, and operational-authority pressure, but it does not perform
 general semantic understanding. Subtle paraphrases, sarcasm, translation
 variants, and domain-specific euphemisms can evade it.
 
-The known false positive is useful because it shows overbroad boundary language.
-The known false negative is useful because it shows that Spanish certainty
-pressure needs more careful coverage before any multilingual claims are made.
+The known false positives are useful because they show overbroad boundary
+language and negation weakness. The known false negatives are useful because
+they show that soft certainty pressure and Spanish wording need more careful
+coverage before any stronger claims are made.
 
 ## Future Work
 
 Future calibration may add a small phrase registry, language-tagged cases,
-near-miss categories, and separate metrics for precision and recall. That work
-should expand the honest error surface rather than making the report look
-cleaner than the system really is.
+near-miss categories, and broader precision/recall analysis. That work should
+expand the honest error surface rather than making the report look cleaner than
+the system really is.

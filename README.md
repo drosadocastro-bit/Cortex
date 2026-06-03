@@ -29,6 +29,15 @@ The framework is intentionally skeletal at this stage:
 - No truth assertions.
 - Vector search is treated as secondary to graph, timeline, and source-trust reasoning.
 
+## Table Of Contents
+
+- [Current Scope](#current-scope)
+- [Project Layout](#project-layout)
+- [Development](#development)
+- [Research Roadmap](#research-roadmap)
+- [Design Principle](#design-principle)
+- [Understanding The Code](#understanding-the-code)
+
 ## Current Scope
 
 The initial framework provides:

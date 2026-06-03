@@ -38,10 +38,30 @@ class EvidenceDocketFormatter:
         lines.extend(self._section("Possible support", item.support_summaries, "support_score"))
         lines.extend(self._section("Possible contradiction", item.contradiction_summaries, "contradiction_score"))
         lines.extend(self._section("Uncertainty", item.uncertainty_summaries, "uncertainty_score"))
+        lines.extend(self._quality_section(item))
         if item.warning_types:
             lines.append("- Warnings: " + ", ".join(sorted(warning.value for warning in item.warning_types)))
         if item.recommendations:
             lines.append("- Recommendations: " + " | ".join(rec.message for rec in item.recommendations))
+        return lines
+
+    def _quality_section(self, item: ClaimReviewItem) -> list[str]:
+        if not item.quality_summaries:
+            return ["- Evidence quality: none"]
+        lines = ["- Evidence quality:"]
+        for summary in sorted(item.quality_summaries, key=lambda entry: entry.evidence_id):
+            weak = ",".join(summary.weak_dimensions) if summary.weak_dimensions else "none"
+            warnings = ",".join(sorted(warning.value for warning in summary.warning_types)) if summary.warning_types else "none"
+            lines.append(
+                "  - "
+                f"evidence:{summary.evidence_id} "
+                f"label:{summary.quality_label.value} "
+                f"quality_score:{summary.quality_score:.2f} "
+                f"review_priority:{summary.review_priority_score:.2f} "
+                f"weak_dimensions:{weak} "
+                f"warnings:{warnings}"
+            )
+        lines.append("  - boundary:evidence quality is review context, not claim confirmation")
         return lines
 
     def _section(

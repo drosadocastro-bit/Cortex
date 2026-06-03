@@ -74,6 +74,10 @@ class EvidenceQualityEngine:
         )
         if dimensions.provenance_completeness < 0.3:
             quality_score = min(quality_score, 0.74)
+        if dimensions.lineage_clarity < 0.4:
+            quality_score = min(quality_score, 0.74)
+        if dimensions.contamination_resistance < 0.85:
+            quality_score = min(quality_score, 0.74)
         if dimensions.contamination_resistance < 0.5:
             quality_score = min(quality_score, 0.64)
         label = self._label(quality_score, contradiction_pressure)

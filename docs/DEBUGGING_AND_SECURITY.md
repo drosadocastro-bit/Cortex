@@ -59,6 +59,20 @@ presentation do not create truth state, missing and unknown display boundaries
 remain documented, and Phase 21-25 modules avoid network, process, dynamic
 execution, and unsafe deserialization patterns.
 
+## Phase 27 Evidence Quality Check
+
+After evidence-quality rubric work, run:
+
+```powershell
+python -m pytest tests/test_phase27_evidence_quality.py tests/test_phase27_evidence_quality_docs.py tests/test_phase27_1_evidence_quality_hygiene.py
+```
+
+This verifies that quality labels are not truth confidence, quality assessments
+round-trip through the serializer, unknown quality fields are preserved in
+metadata, quality modules avoid network, process, dynamic execution, and unsafe
+deserialization patterns, and docs do not frame quality as proof, validation,
+or reliability.
+
 ## Dependency Surface
 
 Project dependencies are defined in `pyproject.toml`, not by the global Python

@@ -16,6 +16,7 @@ raw input
 -> candidate claim extraction
 -> claim normalization / unsupported topic registration
 -> claim evidence evaluation / support and contradiction review
+-> evidence-quality-aware review packaging
 -> claim review dockets / human review queue
 -> source reliability review
 -> working memory / review session state
@@ -85,15 +86,15 @@ evidence, create support graph edges, or erase contradiction pressure.
 
 Claim review workflow:
 Claim review dockets organize normalized claims, evidence assessment summaries,
-citations, lineage, warnings, uncertainty, and cautious recommendations for
-human inspection. Review priority is an attention signal, not truth
-confidence.
+evidence-quality summaries, citations, lineage, warnings, uncertainty, and
+cautious recommendations for human inspection. Review priority is an attention
+signal, not truth confidence.
 
 Source reliability review:
 Source review dockets organize evidence by source id and expose provenance
-quality, lineage risk, contamination flags, source-trust inputs, and bounded
-recommendations. Source review is not source truth, source rejection, or claim
-confirmation.
+quality, evidence-quality summaries, lineage risk, contamination flags,
+source-trust inputs, and bounded recommendations. Source review is not source
+truth, source rejection, or claim confirmation.
 
 Working memory and review sessions:
 Working memory holds active claim dockets, source dockets, activated context,

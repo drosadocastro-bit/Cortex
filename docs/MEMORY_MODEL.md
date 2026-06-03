@@ -54,14 +54,15 @@ condition for review only. They do not confirm claims, create graph edges,
 increase claim confidence, or erase uncertainty.
 
 Phase 18 adds claim review dockets. `ClaimReviewEngine` packages normalized
-claims and evidence assessments into `ClaimReviewDocket` records for human
-inspection. `ReviewPriorityEngine` orders attention by contradiction pressure,
-missing provenance, same-lineage repetition, speculative or reported evidence,
-and uncertainty. Review priority is not truth confidence.
+claims, evidence assessments, and optional evidence-quality summaries into
+`ClaimReviewDocket` records for human inspection. `ReviewPriorityEngine` orders
+attention by contradiction pressure, missing provenance, same-lineage
+repetition, speculative or reported evidence, uncertainty, and quality
+fragility. Review priority is not truth confidence.
 
 Phase 19 adds source reliability review dockets. `SourceReviewEngine` groups
 evidence by source id and packages provenance ids, lineage ids, contamination
-flags, reliability signals, risk signals, and recommendations into
+flags, evidence-quality summaries, reliability signals, risk signals, and recommendations into
 `SourceReviewDocket` records. Source review is not source truth, source
 rejection, or claim confirmation.
 

@@ -87,10 +87,10 @@ The initial framework provides:
 - Evaluation guardrails that preserve the distinction between possible support,
   possible contradiction, uncertainty, irrelevance, and needs-review pressure.
 - Claim review dockets that package normalized claims, evidence assessments,
-  provenance, lineage, uncertainty, warnings, and bounded review
+  evidence-quality summaries, provenance, lineage, uncertainty, warnings, and bounded review
   recommendations for human inspection.
 - Source reliability review dockets that expose provenance quality, lineage
-  risk, contamination flags, trust inputs, repeated source usage, and bounded
+  risk, evidence-quality summaries, contamination flags, trust inputs, repeated source usage, and bounded
   source-review recommendations without accepting or rejecting sources.
 - Working memory and review session state for tracking active focus, reviewed
   items, deferred items, unresolved contradictions, uncertainty notes, and
@@ -172,6 +172,7 @@ Roswell-uap-cortex/
     API_AND_MODEL_MAP.md
     ADR-029-adversarial-calibration-expansion.md
     ADR-030-evidence-quality-rubric.md
+    ADR-031-evidence-quality-review-integration.md
     ADVERSARIAL_CALIBRATION_BASELINE.md
     ADVERSARIAL_FINDINGS.md
     ADVERSARIAL_RESULTS_GUIDE.md
@@ -188,6 +189,7 @@ Roswell-uap-cortex/
     PHASE_23_2_CONSOLIDATION.md
     PHASE_25_2_CONSOLIDATION.md
     PHASE_26_4_ADVERSARIAL_CONSOLIDATION.md
+    PHASE_27_1_EVIDENCE_QUALITY_HYGIENE.md
     PRESENTATION_CONTRACT.md
     PROBLEM_STATEMENT.md
     PUBLIC_API.md
@@ -324,6 +326,8 @@ Roswell-uap-cortex/
     test_phase25_presentation_contract.py
     test_phase26_scenario_expansion.py
     test_phase27_evidence_quality.py
+    test_phase27_1_evidence_quality_hygiene.py
+    test_phase28_quality_review_integration.py
   pyproject.toml
   README.md
 ```

@@ -177,7 +177,9 @@ Current mitigation:
 source transparency, observation directness, contamination resistance,
 contradiction stability, temporal specificity, and extraction confidence.
 `EvidenceQualityGuardrails` adds warnings that quality is review context only,
-and adversarial tests include quality-score laundering.
+adversarial tests include quality-score laundering, and Phase 28 integrates
+quality into review dockets as compact summaries rather than claim confidence
+or source acceptance.
 
 Future trigger:
 Before exposing quality labels in UI, review bundles, transferability studies,

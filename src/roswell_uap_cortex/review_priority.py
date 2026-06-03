@@ -9,6 +9,8 @@ from roswell_uap_cortex.models import (
     ClaimEvaluationWarningType,
     ClaimReviewItem,
     EvidenceAssessmentSummary,
+    EvidenceQualityLabel,
+    EvidenceQualityWarningType,
     ReviewPriority,
 )
 
@@ -54,6 +56,30 @@ class ReviewPriorityEngine:
         if item.uncertainty_summaries:
             score += 0.08
             reasons.append("uncertainty_visible")
+
+        if item.quality_summaries:
+            fragile_quality = [
+                summary
+                for summary in item.quality_summaries
+                if summary.quality_label in {EvidenceQualityLabel.FRAGILE, EvidenceQualityLabel.INSUFFICIENT}
+            ]
+            contested_quality = [
+                summary
+                for summary in item.quality_summaries
+                if summary.quality_label is EvidenceQualityLabel.CONTESTED
+            ]
+            if fragile_quality:
+                score += 0.12
+                reasons.append("evidence_quality_fragile")
+            if contested_quality:
+                score += 0.25
+                reasons.append("evidence_quality_contested")
+            if any(EvidenceQualityWarningType.MISSING_PROVENANCE in summary.warning_types for summary in item.quality_summaries):
+                score += 0.08
+                reasons.append("quality_missing_provenance")
+            if any(EvidenceQualityWarningType.CONTAMINATION_RISK_VISIBLE in summary.warning_types for summary in item.quality_summaries):
+                score += 0.08
+                reasons.append("quality_contamination_visible")
 
         score = _clamp(score)
         if score >= 0.75:

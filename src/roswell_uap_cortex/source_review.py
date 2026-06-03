@@ -13,6 +13,10 @@ from roswell_uap_cortex.models import (
     ContaminationFlagType,
     DiscourseCitation,
     EvidenceItem,
+    EvidenceQualityAssessment,
+    EvidenceQualityLabel,
+    EvidenceQualitySummary,
+    EvidenceQualityWarningType,
     ProvenanceRecord,
     SourceLineageRecord,
     SourceReliabilitySignal,
@@ -40,12 +44,14 @@ class SourceReviewEngine:
         lineage_records: list[SourceLineageRecord] | None = None,
         contamination_flags: list[ContaminationFlag] | None = None,
         source_trust_records: list[SourceTrust] | None = None,
+        evidence_quality_by_evidence_id: dict[str, EvidenceQualityAssessment] | None = None,
         title: str = "Source Reliability Review Docket",
     ) -> SourceReviewDocket:
         provenance_records = provenance_records or []
         lineage_records = lineage_records or []
         contamination_flags = contamination_flags or []
         source_trust_records = source_trust_records or []
+        evidence_quality_by_evidence_id = evidence_quality_by_evidence_id or {}
 
         provenance_by_evidence = {record.evidence_id: record for record in provenance_records}
         lineage_by_evidence: dict[str, list[SourceLineageRecord]] = {}
@@ -61,6 +67,11 @@ class SourceReviewEngine:
                 lineage_records=[record for item in grouped for record in lineage_by_evidence.get(item.id, [])],
                 contamination_flags=self._flags_for_source(source_id, grouped, contamination_flags),
                 source_trust=trust_by_source.get(source_id),
+                quality_assessments=[
+                    evidence_quality_by_evidence_id[item.id]
+                    for item in grouped
+                    if item.id in evidence_quality_by_evidence_id
+                ],
             )
             for source_id, grouped in self._group_by_source(evidence_items).items()
         ]
@@ -89,6 +100,7 @@ class SourceReviewEngine:
         lineage_records: list[SourceLineageRecord],
         contamination_flags: set[ContaminationFlagType],
         source_trust: SourceTrust | None,
+        quality_assessments: list[EvidenceQualityAssessment],
     ) -> SourceReviewItem:
         provenance_visible = all(item.id in provenance_by_evidence for item in evidence_items)
         risk_score, risk_signals = self.risk_profiler.profile(
@@ -101,7 +113,9 @@ class SourceReviewEngine:
         )
         reliability_signals = self._reliability_signals(source_id, evidence_items, source_trust, provenance_visible)
         reliability_score = self._reliability_score(reliability_signals, risk_score)
-        priority, priority_score = self._priority(risk_score)
+        quality_summaries = [self._quality_summary(assessment) for assessment in quality_assessments]
+        quality_risk = self._quality_risk(quality_summaries)
+        priority, priority_score = self._priority(max(risk_score, quality_risk))
         return SourceReviewItem(
             source_id=source_id,
             priority=priority,
@@ -112,11 +126,59 @@ class SourceReviewEngine:
             provenance_ids={provenance_by_evidence[item.id].id for item in evidence_items if item.id in provenance_by_evidence},
             lineage_ids={record.lineage_id for record in lineage_records},
             contamination_flags=contamination_flags,
+            quality_summaries=quality_summaries,
             reliability_signals=reliability_signals,
             risk_signals=risk_signals,
             recommendations=self._recommendations(risk_signals, source_trust),
-            notes=["source review item only; no evidence, claim, graph, or trust mutation"],
+            notes=[
+                "source review item only; no evidence, claim, graph, or trust mutation",
+                "evidence quality is review context, not source truth",
+            ],
         )
+
+    def _quality_summary(self, assessment: EvidenceQualityAssessment) -> EvidenceQualitySummary:
+        dimensions = assessment.dimension_scores
+        weak_dimensions = [
+            name
+            for name, score in [
+                ("provenance_completeness", dimensions.provenance_completeness),
+                ("lineage_clarity", dimensions.lineage_clarity),
+                ("source_transparency", dimensions.source_transparency),
+                ("observation_directness", dimensions.observation_directness),
+                ("contamination_resistance", dimensions.contamination_resistance),
+                ("contradiction_stability", dimensions.contradiction_stability),
+                ("temporal_specificity", dimensions.temporal_specificity),
+                ("extraction_confidence", dimensions.extraction_confidence),
+            ]
+            if score < 0.55
+        ]
+        warning_types = sorted(
+            {warning.warning_type for warning in assessment.warnings},
+            key=lambda warning: warning.value,
+        )
+        return EvidenceQualitySummary(
+            evidence_id=assessment.evidence_id,
+            quality_label=assessment.quality_label,
+            quality_score=assessment.quality_score,
+            review_priority_score=assessment.review_priority_score,
+            weak_dimensions=weak_dimensions,
+            warning_types=warning_types,
+            reason_codes=list(assessment.reason_codes),
+        )
+
+    def _quality_risk(self, summaries: list[EvidenceQualitySummary]) -> float:
+        if not summaries:
+            return 0.0
+        risk = 0.0
+        if any(summary.quality_label in {EvidenceQualityLabel.FRAGILE, EvidenceQualityLabel.INSUFFICIENT} for summary in summaries):
+            risk += 0.35
+        if any(summary.quality_label is EvidenceQualityLabel.CONTESTED for summary in summaries):
+            risk += 0.45
+        if any(EvidenceQualityWarningType.MISSING_PROVENANCE in summary.warning_types for summary in summaries):
+            risk += 0.2
+        if any(EvidenceQualityWarningType.CONTAMINATION_RISK_VISIBLE in summary.warning_types for summary in summaries):
+            risk += 0.2
+        return _clamp(risk)
 
     def _reliability_signals(
         self,

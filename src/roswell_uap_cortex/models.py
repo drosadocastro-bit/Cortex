@@ -1437,6 +1437,7 @@ class EvidenceQualityAssessment:
     reason_codes: list[str] = field(default_factory=list)
     warnings: list[EvidenceQualityWarning] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if isinstance(self.quality_label, str):
@@ -1789,6 +1790,29 @@ class EvidenceAssessmentSummary:
 
 
 @dataclass(slots=True)
+class EvidenceQualitySummary:
+    """Compact evidence-quality summary for review dockets; not truth state."""
+
+    evidence_id: str
+    quality_label: EvidenceQualityLabel | str
+    quality_score: float = 0.0
+    review_priority_score: float = 0.0
+    weak_dimensions: list[str] = field(default_factory=list)
+    warning_types: list[EvidenceQualityWarningType] = field(default_factory=list)
+    reason_codes: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.quality_label, str):
+            self.quality_label = EvidenceQualityLabel(self.quality_label)
+        self.warning_types = [
+            EvidenceQualityWarningType(warning) if isinstance(warning, str) else warning
+            for warning in self.warning_types
+        ]
+        self.quality_score = max(0.0, min(1.0, self.quality_score))
+        self.review_priority_score = max(0.0, min(1.0, self.review_priority_score))
+
+
+@dataclass(slots=True)
 class ReviewRecommendation:
     """A cautious next-step recommendation for human review."""
 
@@ -1813,6 +1837,7 @@ class ClaimReviewItem:
     support_summaries: list[EvidenceAssessmentSummary] = field(default_factory=list)
     contradiction_summaries: list[EvidenceAssessmentSummary] = field(default_factory=list)
     uncertainty_summaries: list[EvidenceAssessmentSummary] = field(default_factory=list)
+    quality_summaries: list[EvidenceQualitySummary] = field(default_factory=list)
     irrelevant_evidence_ids: set[str] = field(default_factory=set)
     provenance_ids: set[str] = field(default_factory=set)
     lineage_ids: set[str] = field(default_factory=set)
@@ -2197,6 +2222,7 @@ class SourceReviewItem:
     provenance_ids: set[str] = field(default_factory=set)
     lineage_ids: set[str] = field(default_factory=set)
     contamination_flags: set[ContaminationFlagType] = field(default_factory=set)
+    quality_summaries: list[EvidenceQualitySummary] = field(default_factory=list)
     reliability_signals: list[SourceReliabilitySignal] = field(default_factory=list)
     risk_signals: list[SourceRiskSignal] = field(default_factory=list)
     recommendations: list[SourceReviewRecommendation] = field(default_factory=list)

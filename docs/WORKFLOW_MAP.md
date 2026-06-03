@@ -19,6 +19,7 @@ raw input
 -> candidate claims
 -> normalized claims
 -> claim evidence evaluation
+-> evidence-quality-aware review packaging
 -> claim review dockets
 -> source reliability dockets
 -> working memory
@@ -48,8 +49,9 @@ contradictions automatically.
 
 `claim_review.py`
 : Builds claim review dockets from normalized claims and evidence assessments.
-It owns claim review packaging and recommendations. It does not own source
-review, session decisions, or report export.
+It owns claim review packaging, optional evidence-quality summaries, and
+recommendations. It does not own source review, session decisions, or report
+export.
 
 `evidence_docket.py`
 : Summarizes possible support, possible contradiction, uncertainty, and
@@ -62,7 +64,8 @@ specificity, and extraction confidence. Quality is review context only.
 
 `source_review.py`
 : Builds source reliability dockets from evidence, provenance, lineage,
-contamination, and trust signals. It does not reject or certify sources.
+contamination, evidence-quality summaries, and trust signals. It does not reject
+or certify sources.
 
 `source_risk.py`
 : Scores source-review risk signals for review priority. It is not a source
@@ -133,6 +136,7 @@ future UI fixture.
 - A demo workspace is an architecture exercise, not validation against reality.
 - Review priority is attention, not confidence.
 - Evidence quality is record condition, not confirmation.
+- Evidence-quality summaries may raise review pressure, not evidentiary weight.
 - Source risk is review pressure, not source rejection.
 - Repeated lineage remains repeated lineage even if it appears across dockets,
   sessions, bundles, or demo output.

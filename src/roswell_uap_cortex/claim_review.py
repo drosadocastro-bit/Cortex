@@ -18,6 +18,8 @@ from roswell_uap_cortex.models import (
     ClaimReviewQueue,
     DiscourseCitation,
     EvidenceAssessmentSummary,
+    EvidenceQualityAssessment,
+    EvidenceQualitySummary,
     NormalizedClaim,
     ProvenanceRecord,
     ReviewRecommendation,
@@ -40,16 +42,19 @@ class ClaimReviewEngine:
         *,
         provenance_by_evidence_id: dict[str, ProvenanceRecord] | None = None,
         lineage_by_evidence_id: dict[str, SourceLineageRecord] | None = None,
+        evidence_quality_by_evidence_id: dict[str, EvidenceQualityAssessment] | None = None,
         title: str = "Claim Review Docket",
     ) -> ClaimReviewDocket:
         provenance_by_evidence_id = provenance_by_evidence_id or {}
         lineage_by_evidence_id = lineage_by_evidence_id or {}
+        evidence_quality_by_evidence_id = evidence_quality_by_evidence_id or {}
         assessments_by_claim = self._assessments_by_claim(evaluation.assessments)
 
         items = [
             self._item_for_claim(
                 claim,
                 assessments_by_claim.get(claim.normalized_claim_id, []),
+                evidence_quality_by_evidence_id=evidence_quality_by_evidence_id,
             )
             for claim in sorted(normalized_claims, key=lambda claim: claim.canonical_key.value)
         ]
@@ -87,8 +92,15 @@ class ClaimReviewEngine:
         self,
         claim: NormalizedClaim,
         assessments: list[ClaimEvidenceAssessment],
+        *,
+        evidence_quality_by_evidence_id: dict[str, EvidenceQualityAssessment],
     ) -> ClaimReviewItem:
         summaries = [self._summary(assessment) for assessment in assessments]
+        quality_summaries = [
+            self._quality_summary(quality)
+            for evidence_id, quality in sorted(evidence_quality_by_evidence_id.items())
+            if evidence_id in {summary.evidence_id for summary in summaries}
+        ]
         support = [summary for summary in summaries if summary.assessment_type is ClaimEvidenceAssessmentType.POSSIBLE_SUPPORT]
         contradiction = [
             summary
@@ -118,6 +130,7 @@ class ClaimReviewEngine:
             support_summaries=support,
             contradiction_summaries=contradiction,
             uncertainty_summaries=uncertainty,
+            quality_summaries=quality_summaries,
             irrelevant_evidence_ids=irrelevant,
             provenance_ids={pid for summary in summaries for pid in summary.provenance_ids} | set(claim.provenance_ids),
             lineage_ids={summary.lineage_id for summary in summaries if summary.lineage_id} | set(claim.lineage_ids),
@@ -132,6 +145,36 @@ class ClaimReviewEngine:
         item.priority_score = score
         item.notes.extend(f"priority:{reason}" for reason in reasons)
         return item
+
+    def _quality_summary(self, assessment: EvidenceQualityAssessment) -> EvidenceQualitySummary:
+        dimensions = assessment.dimension_scores
+        weak_dimensions = [
+            name
+            for name, score in [
+                ("provenance_completeness", dimensions.provenance_completeness),
+                ("lineage_clarity", dimensions.lineage_clarity),
+                ("source_transparency", dimensions.source_transparency),
+                ("observation_directness", dimensions.observation_directness),
+                ("contamination_resistance", dimensions.contamination_resistance),
+                ("contradiction_stability", dimensions.contradiction_stability),
+                ("temporal_specificity", dimensions.temporal_specificity),
+                ("extraction_confidence", dimensions.extraction_confidence),
+            ]
+            if score < 0.55
+        ]
+        warning_types = sorted(
+            {warning.warning_type for warning in assessment.warnings},
+            key=lambda warning: warning.value,
+        )
+        return EvidenceQualitySummary(
+            evidence_id=assessment.evidence_id,
+            quality_label=assessment.quality_label,
+            quality_score=assessment.quality_score,
+            review_priority_score=assessment.review_priority_score,
+            weak_dimensions=weak_dimensions,
+            warning_types=warning_types,
+            reason_codes=list(assessment.reason_codes),
+        )
 
     def _summary(self, assessment: ClaimEvidenceAssessment) -> EvidenceAssessmentSummary:
         warning_types = sorted(

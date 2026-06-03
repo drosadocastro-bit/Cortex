@@ -47,6 +47,11 @@ prettification, transferability leaps, authority laundering, multilingual
 certainty pressure, true/false positive/negative calibration examples, benign
 boundary language, negated confirmation, and soft certainty inflation.
 
+Evidence quality scenarios:
+: Missing provenance, derivative lineage, contamination flags, contradiction
+pressure, speculative observations, unknown timing, review-only ordering, and
+quality-score laundering.
+
 ## Dataset Summary Helper
 
 `ScenarioDatasetBuilder` builds a deterministic summary of:

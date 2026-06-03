@@ -35,6 +35,8 @@ from roswell_uap_cortex.demo_presentation import DemoPresentationBuilder
 from roswell_uap_cortex.demo_workspace import DemoWorkspaceBuilder
 from roswell_uap_cortex.demo_workspace_guardrails import DemoWorkspaceGuardrails
 from roswell_uap_cortex.evidence_docket import EvidenceDocketFormatter
+from roswell_uap_cortex.evidence_quality import EvidenceQualityEngine
+from roswell_uap_cortex.evidence_quality_guardrails import EvidenceQualityGuardrails
 from roswell_uap_cortex.evaluation import EvaluationHarness
 from roswell_uap_cortex.evaluation_guardrails import EvaluationGuardrails
 from roswell_uap_cortex.evaluation_report import EvaluationReportFormatter
@@ -130,6 +132,11 @@ from roswell_uap_cortex.models import (
     EntityNode,
     EvidenceAssessmentSummary,
     EvidenceCategory,
+    EvidenceQualityAssessment,
+    EvidenceQualityDimensionScores,
+    EvidenceQualityLabel,
+    EvidenceQualityWarning,
+    EvidenceQualityWarningType,
     EvidenceItem,
     EvidenceLineageRecord,
     DeferredItem,
@@ -374,6 +381,13 @@ __all__ = [
     "EvidenceAssessmentSummary",
     "EvidenceCategory",
     "EvidenceDocketFormatter",
+    "EvidenceQualityAssessment",
+    "EvidenceQualityDimensionScores",
+    "EvidenceQualityEngine",
+    "EvidenceQualityGuardrails",
+    "EvidenceQualityLabel",
+    "EvidenceQualityWarning",
+    "EvidenceQualityWarningType",
     "EmbeddingBackend",
     "EmbeddingVector",
     "EvidenceIndependenceInput",

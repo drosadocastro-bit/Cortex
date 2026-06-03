@@ -265,6 +265,30 @@ class ContaminationFlagType(str, Enum):
     WEAK_CHAIN_OF_CUSTODY = "weak_chain_of_custody"
 
 
+class EvidenceQualityLabel(str, Enum):
+    """Evidence condition label for review context, not truth confidence."""
+
+    INSUFFICIENT = "insufficient"
+    FRAGILE = "fragile"
+    REVIEWABLE = "reviewable"
+    STRONG_CONTEXT = "strong_context"
+    CONTESTED = "contested"
+
+
+class EvidenceQualityWarningType(str, Enum):
+    """Warnings that keep evidence quality from becoming truth."""
+
+    QUALITY_NOT_TRUTH = "quality_not_truth"
+    REVIEW_SIGNAL_ONLY = "review_signal_only"
+    MISSING_PROVENANCE = "missing_provenance"
+    DERIVATIVE_LINEAGE = "derivative_lineage"
+    UNKNOWN_LINEAGE = "unknown_lineage"
+    CONTAMINATION_RISK_VISIBLE = "contamination_risk_visible"
+    CONTRADICTION_PRESSURE_VISIBLE = "contradiction_pressure_visible"
+    TEMPORAL_UNCERTAINTY_VISIBLE = "temporal_uncertainty_visible"
+    LOW_OBSERVATION_DIRECTNESS = "low_observation_directness"
+
+
 class ConfidenceBand(str, Enum):
     """Context-support band for reasoning output, not truth confidence."""
 
@@ -337,6 +361,9 @@ class ExpectedBehaviorType(str, Enum):
     PRESENTATION_NO_AGGREGATION_SEMANTICS = "presentation_no_aggregation_semantics"
     PRESENTATION_MISSING_DATA_VISIBLE = "presentation_missing_data_visible"
     DEMO_PRESENTATION_SYNTHETIC_ONLY = "demo_presentation_synthetic_only"
+    EVIDENCE_QUALITY_NOT_CONFIRMATION = "evidence_quality_not_confirmation"
+    EVIDENCE_QUALITY_REVIEW_ONLY = "evidence_quality_review_only"
+    EVIDENCE_QUALITY_WARNINGS_VISIBLE = "evidence_quality_warnings_visible"
 
 
 class SemanticWarningType(str, Enum):
@@ -398,6 +425,7 @@ class AdversarialAttackVector(str, Enum):
     TRANSFERABILITY_LEAP = "transferability_leap"
     AUTHORITY_LAUNDERING = "authority_laundering"
     MULTILINGUAL_CERTAINTY_INFLATION = "multilingual_certainty_inflation"
+    QUALITY_SCORE_LAUNDERING = "quality_score_laundering"
 
 
 class AdversarialExpectedFailureMode(str, Enum):
@@ -419,6 +447,7 @@ class AdversarialExpectedFailureMode(str, Enum):
     TRANSFERABILITY_AS_OPERATIONAL_AUTHORITY = "transferability_as_operational_authority"
     INSPIRATION_AS_CERTIFICATION = "inspiration_as_certification"
     NON_ENGLISH_CERTAINTY_INFLATION = "non_english_certainty_inflation"
+    QUALITY_AS_CONFIRMATION = "quality_as_confirmation"
 
 
 class AdversarialCalibrationErrorType(str, Enum):
@@ -986,6 +1015,7 @@ class EvaluationInput:
     review_influence: ReviewInfluenceResult | None = None
     review_dashboard: ReviewDashboardView | None = None
     demo_presentation: DemoPresentation | None = None
+    evidence_quality_assessments: list["EvidenceQualityAssessment"] = field(default_factory=list)
     before_state_hash: str | None = None
     after_state_hash: str | None = None
 
@@ -1354,6 +1384,65 @@ class EvidenceItem:
     confidence: float = 0.5
     tags: set[str] = field(default_factory=set)
     metadata: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
+class EvidenceQualityDimensionScores:
+    """Separated evidence-condition signals; no dimension is a truth score."""
+
+    provenance_completeness: float = 0.0
+    lineage_clarity: float = 0.0
+    source_transparency: float = 0.0
+    observation_directness: float = 0.0
+    contamination_resistance: float = 0.0
+    contradiction_stability: float = 0.0
+    temporal_specificity: float = 0.0
+    extraction_confidence: float = 0.0
+
+    def __post_init__(self) -> None:
+        self.provenance_completeness = max(0.0, min(1.0, self.provenance_completeness))
+        self.lineage_clarity = max(0.0, min(1.0, self.lineage_clarity))
+        self.source_transparency = max(0.0, min(1.0, self.source_transparency))
+        self.observation_directness = max(0.0, min(1.0, self.observation_directness))
+        self.contamination_resistance = max(0.0, min(1.0, self.contamination_resistance))
+        self.contradiction_stability = max(0.0, min(1.0, self.contradiction_stability))
+        self.temporal_specificity = max(0.0, min(1.0, self.temporal_specificity))
+        self.extraction_confidence = max(0.0, min(1.0, self.extraction_confidence))
+
+
+@dataclass(slots=True)
+class EvidenceQualityWarning:
+    """A quality warning that keeps uncertainty visible."""
+
+    warning_type: EvidenceQualityWarningType | str
+    message: str
+    related_ids: set[str] = field(default_factory=set)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.warning_type, str):
+            self.warning_type = EvidenceQualityWarningType(self.warning_type)
+
+
+@dataclass(slots=True)
+class EvidenceQualityAssessment:
+    """Bounded review assessment of evidence condition, not truth confidence."""
+
+    evidence_id: str
+    dimension_scores: EvidenceQualityDimensionScores
+    quality_label: EvidenceQualityLabel | str
+    quality_score: float = 0.0
+    review_priority_score: float = 0.0
+    provenance_ids: set[str] = field(default_factory=set)
+    lineage_id: str | None = None
+    reason_codes: list[str] = field(default_factory=list)
+    warnings: list[EvidenceQualityWarning] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.quality_label, str):
+            self.quality_label = EvidenceQualityLabel(self.quality_label)
+        self.quality_score = max(0.0, min(1.0, self.quality_score))
+        self.review_priority_score = max(0.0, min(1.0, self.review_priority_score))
 
 
 @dataclass(slots=True)

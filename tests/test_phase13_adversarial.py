@@ -10,7 +10,7 @@ from roswell_uap_cortex import (
 def test_adversarial_factory_returns_synthetic_attack_scenarios() -> None:
     scenarios = AdversarialScenarioFactory().all()
 
-    assert len(scenarios) == 16
+    assert len(scenarios) == 17
     assert all("synthetic" in scenario.tags for scenario in scenarios)
     assert all("adversarial" in scenario.tags for scenario in scenarios)
 
@@ -42,8 +42,8 @@ def test_adversarial_harness_runs_deterministically() -> None:
 def test_adversarial_findings_record_pass_fail_per_attack() -> None:
     report = AdversarialHarness().run(AdversarialScenarioFactory().all())
 
-    assert report.scenario_count == 16
-    assert report.resisted_count == 16
+    assert report.scenario_count == 17
+    assert report.resisted_count == 17
     assert report.resistance_rate == 1.0
     assert all(finding.triggered_behaviors for finding in report.findings)
     assert all(not finding.failed_behaviors for finding in report.findings)
@@ -106,6 +106,15 @@ def test_review_and_presentation_attacks_are_resisted() -> None:
 
     assert report.scenario_count == 6
     assert report.resisted_count == 6
+
+
+def test_evidence_quality_laundering_attack_is_resisted() -> None:
+    report = AdversarialHarness().run([AdversarialScenarioFactory().quality_score_laundering()])
+    finding = report.findings[0]
+
+    assert finding.attack_vector is AdversarialAttackVector.QUALITY_SCORE_LAUNDERING
+    assert finding.expected_failure_mode is AdversarialExpectedFailureMode.QUALITY_AS_CONFIRMATION
+    assert finding.resisted
 
 
 def test_adversarial_calibration_reports_confusion_matrix_buckets() -> None:

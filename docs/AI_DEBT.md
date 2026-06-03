@@ -166,6 +166,29 @@ Must not do:
 Do not promote a claim, create support graph edges, or mutate evidence merely
 because an evaluator found lexical, semantic, or narrative alignment.
 
+## Evidence Quality Debt
+
+Risk:
+Evidence-quality labels may be mistaken for truth confidence, source
+acceptance, claim confirmation, or operational reliability.
+
+Current mitigation:
+`EvidenceQualityEngine` separates provenance completeness, lineage clarity,
+source transparency, observation directness, contamination resistance,
+contradiction stability, temporal specificity, and extraction confidence.
+`EvidenceQualityGuardrails` adds warnings that quality is review context only,
+and adversarial tests include quality-score laundering.
+
+Future trigger:
+Before exposing quality labels in UI, review bundles, transferability studies,
+or live inference prompts, labels must remain paired with warnings and
+dimension scores.
+
+Must not do:
+Do not treat `strong_context`, quality score, or review priority score as claim
+truth, source truth, corroboration, graph support, safety evidence, or
+operational validity.
+
 ## Claim Review Debt
 
 Risk:

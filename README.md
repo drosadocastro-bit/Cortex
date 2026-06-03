@@ -71,6 +71,10 @@ The initial framework provides:
 - Claim support and contradiction evaluation that compares normalized claims
   against evidence as bounded review signals without confirming or disproving
   claims.
+- Evidence quality assessment that scores provenance completeness, lineage
+  clarity, source transparency, observation directness, contamination
+  resistance, contradiction stability, temporal specificity, and extraction
+  confidence as review context only.
 - Evaluation guardrails that preserve the distinction between possible support,
   possible contradiction, uncertainty, irrelevance, and needs-review pressure.
 - Claim review dockets that package normalized claims, evidence assessments,
@@ -158,6 +162,7 @@ Roswell-uap-cortex/
     AI_DEBT.md
     API_AND_MODEL_MAP.md
     ADR-029-adversarial-calibration-expansion.md
+    ADR-030-evidence-quality-rubric.md
     ADVERSARIAL_CALIBRATION_BASELINE.md
     ADVERSARIAL_FINDINGS.md
     ADVERSARIAL_RESULTS_GUIDE.md
@@ -211,6 +216,8 @@ Roswell-uap-cortex/
       demo_workspace.py
       demo_workspace_guardrails.py
       evidence_docket.py
+      evidence_quality.py
+      evidence_quality_guardrails.py
       evaluation.py
       evaluation_guardrails.py
       evaluation_report.py
@@ -307,6 +314,7 @@ Roswell-uap-cortex/
     test_phase25_3_api_model_map.py
     test_phase25_presentation_contract.py
     test_phase26_scenario_expansion.py
+    test_phase27_evidence_quality.py
   pyproject.toml
   README.md
 ```

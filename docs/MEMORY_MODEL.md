@@ -45,6 +45,14 @@ possible contradiction, uncertainty, irrelevant, or needs-review assessments.
 These assessments are review signals. They do not confirm claims, disprove
 claims, create graph edges, or mutate evidence.
 
+Phase 27 adds deterministic evidence-quality assessment. `EvidenceQualityEngine`
+scores provenance completeness, lineage clarity, source transparency,
+observation directness, contamination resistance, contradiction stability,
+temporal specificity, and extraction confidence. Quality labels such as
+`fragile`, `reviewable`, `strong_context`, and `contested` describe evidence
+condition for review only. They do not confirm claims, create graph edges,
+increase claim confidence, or erase uncertainty.
+
 Phase 18 adds claim review dockets. `ClaimReviewEngine` packages normalized
 claims and evidence assessments into `ClaimReviewDocket` records for human
 inspection. `ReviewPriorityEngine` orders attention by contradiction pressure,
@@ -249,6 +257,11 @@ cautiously.
 source URIs, same-lineage repetition, contamination flags, speculative or
 reported content, and source-trust risk inputs to build bounded source-risk
 signals. These signals guide review; they do not accept or reject a source.
+
+`EvidenceQualityEngine` gathers evidence-condition signals into a bounded
+assessment while keeping each dimension visible. Missing provenance, derivative
+lineage, contamination flags, contradiction pressure, uncertain timing, and low
+observation directness remain warnings rather than hidden deductions.
 
 ## Working Memory
 

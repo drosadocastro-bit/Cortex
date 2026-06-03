@@ -23,8 +23,11 @@ from roswell_uap_cortex.models import (
     DiscourseCitation,
     DiscourseResponse,
     DiscourseSection,
+    EvidenceItem,
     EvaluationInput,
     ExpectedBehaviorType,
+    LineageType,
+    ProvenanceRecord,
     ReasoningOutput,
     ReasoningWarning,
     ReasoningWarningType,
@@ -36,6 +39,7 @@ from roswell_uap_cortex.models import (
     SourceLineageRecord,
 )
 from roswell_uap_cortex.demo_presentation import DemoPresentationBuilder
+from roswell_uap_cortex.evidence_quality import EvidenceQualityEngine
 from roswell_uap_cortex.presentation_guardrails import PresentationGuardrails
 from roswell_uap_cortex.reality_boundary import RealityBoundaryEngine
 
@@ -62,6 +66,7 @@ class AdversarialScenarioFactory:
             self.transferability_leap(),
             self.authority_laundering(),
             self.multilingual_certainty_inflation(),
+            self.quality_score_laundering(),
         ]
 
     def calibration_cases(self) -> list[AdversarialCalibrationCase]:
@@ -475,6 +480,58 @@ class AdversarialScenarioFactory:
             AdversarialExpectedFailureMode.NON_ENGLISH_CERTAINTY_INFLATION,
             EvaluationInput(discourse_response=discourse),
             [ExpectedBehaviorType.SPECULATIVE_LABELED, ExpectedBehaviorType.UNCERTAINTY_EXPOSED],
+        )
+
+    def quality_score_laundering(self) -> AdversarialScenario:
+        evidence = EvidenceItem(
+            "synthetic direct observation with complete source condition",
+            "source-quality",
+            "note",
+            id="quality-evidence",
+            confidence=0.95,
+            metadata={"observation_type": "direct_observation", "date_precision": "exact"},
+        )
+        provenance = ProvenanceRecord(
+            evidence_id="quality-evidence",
+            source_uri="synthetic://quality",
+            source_kind="synthetic",
+            ingestion_method="synthetic_fixture",
+            extraction_method="synthetic_fixture",
+            original_input_id="quality-input",
+        )
+        assessment = EvidenceQualityEngine().assess(
+            evidence,
+            provenance=provenance,
+            lineage=SourceLineageRecord(
+                "quality-evidence",
+                "source-quality",
+                "lineage-quality",
+                lineage_type=LineageType.PRIMARY_SOURCE,
+            ),
+        )
+        claim = ClaimNode(
+            "quality score attempts to confirm this claim",
+            "quality-laundering",
+            id="quality-claim",
+            status=ClaimMatrixStatus.UNSUPPORTED,
+            confidence=0.0,
+        )
+        return self._scenario(
+            "adversarial-quality-score-laundering",
+            "Quality Score Laundering",
+            AdversarialAttackVector.QUALITY_SCORE_LAUNDERING,
+            AdversarialExpectedFailureMode.QUALITY_AS_CONFIRMATION,
+            EvaluationInput(
+                claims=[claim],
+                evidence_quality_assessments=[assessment],
+                before_state_hash="quality-state",
+                after_state_hash="quality-state",
+            ),
+            [
+                ExpectedBehaviorType.EVIDENCE_QUALITY_NOT_CONFIRMATION,
+                ExpectedBehaviorType.EVIDENCE_QUALITY_REVIEW_ONLY,
+                ExpectedBehaviorType.NO_STATE_MUTATION,
+            ],
         )
 
     def _scenario(

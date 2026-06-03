@@ -12,6 +12,7 @@ The main experimental path is:
 raw input
 -> ingestion / normalization
 -> evidence / provenance / lineage
+-> evidence quality assessment
 -> candidate claim extraction
 -> claim normalization / unsupported topic registration
 -> claim evidence evaluation / support and contradiction review
@@ -63,6 +64,13 @@ Candidate claim extraction:
 Classified observations can seed `CandidateClaim` records for review. Candidate
 claims are not support, confirmation, or graph relationships. They start
 unsupported and preserve their observation origin and provenance.
+
+Evidence quality:
+`EvidenceQualityEngine` assesses evidence condition across provenance, lineage,
+source transparency, observation directness, contamination resistance,
+contradiction stability, temporal specificity, and extraction confidence.
+Quality labels guide review attention only. They do not confirm claims, reject
+evidence, create graph edges, or alter claim confidence.
 
 Claim normalization:
 Candidate claims can be grouped under deterministic canonical keys and
@@ -165,6 +173,7 @@ These layers should preserve the same epistemic rules as the core path.
 - Contradictions are valuable state.
 - Unknown or fuzzy dates must not become false exact dates.
 - Repetition is not independent corroboration.
+- Evidence quality is not truth confidence.
 - Support is not confirmation.
 - Contradiction is not disproof.
 - Review priority is not truth confidence.

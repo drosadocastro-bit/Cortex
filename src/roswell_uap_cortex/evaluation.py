@@ -12,6 +12,8 @@ from roswell_uap_cortex.models import (
     ClaimMatrixStatus,
     ConfidenceBand,
     DiscourseWarningType,
+    EvidenceQualityLabel,
+    EvidenceQualityWarningType,
     EvaluationFailure,
     EvaluationReport,
     EvaluationResult,
@@ -291,6 +293,41 @@ class EvaluationHarness:
                 and any("synthetic" in note.casefold() for note in demo.boundary_notes)
             )
             return passed, "demo presentation was not clearly synthetic", set()
+        if behavior is ExpectedBehaviorType.EVIDENCE_QUALITY_NOT_CONFIRMATION:
+            assessments = inputs.evidence_quality_assessments
+            claims_safe = all(claim.confidence == 0.0 for claim in inputs.claims)
+            quality_warnings = {
+                warning.warning_type
+                for assessment in assessments
+                for warning in assessment.warnings
+            }
+            passed = bool(assessments) and claims_safe and EvidenceQualityWarningType.QUALITY_NOT_TRUTH in quality_warnings
+            return passed, "evidence quality appeared to confirm a claim", {assessment.evidence_id for assessment in assessments}
+        if behavior is ExpectedBehaviorType.EVIDENCE_QUALITY_REVIEW_ONLY:
+            assessments = inputs.evidence_quality_assessments
+            passed = bool(assessments) and all(
+                0.0 <= assessment.review_priority_score <= 1.0
+                and assessment.quality_label in set(EvidenceQualityLabel)
+                for assessment in assessments
+            )
+            return passed, "evidence quality was not bounded review context", {assessment.evidence_id for assessment in assessments}
+        if behavior is ExpectedBehaviorType.EVIDENCE_QUALITY_WARNINGS_VISIBLE:
+            assessments = inputs.evidence_quality_assessments
+            warning_types = {
+                warning.warning_type
+                for assessment in assessments
+                for warning in assessment.warnings
+            }
+            passed = bool(
+                warning_types
+                & {
+                    EvidenceQualityWarningType.MISSING_PROVENANCE,
+                    EvidenceQualityWarningType.DERIVATIVE_LINEAGE,
+                    EvidenceQualityWarningType.CONTAMINATION_RISK_VISIBLE,
+                    EvidenceQualityWarningType.CONTRADICTION_PRESSURE_VISIBLE,
+                }
+            )
+            return passed, "evidence-quality fragility warnings were not visible", set()
         if behavior in {
             ExpectedBehaviorType.SEMANTIC_SIMILARITY_NOT_CONFIRMATION,
             ExpectedBehaviorType.SEMANTIC_LINEAGE_ECHO_DOWNGRADED,

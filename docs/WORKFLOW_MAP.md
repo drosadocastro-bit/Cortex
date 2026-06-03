@@ -15,6 +15,7 @@ For public exports and model ownership, see `docs/API_AND_MODEL_MAP.md`.
 raw input
 -> ingestion / normalization
 -> extracted observations
+-> evidence quality assessment
 -> candidate claims
 -> normalized claims
 -> claim evidence evaluation
@@ -53,6 +54,11 @@ review, session decisions, or report export.
 `evidence_docket.py`
 : Summarizes possible support, possible contradiction, uncertainty, and
 irrelevance for review. It does not create evidence or decide claim status.
+
+`evidence_quality.py`
+: Scores evidence condition across provenance, lineage, source transparency,
+observation directness, contamination, contradiction pressure, temporal
+specificity, and extraction confidence. Quality is review context only.
 
 `source_review.py`
 : Builds source reliability dockets from evidence, provenance, lineage,
@@ -126,6 +132,7 @@ future UI fixture.
 - A bundle is a bounded review packet, not a final report.
 - A demo workspace is an architecture exercise, not validation against reality.
 - Review priority is attention, not confidence.
+- Evidence quality is record condition, not confirmation.
 - Source risk is review pressure, not source rejection.
 - Repeated lineage remains repeated lineage even if it appears across dockets,
   sessions, bundles, or demo output.

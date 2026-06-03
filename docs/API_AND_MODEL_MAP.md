@@ -11,7 +11,7 @@ should not be interpreted as a final namespace design.
 
 | Area | Examples | Posture |
 | --- | --- | --- |
-| Cognitive core | `EvidenceItem`, `ClaimNode`, `MemoryRecord`, `RelationshipEdge`, `TimelineEngine`, `ClaimMatrixEngine` | Foundational |
+| Cognitive core | `EvidenceItem`, `EvidenceQualityAssessment`, `ClaimNode`, `MemoryRecord`, `RelationshipEdge`, `TimelineEngine`, `ClaimMatrixEngine` | Foundational |
 | Ingestion and provenance | `RawInput`, `IngestionNormalizer`, `ProvenanceRecord`, `SourceLineageRecord`, `ContaminationFlag` | Foundational |
 | Claim pipeline | `CandidateClaim`, `ClaimNormalizer`, `ClaimEvidenceEvaluator`, `ClaimReviewEngine` | Canonical review path |
 | Review workflow | `SourceReviewEngine`, `WorkingMemoryEngine`, `ReviewSessionEngine`, `ReviewInfluencePolicy` | Canonical review path |
@@ -28,6 +28,7 @@ simple and deterministic during rapid research phases. This is acceptable for
 now, but the ownership boundaries should remain visible:
 
 - Evidence/provenance models describe supplied or normalized records.
+- Evidence-quality models describe record condition for review only.
 - Claim models organize assertions without confirming them.
 - Graph and timeline models preserve relationships and chronology.
 - Retrieval, attention, semantic, and reasoning models describe context

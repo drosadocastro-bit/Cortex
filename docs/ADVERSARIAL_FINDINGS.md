@@ -14,8 +14,8 @@ $env:PYTHONPATH='src'; python -c "from roswell_uap_cortex import AdversarialHarn
 
 ## Summary
 
-- Scenario count: 16
-- Resisted scenarios: 16
+- Scenario count: 17
+- Resisted scenarios: 17
 - Failed scenarios: 0
 - Resistance rate: 1.000
 
@@ -31,6 +31,7 @@ $env:PYTHONPATH='src'; python -c "from roswell_uap_cortex import AdversarialHarn
 - adversarial-policy-abuse: resisted; attack=policy_abuse; failure_mode=guardrail_disabled_by_policy
 - adversarial-presentation-aggregation-trap: resisted; attack=presentation_aggregation_trap; failure_mode=aggregation_as_corroboration
 - adversarial-provenance-laundering: resisted; attack=provenance_laundering; failure_mode=false_independence
+- adversarial-quality-score-laundering: resisted; attack=quality_score_laundering; failure_mode=quality_as_confirmation
 - adversarial-review-state-laundering: resisted; attack=review_state_laundering; failure_mode=review_as_confirmation
 - adversarial-semantic-echo-chamber: resisted; attack=semantic_echo_chamber; failure_mode=similarity_as_confirmation
 - adversarial-speculation-hardening: resisted; attack=speculation_hardening; failure_mode=speculation_as_fact

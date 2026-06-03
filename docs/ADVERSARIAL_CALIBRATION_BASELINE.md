@@ -2,6 +2,9 @@
 
 Generated: 2026-06-02
 
+Reading guide: see `docs/ADVERSARIAL_RESULTS_GUIDE.md` for how this calibration
+baseline differs from smoke adversarial findings and hard adversarial results.
+
 This baseline records the lightweight adversarial wording detector exactly as it
 behaves today. It is a credibility artifact, not a safety score. The point is to
 keep true positives, true negatives, false positives, and false negatives

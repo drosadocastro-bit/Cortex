@@ -2,6 +2,9 @@
 
 Generated: 2026-05-29
 
+Reading guide: see `docs/ADVERSARIAL_RESULTS_GUIDE.md` for how hard adversarial
+outcomes differ from smoke adversarial findings and calibration metrics.
+
 Command:
 
 ```powershell

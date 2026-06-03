@@ -4,6 +4,10 @@
 
 Accepted.
 
+Related reading: `ADVERSARIAL_RESULTS_GUIDE.md` explains how the adversarial
+findings, calibration baseline, hard suite, remediation notes, and AI debt
+register fit together.
+
 ## Context
 
 The first adversarial calibration baseline was useful as a smoke test, but its

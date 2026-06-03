@@ -2,6 +2,10 @@
 
 Generated: 2026-06-02
 
+Reading guide: see `docs/ADVERSARIAL_RESULTS_GUIDE.md` for how this smoke
+report differs from calibration baselines, hard adversarial results, and
+remediation tracking.
+
 Command:
 
 ```powershell

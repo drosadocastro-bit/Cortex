@@ -44,6 +44,29 @@ Must not do:
 Do not let an LLM create graph edges, mutate evidence, confirm claims, or remove
 contradictions from context.
 
+## Dream Replay Debt
+
+Risk:
+Future offline consolidation could be mistaken for insight, evidence, memory
+truth amplification, or autonomous reasoning if dream artifacts are allowed to
+feed back into claims without boundary checks.
+
+Current mitigation:
+`DreamReplayEngine` is deterministic and read-only. It emits
+`DreamReplayResult` artifacts, consolidation notes, duplicate candidates,
+stale-memory signals, contradiction visibility, warnings, and recommendations
+without applying decay, merging memories, reactivating archival memories,
+creating evidence, confirming claims, or creating graph edges.
+
+Future trigger:
+Before connecting dream replay to persistence, review workflow, live inference,
+or automated scheduling, dream artifacts must remain typed internal cognitive
+artifacts with explicit provenance, limitations, and no automatic promotion.
+
+Must not do:
+Do not treat dream replay, repeated replay, or consolidation recommendations as
+evidence, corroboration, claim support, contradiction resolution, or source
+trust.
 ## Provenance Debt
 
 Risk:
@@ -747,6 +770,7 @@ state.
 Must not do:
 Do not treat VLM descriptions as primary evidence without provenance and
 uncertainty labeling.
+
 
 
 

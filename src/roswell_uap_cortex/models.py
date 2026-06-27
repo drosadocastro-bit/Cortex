@@ -406,6 +406,27 @@ class AttentionWarningType(str, Enum):
     SPECULATION_REMAINS_SPECULATION = "speculation_remains_speculation"
 
 
+class DreamRecommendationType(str, Enum):
+    """Offline memory-consolidation recommendations, not truth updates."""
+
+    REPLAY_FOR_REVIEW = "replay_for_review"
+    REVIEW_CONTRADICTION = "review_contradiction"
+    REVIEW_DUPLICATE = "review_duplicate"
+    CONSIDER_ARCHIVAL = "consider_archival"
+    REFRESH_ATTENTION = "refresh_attention"
+    PRESERVE_UNCERTAINTY = "preserve_uncertainty"
+
+
+class DreamWarningType(str, Enum):
+    """Warnings that keep dream replay from becoming evidence or confirmation."""
+
+    DREAM_NOT_EVIDENCE = "dream_not_evidence"
+    REPLAY_NOT_CONFIRMATION = "replay_not_confirmation"
+    DUPLICATE_NOT_CORROBORATION = "duplicate_not_corroboration"
+    CONTRADICTION_NOT_RESOLUTION = "contradiction_not_resolution"
+    RECOMMENDATION_NOT_MUTATION = "recommendation_not_mutation"
+    MISSING_PROVENANCE_VISIBLE = "missing_provenance_visible"
+
 class AdversarialAttackVector(str, Enum):
     """Synthetic attack vectors against epistemic guardrails."""
 
@@ -2470,6 +2491,92 @@ class MemoryRecord:
     def content_key(content: str) -> str:
         return " ".join(content.casefold().strip().split())
 
+@dataclass(slots=True)
+class DreamReplayRequest:
+    """Offline replay request over existing memories; not an inference prompt."""
+
+    request_id: str = ""
+    memory_records: list[MemoryRecord] = field(default_factory=list)
+    as_of: datetime = field(default_factory=lambda: datetime(1970, 1, 1, tzinfo=timezone.utc))
+    include_archival: bool = True
+    stale_after_days: int = 30
+    notes: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if not self.request_id:
+            memory_ids = ":".join(sorted(memory.id for memory in self.memory_records))
+            self.request_id = str(uuid5(NAMESPACE_URL, f"dream-request:{self.as_of.isoformat()}:{memory_ids}"))
+
+
+@dataclass(slots=True)
+class MemoryConsolidationNote:
+    """A dream-replay observation about memory state, not evidence."""
+
+    memory_id: str
+    note_type: str
+    message: str
+    related_memory_ids: set[str] = field(default_factory=set)
+    evidence_ids: set[str] = field(default_factory=set)
+    note_id: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.note_id:
+            related = ":".join(sorted(self.related_memory_ids))
+            evidence = ":".join(sorted(self.evidence_ids))
+            self.note_id = str(uuid5(NAMESPACE_URL, f"dream-note:{self.memory_id}:{self.note_type}:{related}:{evidence}:{self.message}"))
+
+
+@dataclass(slots=True)
+class ConsolidationRecommendation:
+    """A bounded offline recommendation; applying it requires another layer."""
+
+    recommendation_type: DreamRecommendationType | str
+    memory_ids: set[str] = field(default_factory=set)
+    rationale: str = ""
+    priority: float = 0.0
+    recommendation_id: str = ""
+
+    def __post_init__(self) -> None:
+        if isinstance(self.recommendation_type, str):
+            self.recommendation_type = DreamRecommendationType(self.recommendation_type)
+        self.priority = max(0.0, min(1.0, self.priority))
+        if not self.recommendation_id:
+            memory_ids = ":".join(sorted(self.memory_ids))
+            self.recommendation_id = str(uuid5(NAMESPACE_URL, f"dream-recommendation:{self.recommendation_type.value}:{memory_ids}:{self.rationale}"))
+
+
+@dataclass(slots=True)
+class DreamArtifact:
+    """Internal cognitive artifact produced by dream replay, not evidence."""
+
+    artifact_id: str
+    source_memory_ids: set[str] = field(default_factory=set)
+    generated_at: datetime = field(default_factory=lambda: datetime(1970, 1, 1, tzinfo=timezone.utc))
+    notes: list[str] = field(default_factory=list)
+    limitations: list[str] = field(default_factory=list)
+    artifact_type: str = "dream_replay"
+
+
+@dataclass(slots=True)
+class DreamReplayResult:
+    """Structured result from offline memory consolidation."""
+
+    request_id: str
+    artifact: DreamArtifact
+    consolidation_notes: list[MemoryConsolidationNote] = field(default_factory=list)
+    recommendations: list[ConsolidationRecommendation] = field(default_factory=list)
+    replayed_memory_ids: list[str] = field(default_factory=list)
+    duplicate_candidate_groups: list[list[str]] = field(default_factory=list)
+    contradiction_memory_ids: set[str] = field(default_factory=set)
+    stale_memory_ids: set[str] = field(default_factory=set)
+    archival_memory_ids: set[str] = field(default_factory=set)
+    warnings: list[DreamWarningType | str] = field(default_factory=list)
+    limitations: list[str] = field(default_factory=list)
+    mutated_state: bool = False
+
+    def __post_init__(self) -> None:
+        self.warnings = [DreamWarningType(warning) if isinstance(warning, str) else warning for warning in self.warnings]
+
 
 @dataclass(slots=True)
 class GraphNode:
@@ -2493,3 +2600,6 @@ class Contradiction:
     severity: float = 0.5
     resolved: bool = False
     created_at: datetime = field(default_factory=utc_now)
+
+
+

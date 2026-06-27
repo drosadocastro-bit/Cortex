@@ -56,8 +56,9 @@ below summarize what exists today; deeper ownership maps live in
 
 - Domain dataclasses for evidence, claims, source trust, memory records, graph
   nodes, timelines, contradictions, and review artifacts.
-- Memory decay and duplicate memory merging, so repeated observations can
-  reinforce stable records without accumulating redundant copies.
+- Memory decay, duplicate memory merging, and offline dream replay, so repeated
+  observations can be weakened, merged, replayed, or recommended for review
+  without becoming truth signals.
 - Source trust, source independence, lineage, contamination, and corroboration
   helpers that preserve caution without automatic conclusions.
 - Graph relationship models and deterministic graph backends for entities,
@@ -146,6 +147,7 @@ below summarize what exists today; deeper ownership maps live in
   to interpret adversarial smoke, hard, and calibration results.
 - Use [`docs/AI_DEBT.md`](docs/AI_DEBT.md) to check future-risk watchpoints
   before adding AI, vector, UI, connector, or transferability features.
+
 ## Project Layout
 
 ```text
@@ -157,6 +159,7 @@ Roswell-uap-cortex/
     ADR-030-evidence-quality-rubric.md
     ADR-031-evidence-quality-review-integration.md
     ADR-032-review-bundle-quality-integration.md
+    ADR-033-offline-memory-consolidation-and-dream-replay.md
     ADVERSARIAL_CALIBRATION_BASELINE.md
     ADVERSARIAL_FINDINGS.md
     ADVERSARIAL_RESULTS_GUIDE.md
@@ -209,6 +212,7 @@ Roswell-uap-cortex/
       correlation_guard.py
       discourse.py
       discourse_guardrails.py
+      dream_replay.py
       demo_presentation.py
       demo_workspace.py
       demo_workspace_guardrails.py
@@ -316,6 +320,7 @@ Roswell-uap-cortex/
     test_phase28_quality_review_integration.py
     test_phase29_review_bundle_quality.py
     test_phase30_readme_navigation.py
+    test_phase31_dream_replay.py
   pyproject.toml
   README.md
 ```
@@ -361,5 +366,7 @@ public surface and model ownership map before larger refactors.
 See [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) for the recurring rule that every
 five major phases should pause feature expansion for architecture
 consolidation, debugging, and security hygiene.
+
+
 
 

@@ -3,7 +3,7 @@
 Last verified: 2026-06-27
 
 This document is a reorientation snapshot for Roswell UAP Cortex after the
-evidence-quality and review-integration phases. It is not a roadmap, product claim, validation report, or assurance case.
+evidence-quality, review-integration, documentation-navigation, and dream-replay phases. It is not a roadmap, product claim, validation report, or assurance case.
 
 ## Health Check
 
@@ -15,7 +15,7 @@ python -m pytest
 
 Result:
 
-- `406 passed` before Phase 30 documentation-only updates
+- `412 passed` before Phase 31 dream-replay updates
 
 ## What Cortex Can Do Now
 
@@ -26,6 +26,7 @@ raw input
 -> ingestion / normalization
 -> evidence / provenance / lineage
 -> evidence quality assessment
+-> offline memory consolidation / dream replay
 -> candidate claim extraction
 -> claim normalization
 -> claim evidence evaluation
@@ -77,6 +78,7 @@ The strongest parts of the framework are now:
 - claim extraction and normalization without confirmation
 - claim/source review dockets
 - evidence-quality rubric and quality-aware review packaging
+- offline memory consolidation that recommends replay, duplicate review, stale-memory review, archival review, and contradiction review without mutating memories
 - reality-boundary and recursive-inference protection
 - adversarial smoke tests, hard tests, calibration baselines, and documented
   limitations
@@ -91,6 +93,7 @@ The main watchpoints are:
   problem appears.
 - Review workflow objects are numerous and should not duplicate each other.
 - Evidence quality must remain record condition, not truth confidence.
+- Dream replay must remain recommendation-only and must not become evidence, corroboration, or truth amplification.
 - Review bundles now preserve evidence-quality summaries, but their quality
   sections must remain review context rather than findings.
 - Future UI work must consume presentation/review models without inventing
@@ -102,13 +105,14 @@ The main watchpoints are:
 
 Recommended next phase:
 
-**Phase 31: Review Bundle Quality Guardrail Expansion Or Hard-Adversarial Remediation**
+**Phase 32: Dream Replay Boundary Integration Or Hard-Adversarial Remediation**
 
 Reason:
-Phase 30 reorganized README navigation and scope grouping. The next narrow step should either expand bundle-specific adversarial tests or remediate known hard-adversarial near misses before adding new cognitive surface area.
+Phase 31 added offline dream replay as a read-only consolidation layer. The next narrow step should either connect dream artifacts to review visibility with strict boundaries or remediate known hard-adversarial near misses before adding new cognitive surface area.
 
 Other reasonable candidates:
 
+- dream replay boundary integration for review visibility
 - review bundle quality guardrail expansion
 - hard-adversarial remediation for known near misses
 - current roadmap refresh
@@ -121,5 +125,9 @@ Before the next major expansion, keep this boundary:
 > Cortex may improve visibility, ordering, review context, and uncertainty
 > preservation. It must not convert those improvements into truth, authority,
 > safety, certification, or operational validity.
+
+
+
+
 
 

@@ -31,6 +31,7 @@ from roswell_uap_cortex.correlation_guard import CorrelationGuard
 from roswell_uap_cortex.corroboration import CorroborationLayer
 from roswell_uap_cortex.discourse import DiscourseEngine
 from roswell_uap_cortex.discourse_guardrails import DiscourseGuardrails
+from roswell_uap_cortex.dream_replay import DreamReplayEngine
 from roswell_uap_cortex.demo_presentation import DemoPresentationBuilder
 from roswell_uap_cortex.demo_workspace import DemoWorkspaceBuilder
 from roswell_uap_cortex.demo_workspace_guardrails import DemoWorkspaceGuardrails
@@ -109,6 +110,12 @@ from roswell_uap_cortex.models import (
     ClaimReviewQueue,
     ClaimReviewCardView,
     ClaimSupportSignal,
+    ConsolidationRecommendation,
+    DreamArtifact,
+    DreamRecommendationType,
+    DreamReplayRequest,
+    DreamReplayResult,
+    DreamWarningType,
     ClaimUncertaintySignal,
     ClaimNode,
     CognitiveArtifact,
@@ -164,6 +171,7 @@ from roswell_uap_cortex.models import (
     InferenceBoundaryRecord,
     LineageType,
     LoadResult,
+    MemoryConsolidationNote,
     MemoryRecord,
     NormalizedClaim,
     OWASPLLMRisk,
@@ -342,6 +350,12 @@ __all__ = [
     "ClaimReviewItem",
     "ClaimReviewQueue",
     "ClaimSupportSignal",
+    "ConsolidationRecommendation",
+    "DreamArtifact",
+    "DreamRecommendationType",
+    "DreamReplayRequest",
+    "DreamReplayResult",
+    "DreamWarningType",
     "ClaimUncertaintySignal",
     "ClaimNode",
     "CognitiveArtifact",
@@ -370,6 +384,7 @@ __all__ = [
     "DiscourseSection",
     "DiscourseWarning",
     "DiscourseWarningType",
+    "DreamReplayEngine",
     "DemoPresentation",
     "DemoPresentationBuilder",
     "DemoWorkspace",
@@ -437,6 +452,7 @@ __all__ = [
     "LiveInferenceSafetyGuard",
     "MemoryActivationEngine",
     "MemoryDecayEngine",
+    "MemoryConsolidationNote",
     "MemoryRecord",
     "MockEmbeddingBackend",
     "MockReasoner",
@@ -560,3 +576,4 @@ __all__ = [
     "WorkflowStageView",
     "utc_now",
 ]
+

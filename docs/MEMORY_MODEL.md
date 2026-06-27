@@ -180,6 +180,26 @@ Association is not confirmation. Retrieved candidates are labeled as possible,
 weak, or contested associations, and no support relationship is created by
 retrieval.
 
+## Offline Memory Consolidation And Dream Replay
+
+Phase 31 adds `DreamReplayEngine` as a deterministic rest-cycle layer above the
+existing memory mechanisms. Dream replay consumes existing `MemoryRecord`
+objects and emits `DreamReplayResult` artifacts with consolidation notes,
+duplicate candidates, stale-memory signals, contradiction visibility, archival
+visibility, warnings, and bounded recommendations.
+
+Dream replay coordinates memory review. It does not replace or secretly invoke
+memory decay, memory activation, contradiction registration, or duplicate
+merging. In particular:
+
+- decay still decides how memory strength changes over time;
+- merge still decides whether duplicate memories are actually collapsed;
+- contradiction pressure still marks unresolved conflicts;
+- dream replay only recommends what may deserve later review.
+
+Dream artifacts are internal cognitive artifacts, not evidence. Replayed
+memories do not become more true, repeated replay is not corroboration, and
+recommendations do not mutate memory state.
 ## Memory Decay
 
 `MemoryDecayEngine` applies time-aware decay based on days since the last
@@ -507,3 +527,4 @@ evaluation, and reporting.
 
 New AI, ingestion, vector search, or generated-report features should address
 the relevant debt entries before they are treated as complete.
+

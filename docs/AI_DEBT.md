@@ -344,8 +344,8 @@ priority as evidence, confirmation, source truth, or graph support.
 Watchpoints:
 - `ContextWindowBuilder` must stay narrow: review influence can affect
   inclusion and ordering, not evidentiary weighting.
-- `README.md` is becoming a capability ledger; reorganize Current Scope into
-  sections when readability starts to drop.
+- `README.md` Current Scope is now grouped; keep future additions in the
+  correct section so it does not become a flat capability ledger again.
 
 ## Presentation Contract Debt
 
@@ -747,3 +747,6 @@ state.
 Must not do:
 Do not treat VLM descriptions as primary evidence without provenance and
 uncertainty labeling.
+
+
+

@@ -32,6 +32,12 @@ The framework is intentionally skeletal at this stage:
 ## Table Of Contents
 
 - [Current Scope](#current-scope)
+  - [Core Evidence And Memory](#core-evidence-and-memory)
+  - [Ingestion And Provenance](#ingestion-and-provenance)
+  - [Claims, Quality, And Review](#claims-quality-and-review)
+  - [Reasoning, Retrieval, And Discourse](#reasoning-retrieval-and-discourse)
+  - [Persistence, Evaluation, And Safety](#persistence-evaluation-and-safety)
+  - [Navigation Notes](#navigation-notes)
 - [Project Layout](#project-layout)
 - [Development](#development)
 - [Research Roadmap](#research-roadmap)
@@ -40,129 +46,106 @@ The framework is intentionally skeletal at this stage:
 
 ## Current Scope
 
-The initial framework provides:
+The framework is organized around an evidence-first review path. The sections
+below summarize what exists today; deeper ownership maps live in
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md),
+[`docs/WORKFLOW_MAP.md`](docs/WORKFLOW_MAP.md), and
+[`docs/CURRENT_STATE.md`](docs/CURRENT_STATE.md).
 
-- Domain dataclasses for evidence, claims, source trust, memory records, graph nodes,
-  and contradictions.
-- A memory decay engine that weakens unused or low-confidence memories.
-- Duplicate memory merging so repeated observations reinforce stable memories instead
-  of accumulating redundant records.
-- Source trust, lineage, contamination, and corroboration engines for epistemic
-  caution without automatic conclusions.
-- Graph relationship models and an in-memory relationship graph for entities,
-  sources, claims, events, and contradictions.
-- A deterministic timeline engine that orders exact dates while preserving
-  approximate and unknown dates.
-- A claim matrix that separates support from contradiction and keeps repeated
-  lineage from inflating confidence.
-- Source independence scoring so semantic repetition is not treated as
-  corroboration.
-- Associative activation that retrieves possible related memories, claims,
-  evidence, and entities without confirming relationships.
-- A correlation guard that downgrades low-independence, high-overlap, or
-  contradiction-heavy associations.
-- Weak and contested associations remain visible in activated context for
-  review.
-- A vector-ready retrieval design that keeps future embeddings secondary to
-  provenance, independence, and contradiction state.
-- A deterministic ingestion layer that normalizes raw inputs into evidence,
-  observations, provenance, source lineage, contamination flags, and ingestion
+### Core Evidence And Memory
+
+- Domain dataclasses for evidence, claims, source trust, memory records, graph
+  nodes, timelines, contradictions, and review artifacts.
+- Memory decay and duplicate memory merging, so repeated observations can
+  reinforce stable records without accumulating redundant copies.
+- Source trust, source independence, lineage, contamination, and corroboration
+  helpers that preserve caution without automatic conclusions.
+- Graph relationship models and deterministic graph backends for entities,
+  events, sources, claims, evidence, contradiction lookup, lineage paths, and
+  temporal links.
+- Timeline memory that orders exact dates while preserving approximate,
+  partial, fuzzy, and unknown dates without fabricating precision.
+
+### Ingestion And Provenance
+
+- Deterministic ingestion that normalizes raw inputs into evidence,
+  observations, provenance, lineage, contamination flags, and ingestion
   warnings.
-- Observation-vs-interpretation separation at intake, preserving direct
-  observations, interpretations, speculation, reported claims, metadata
-  statements, and unknown spans.
-- Candidate claim extraction that turns classified observations into
-  unsupported review candidates without creating support, graph edges, or
-  confirmation.
-- Claim normalization and matrix integration that groups candidate claims under
-  canonical topics while preserving origin, provenance, lineage, unsupported
-  status, and zero confidence.
-- Claim support and contradiction evaluation that compares normalized claims
-  against evidence as bounded review signals without confirming or disproving
-  claims.
-- Evidence quality assessment that scores provenance completeness, lineage
-  clarity, source transparency, observation directness, contamination
-  resistance, contradiction stability, temporal specificity, and extraction
-  confidence as review context only.
-- Evaluation guardrails that preserve the distinction between possible support,
-  possible contradiction, uncertainty, irrelevance, and needs-review pressure.
-- Claim review dockets that package normalized claims, evidence assessments,
-  evidence-quality summaries, provenance, lineage, uncertainty, warnings, and bounded review
-  recommendations for human inspection.
-- Source reliability review dockets that expose provenance quality, lineage
-  risk, evidence-quality summaries, contamination flags, trust inputs, repeated source usage, and bounded
-  source-review recommendations without accepting or rejecting sources.
-- Working memory and review session state for tracking active focus, reviewed
-  items, deferred items, unresolved contradictions, uncertainty notes, and
-  deterministic session deltas without mutating investigative records.
-- Session persistence and audit trails that save review sessions, decisions,
-  deferred items, unresolved state, and workflow events as deterministic local
-  JSON without creating evidence, claims, source truth, or graph edges on load.
-- Review bundle exports that compose sessions, claim dockets, source dockets,
-  evidence-quality summaries, unresolved items, uncertainty, provenance, audit trails, and limitations into
-  deterministic Markdown-ready review packets without creating final reports.
-- A fully synthetic demo workspace that runs the canonical Cortex path from raw
-  inputs through review bundle output without real UAP data.
-- Review-to-reasoning boundary contracts that allow review workflow state to
-  guide attention, context visibility, and discourse annotations without
-  becoming evidence, claim confidence, source truth, or graph support.
-- Read-only workflow view models and a synthetic demo presentation contract
-  that prepare future UI work without adding UI or presentation-side reasoning.
-- Sensory intake safeguards: ingestion does not confirm claims or create graph
-  edges automatically.
-- A bounded local cognitive reasoning layer that operates on activated context
-  without mutating evidence, claims, or graph structures.
-- Context-window construction that trims duplicate lineage and preserves
-  contradiction visibility to mitigate lost-in-the-middle risk.
-- Reasoning guardrails for speculative labeling, unsupported claims, missing
-  provenance, same-lineage repetition, and fictional contamination warnings.
-- A deterministic mock reasoner plus adapter interface for future Nemotron,
-  LM Studio, Ollama, vLLM, OpenAI API, or VLM perception integrations.
-- An investigative discourse layer that turns activated context and bounded
-  reasoning into structured human-review sections.
-- Deterministic narrative separation for observations, interpretations,
-  speculation, and uncertainty.
-- Provenance citations and discourse guardrails that keep uncertainty,
-  contradictions, weak associations, and contamination warnings visible.
-- A tiny CLI harness for deterministic terminal discourse output, with future
-  web interface possibilities kept separate.
-- Snapshot persistence with manifest, schema versioning, record counts,
-  deterministic checksums, and guarded local JSON save/load behavior.
-- Immutable persistence boundaries: loading records does not create evidence,
-  claims, graph edges, or truth state automatically.
-- A synthetic evaluation harness with epistemic metrics, deterministic reports,
-  no-mutation checks, and mandatory limitations.
-- Expanded synthetic scenario coverage for review influence, presentation
-  boundaries, missing display data, and synthetic-demo presentation behavior
-  before any transferability claims.
-- Graph backend abstraction with NetworkX integration for deterministic
-  traversal, contradiction lookup, lineage paths, subgraphs, and temporal links.
-- Conservative temporal helpers using `python-dateutil` behind wrappers that
-  preserve fuzzy-date uncertainty.
-- Controlled semantic layer with embedding backend abstraction, deterministic
-  mock embeddings, semantic warnings, possible-related clusters, and hybrid
-  retrieval component scores.
-- Reality boundary layer with cognitive artifact separation, inference
-  provenance chains, recursive inference protection, self-citation detection,
-  and live-inference safety guardrails.
-- Attention and salience gating that ranks review priority across records,
-  preserves noisy evidence warnings, suppresses same-lineage dominance, and
-  mitigates context overload without creating truth claims.
-- Adversarial epistemic stress testing with synthetic attacks for provenance
-  laundering, semantic echo, discourse contamination, confidence inflation,
-  contradiction suppression, speculation hardening, and policy abuse.
-- Adversarial calibration with explicit true-positive, true-negative,
-  false-positive, false-negative, precision, recall, and error-taxonomy
-  reporting so detector limits remain visible.
-- OWASP-inspired hard adversarial testing with honest outcomes including
-  resisted, near-miss, expected-failure, unexpected-failure, and inconclusive
-  results.
-- An AI debt register documenting future risks around inference, provenance,
-  semantic similarity, temporal parsing, scoring, evaluation, and reporting.
-- Tests proving memory, source-trust, timeline, graph, claim-matrix,
-  associative retrieval, ingestion, bounded reasoning, discourse, and
-  persistence/evaluation behavior.
+- Observation classification that keeps direct observations, interpretations,
+  speculation, reported claims, metadata statements, and unknown spans
+  separated at intake.
+- Sensory-intake safeguards: ingestion does not confirm claims, rank claims,
+  create graph edges, or create support relationships automatically.
+- Provenance and lineage travel with records so derivative sources, repeated
+  source URIs, missing fields, and weak chain-of-custody remain visible.
 
+### Claims, Quality, And Review
+
+- Candidate claim extraction, claim normalization, and claim matrix integration
+  that keep extracted and normalized claims unsupported with zero confidence
+  until reviewed.
+- Claim evidence evaluation that emits possible support, possible
+  contradiction, uncertainty, irrelevance, and needs-review signals without
+  confirming or disproving claims.
+- Evidence quality assessment across provenance completeness, lineage clarity,
+  source transparency, observation directness, contamination resistance,
+  contradiction stability, temporal specificity, and extraction confidence.
+- Claim and source review dockets that include evidence assessments,
+  evidence-quality summaries, provenance, lineage, uncertainty, warnings, and
+  recommendations for human inspection.
+- Review priority, working memory, review sessions, audit trails, and review
+  bundles that organize review state without mutating evidence, confirming
+  claims, accepting or rejecting sources, or creating graph edges.
+- Review bundle exports that preserve evidence-quality summaries,
+  unresolved items, uncertainty, provenance, audit trails, limitations, and
+  quality boundaries without becoming final reports.
+
+### Reasoning, Retrieval, And Discourse
+
+- Associative activation and correlation guarding that retrieve possible,
+  weak, and contested associations without creating confirmation.
+- Controlled semantic and hybrid retrieval layers with deterministic mock
+  embeddings, component scores, semantic warnings, and future vector-ready
+  abstractions.
+- Attention and salience gating that ranks review priority while preserving
+  noisy evidence warnings, contradiction pressure, provenance gaps, and
+  same-lineage suppression.
+- Bounded local reasoning over activated context with deterministic mock
+  reasoning, context-window trimming, speculative labeling, and guardrails that
+  prevent mutation of evidence, claims, or graph structures.
+- Investigative discourse, citations, uncertainty formatting, and deterministic
+  narrative separation for observations, interpretations, speculation, and
+  unresolved uncertainty.
+
+### Persistence, Evaluation, And Safety
+
+- Snapshot persistence with manifests, schema versioning, record counts,
+  deterministic checksums, unknown-field preservation, and guarded local JSON
+  save/load behavior.
+- Session persistence and audit trails that save workflow history without
+  applying review decisions to evidence, claims, sources, graph records, or
+  truth state.
+- Synthetic evaluation harnesses, scenario datasets, epistemic metrics, and
+  deterministic reports with mandatory limitations.
+- Reality-boundary and live-inference safety layers that keep evidence, claims,
+  reasoning outputs, discourse outputs, semantic clusters, retrieval results,
+  speculative hypotheses, synthetic evaluations, and external input separated.
+- Adversarial smoke tests, OWASP-inspired hard scenarios, calibration
+  baselines, error-taxonomy reporting, remediation notes, and an AI debt
+  register that keep known limitations visible.
+
+### Navigation Notes
+
+- Start with [`docs/CURRENT_STATE.md`](docs/CURRENT_STATE.md) for the latest
+  reorientation snapshot and next-phase candidates.
+- Use [`docs/WORKFLOW_MAP.md`](docs/WORKFLOW_MAP.md) to understand review
+  workflow ownership and sprawl boundaries.
+- Use [`docs/API_AND_MODEL_MAP.md`](docs/API_AND_MODEL_MAP.md) before larger
+  refactors or public API changes.
+- Use [`docs/ADVERSARIAL_RESULTS_GUIDE.md`](docs/ADVERSARIAL_RESULTS_GUIDE.md)
+  to interpret adversarial smoke, hard, and calibration results.
+- Use [`docs/AI_DEBT.md`](docs/AI_DEBT.md) to check future-risk watchpoints
+  before adding AI, vector, UI, connector, or transferability features.
 ## Project Layout
 
 ```text
@@ -192,6 +175,7 @@ Roswell-uap-cortex/
     PHASE_25_2_CONSOLIDATION.md
     PHASE_26_4_ADVERSARIAL_CONSOLIDATION.md
     PHASE_27_1_EVIDENCE_QUALITY_HYGIENE.md
+    PHASE_30_DOCUMENTATION_NAVIGATION.md
     PRESENTATION_CONTRACT.md
     PROBLEM_STATEMENT.md
     PUBLIC_API.md
@@ -331,6 +315,7 @@ Roswell-uap-cortex/
     test_phase27_1_evidence_quality_hygiene.py
     test_phase28_quality_review_integration.py
     test_phase29_review_bundle_quality.py
+    test_phase30_readme_navigation.py
   pyproject.toml
   README.md
 ```
@@ -376,3 +361,5 @@ public surface and model ownership map before larger refactors.
 See [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) for the recurring rule that every
 five major phases should pause feature expansion for architecture
 consolidation, debugging, and security hygiene.
+
+

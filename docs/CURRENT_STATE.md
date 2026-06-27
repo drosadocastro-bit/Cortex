@@ -15,7 +15,7 @@ python -m pytest
 
 Result:
 
-- `393 passed`
+- `406 passed` before Phase 30 documentation-only updates
 
 ## What Cortex Can Do Now
 
@@ -86,7 +86,7 @@ The strongest parts of the framework are now:
 
 The main watchpoints are:
 
-- `README.md` is still readable but increasingly dense.
+- `README.md` now has grouped current-scope navigation; future additions should stay in the right section rather than rebuilding a flat capability ledger.
 - `models.py` remains broad by design; defer splitting until a real ownership
   problem appears.
 - Review workflow objects are numerous and should not duplicate each other.
@@ -102,17 +102,14 @@ The main watchpoints are:
 
 Recommended next phase:
 
-**Phase 30: Review Bundle Quality Guardrail Expansion Or README Scope Reorganization**
+**Phase 31: Review Bundle Quality Guardrail Expansion Or Hard-Adversarial Remediation**
 
 Reason:
-Evidence quality now flows through review dockets and bundles. The next narrow
-step is either to expand bundle-specific adversarial tests or to reorganize the
-README current-scope ledger into clearer sections before the next feature.
+Phase 30 reorganized README navigation and scope grouping. The next narrow step should either expand bundle-specific adversarial tests or remediate known hard-adversarial near misses before adding new cognitive surface area.
 
 Other reasonable candidates:
 
 - review bundle quality guardrail expansion
-- README scope reorganization
 - hard-adversarial remediation for known near misses
 - current roadmap refresh
 - UI-readiness view-model audit
@@ -124,3 +121,5 @@ Before the next major expansion, keep this boundary:
 > Cortex may improve visibility, ordering, review context, and uncertainty
 > preservation. It must not convert those improvements into truth, authority,
 > safety, certification, or operational validity.
+
+

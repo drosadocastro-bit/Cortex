@@ -35,4 +35,5 @@ def test_ai_debt_tracks_review_boundary_watchpoints() -> None:
     assert "Review-To-Reasoning Boundary Debt" in text
     assert "ContextWindowBuilder" in text
     assert "inclusion and ordering, not evidentiary weighting" in text
-    assert "`README.md` is becoming a capability ledger" in text
+    assert "`README.md` Current Scope is now grouped" in text
+    assert "flat capability ledger again" in text

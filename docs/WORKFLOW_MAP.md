@@ -25,7 +25,7 @@ raw input
 -> working memory
 -> review session
 -> audit trail
--> review bundle
+-> evidence-quality-aware review bundle
 -> review influence hints
 -> bounded reasoning / discourse visibility
 -> synthetic demo / future UI display
@@ -96,8 +96,8 @@ claims, evidence, sources, or graph records.
 
 `review_bundle.py`
 : Composes session state, dockets, audit trail, provenance references,
-contradictions, uncertainty, and limitations into a bounded review packet. It
-does not create a final report.
+contradictions, uncertainty, evidence-quality summaries, and limitations into a
+bounded review packet. It does not create a final report.
 
 `review_bundle_formatter.py`
 : Formats a bundle into deterministic Markdown-ready text. It must preserve
@@ -133,6 +133,7 @@ future UI fixture.
 - A session decision is a workflow annotation, not a claim update.
 - An audit event is workflow history, not evidence.
 - A bundle is a bounded review packet, not a final report.
+- A bundle quality section is review context, not a finding.
 - A demo workspace is an architecture exercise, not validation against reality.
 - Review priority is attention, not confidence.
 - Evidence quality is record condition, not confirmation.

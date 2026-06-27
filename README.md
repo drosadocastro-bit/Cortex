@@ -99,7 +99,7 @@ The initial framework provides:
   deferred items, unresolved state, and workflow events as deterministic local
   JSON without creating evidence, claims, source truth, or graph edges on load.
 - Review bundle exports that compose sessions, claim dockets, source dockets,
-  unresolved items, uncertainty, provenance, audit trails, and limitations into
+  evidence-quality summaries, unresolved items, uncertainty, provenance, audit trails, and limitations into
   deterministic Markdown-ready review packets without creating final reports.
 - A fully synthetic demo workspace that runs the canonical Cortex path from raw
   inputs through review bundle output without real UAP data.
@@ -173,11 +173,13 @@ Roswell-uap-cortex/
     ADR-029-adversarial-calibration-expansion.md
     ADR-030-evidence-quality-rubric.md
     ADR-031-evidence-quality-review-integration.md
+    ADR-032-review-bundle-quality-integration.md
     ADVERSARIAL_CALIBRATION_BASELINE.md
     ADVERSARIAL_FINDINGS.md
     ADVERSARIAL_RESULTS_GUIDE.md
     ARCHITECTURE.md
     CODE_WALKTHROUGH.md
+    CURRENT_STATE.md
     DEMO_WORKSPACE.md
     DEBUGGING_AND_SECURITY.md
     GOVERNANCE.md
@@ -328,6 +330,7 @@ Roswell-uap-cortex/
     test_phase27_evidence_quality.py
     test_phase27_1_evidence_quality_hygiene.py
     test_phase28_quality_review_integration.py
+    test_phase29_review_bundle_quality.py
   pyproject.toml
   README.md
 ```
@@ -358,6 +361,10 @@ claims as established fact.
 
 See [`docs/CODE_WALKTHROUGH.md`](docs/CODE_WALKTHROUGH.md) for a maintainer
 walkthrough of how the modules work together.
+
+See [`docs/CURRENT_STATE.md`](docs/CURRENT_STATE.md) for the latest
+reorientation snapshot, current boundaries, and strongest next phase
+candidates.
 
 See [`docs/WORKFLOW_MAP.md`](docs/WORKFLOW_MAP.md) for the review workflow map
 that separates cognitive core, review workflow, session/audit, export/demo, and

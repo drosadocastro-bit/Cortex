@@ -82,8 +82,9 @@ does not create evidence, claims, source truth, or graph edges.
 Phase 22 adds review bundles. `ReviewBundleBuilder` composes sessions, claim
 dockets, source dockets, audit trails, unresolved items, deferred items,
 uncertainty notes, contradictions, provenance references, and limitations into
-structured export packets. A bundle is not a final report and does not resolve
-claims or sources.
+structured export packets. Phase 29 extends bundles with evidence-quality
+summaries while keeping quality as review context only. A bundle is not a final
+report and does not resolve claims or sources.
 
 Phase 23 adds a synthetic demo workspace. `DemoWorkspaceBuilder` creates tiny
 synthetic raw inputs and runs them through ingestion, claim extraction,
@@ -279,6 +280,8 @@ the workflow did, not what external reality is.
 
 Review bundles are memory exports for inspection. They are useful for future UI
 and sharing, but they remain bounded review state rather than conclusions.
+Evidence-quality sections preserve record condition for review; they do not
+turn quality labels into findings.
 
 The demo workspace is useful for future UI because it gives a safe canonical
 session to render without touching real data.

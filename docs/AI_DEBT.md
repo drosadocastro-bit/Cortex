@@ -282,18 +282,20 @@ Exported Markdown bundles may appear like official findings or final reports.
 
 Current mitigation:
 `ReviewBundleBuilder` keeps sessions, claim dockets, source dockets, audit
-trails, uncertainty, contradictions, provenance, and limitations in separate
-sections. `ReviewBundleGuardrails` warns on certainty-inflating language and
-missing provenance or limitations.
+trails, uncertainty, contradictions, provenance, evidence-quality summaries,
+and limitations in separate sections. `ReviewBundleGuardrails` warns on
+certainty-inflating language, missing provenance or limitations, and missing
+quality boundaries.
 
 Future trigger:
 Before adding UI export, PDF output, generated summaries, or public sharing,
 bundle renderers must preserve limitations, provenance, uncertainty, deferred
-items, and unresolved contradictions.
+items, unresolved contradictions, and evidence-quality boundary notes.
 
 Must not do:
 Do not label a review bundle as a final report, confirmed finding, validated
 claim, or source rejection.
+Do not treat a bundle quality section as a finding.
 
 ## Demo Workspace Debt
 

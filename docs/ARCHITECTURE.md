@@ -109,8 +109,9 @@ state does not apply decisions to evidence, claims, sources, or graph records.
 
 Review bundle export:
 Review bundles compose sessions, dockets, audit trails, unresolved items,
-uncertainty, provenance, contradictions, and limitations into structured
-Markdown-ready review packets. A bundle is not a final report or conclusion.
+uncertainty, provenance, evidence-quality summaries, contradictions, and
+limitations into structured Markdown-ready review packets. A bundle is not a
+final report or conclusion.
 
 Synthetic demo workspace:
 The demo workspace runs a tiny synthetic-only fixture through the canonical
@@ -182,6 +183,7 @@ These layers should preserve the same epistemic rules as the core path.
 - Review session decisions are not claim confirmation or source rejection.
 - Audit trails are workflow history, not evidence.
 - Review bundles are not final reports.
+- Review bundle quality sections are review context, not findings.
 - Demo workspaces are not real investigations.
 - Review workflow annotations guide attention only; they are not truth signals.
 - Presentation view models are display state, not reasoning or evidence.

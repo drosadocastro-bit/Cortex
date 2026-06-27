@@ -64,4 +64,14 @@ class ReviewBundleGuardrails:
                         "Review bundle provenance/citation references are missing.",
                     )
                 )
+        if "evidence_quality" in section_ids:
+            quality = next(section for section in bundle.sections if section.section_id == "evidence_quality")
+            text = " ".join(quality.items).casefold()
+            if quality.items != ["none"] and "review context" not in text:
+                warnings.append(
+                    ReviewBundleWarning(
+                        "missing_quality_boundary",
+                        "Evidence-quality bundle section must state that quality is review context only.",
+                    )
+                )
         return warnings

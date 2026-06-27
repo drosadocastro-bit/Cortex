@@ -7,6 +7,7 @@ from uuid import NAMESPACE_URL, uuid5
 
 from roswell_uap_cortex.models import (
     ClaimReviewDocket,
+    EvidenceQualitySummary,
     ReviewBundle,
     ReviewBundleManifest,
     ReviewBundleSection,
@@ -38,6 +39,7 @@ class ReviewBundleBuilder:
             self._active_focus(session),
             self._claim_dockets(claim_dockets),
             self._source_dockets(source_dockets),
+            self._evidence_quality(claim_dockets, source_dockets),
             self._unresolved(session),
             self._deferred(session),
             self._uncertainty(session),
@@ -105,6 +107,44 @@ class ReviewBundleBuilder:
             for item in docket.items:
                 items.append(f"{item.source_id}: risk={item.risk_score:.2f} reliability={item.reliability_score:.2f}")
         return ReviewBundleSection("source_dockets", "Source Review Dockets", items or ["none"], ids)
+
+    def _evidence_quality(
+        self,
+        claim_dockets: list[ClaimReviewDocket],
+        source_dockets: list[SourceReviewDocket],
+    ) -> ReviewBundleSection:
+        summaries: dict[str, EvidenceQualitySummary] = {}
+        related_ids: set[str] = set()
+        for docket in claim_dockets:
+            for item in docket.items:
+                for summary in item.quality_summaries:
+                    summaries.setdefault(summary.evidence_id, summary)
+                    related_ids.add(summary.evidence_id)
+        for docket in source_dockets:
+            for item in docket.items:
+                for summary in item.quality_summaries:
+                    summaries.setdefault(summary.evidence_id, summary)
+                    related_ids.add(summary.evidence_id)
+
+        items = [
+            self._quality_line(summary)
+            for summary in sorted(summaries.values(), key=lambda entry: entry.evidence_id)
+        ]
+        if items:
+            items.append("boundary:evidence quality is review context, not claim confirmation or source truth")
+        return ReviewBundleSection("evidence_quality", "Evidence Quality", items or ["none"], related_ids)
+
+    def _quality_line(self, summary: EvidenceQualitySummary) -> str:
+        weak = self._csv(set(summary.weak_dimensions))
+        warnings = self._csv({warning.value for warning in summary.warning_types})
+        return (
+            f"evidence:{summary.evidence_id}: "
+            f"label={summary.quality_label.value} "
+            f"quality_score={summary.quality_score:.2f} "
+            f"review_priority={summary.review_priority_score:.2f} "
+            f"weak_dimensions={weak} "
+            f"warnings={warnings}"
+        )
 
     def _unresolved(self, session: ReviewSession) -> ReviewBundleSection:
         return ReviewBundleSection("unresolved", "Unresolved Items", sorted(session.state.unresolved_item_ids) or ["none"])

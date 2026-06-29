@@ -200,6 +200,30 @@ merging. In particular:
 Dream artifacts are internal cognitive artifacts, not evidence. Replayed
 memories do not become more true, repeated replay is not corroboration, and
 recommendations do not mutate memory state.
+
+Phase 32 adds the dream-to-review boundary. `DreamInfluencePolicy` converts
+dream replay output into `ReviewInfluenceResult` so dream artifacts can affect
+review visibility, context inclusion, and discourse annotations only.
+`DreamReviewAdapter` can expose replayed memories as attention candidates, and
+`DreamBoundaryGuardrails` preserves warnings that dream artifacts are not
+evidence, confirmation, mutation, contradiction resolution, or corroboration.
+
+## Predictive Memory And Expectation
+
+Phase 33 adds `PredictiveMemoryEngine` as an anticipatory review layer. It uses
+existing memory structure to create `ExpectationTrace`, `PredictionCandidate`,
+`PredictionError`, and `SurpriseSignal` records.
+
+Predictive memory does not predict truth. It predicts review needs: missing
+provenance that may remain important, contradiction pressure that should stay
+visible, duplicate or lineage echoes that should not become corroboration, stale
+memories that may need refresh, and unexpected incoming gaps that deserve
+attention.
+
+`PredictiveReviewAdapter` can expose prediction candidates to attention scoring,
+and `ExpectationGuardrails` preserves the boundary that expectation is not
+evidence, prediction is not confirmation, and surprise is not disproof.
+
 ## Memory Decay
 
 `MemoryDecayEngine` applies time-aware decay based on days since the last
@@ -527,4 +551,3 @@ evaluation, and reporting.
 
 New AI, ingestion, vector search, or generated-report features should address
 the relevant debt entries before they are treated as complete.
-

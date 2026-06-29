@@ -12,14 +12,14 @@ def test_current_state_documents_reorientation_snapshot() -> None:
     text = read("docs/CURRENT_STATE.md")
 
     for phrase in [
-        "Last verified: 2026-06-27",
-        "`412 passed` before Phase 31 dream-replay updates",
+        "Last verified: 2026-06-29",
+        "`453 passed` after Phase 33 predictive-memory updates",
         "evidence quality assessment",
         "evidence-quality-aware review packaging",
         "Cortex still does not",
         "does not decide truth",
-        "Phase 32: Dream Replay Boundary Integration Or Hard-Adversarial Remediation",
-        "Phase 31 added offline dream replay as a read-only consolidation layer.",
+        "Phase 34: Hard-Adversarial Remediation Or Predictive-Memory Boundary Evaluation",
+        "Phase 33 added predictive memory as an expectation layer for review attention only.",
     ]:
         assert phrase in text
 
@@ -41,4 +41,3 @@ def test_readme_links_current_state() -> None:
 
     assert "CURRENT_STATE.md" in text
     assert "reorientation snapshot" in text
-

@@ -58,7 +58,11 @@ below summarize what exists today; deeper ownership maps live in
   nodes, timelines, contradictions, and review artifacts.
 - Memory decay, duplicate memory merging, and offline dream replay, so repeated
   observations can be weakened, merged, replayed, or recommended for review
-  without becoming truth signals.
+  without becoming truth signals; dream boundary integration lets replay affect
+  review visibility only.
+- Predictive memory organizes prior memory structure into expectation traces,
+  prediction candidates, prediction errors, and surprise signals for review
+  attention only.
 - Source trust, source independence, lineage, contamination, and corroboration
   helpers that preserve caution without automatic conclusions.
 - Graph relationship models and deterministic graph backends for entities,
@@ -160,6 +164,8 @@ Roswell-uap-cortex/
     ADR-031-evidence-quality-review-integration.md
     ADR-032-review-bundle-quality-integration.md
     ADR-033-offline-memory-consolidation-and-dream-replay.md
+    ADR-034-dream-replay-boundary-integration.md
+    ADR-035-predictive-memory-and-expectation-layer.md
     ADVERSARIAL_CALIBRATION_BASELINE.md
     ADVERSARIAL_FINDINGS.md
     ADVERSARIAL_RESULTS_GUIDE.md
@@ -213,6 +219,7 @@ Roswell-uap-cortex/
       discourse.py
       discourse_guardrails.py
       dream_replay.py
+      dream_influence.py
       demo_presentation.py
       demo_workspace.py
       demo_workspace_guardrails.py
@@ -248,6 +255,7 @@ Roswell-uap-cortex/
       presentation.py
       presentation_guardrails.py
       provenance.py
+      predictive_memory.py
       reasoning.py
       reality_boundary.py
       recursive_guard.py
@@ -321,6 +329,8 @@ Roswell-uap-cortex/
     test_phase29_review_bundle_quality.py
     test_phase30_readme_navigation.py
     test_phase31_dream_replay.py
+    test_phase32_dream_boundary_integration.py
+    test_phase33_predictive_memory.py
   pyproject.toml
   README.md
 ```
@@ -366,7 +376,3 @@ public surface and model ownership map before larger refactors.
 See [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) for the recurring rule that every
 five major phases should pause feature expansion for architecture
 consolidation, debugging, and security hygiene.
-
-
-
-

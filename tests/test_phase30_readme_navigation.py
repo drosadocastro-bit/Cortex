@@ -60,8 +60,8 @@ def test_readme_navigation_points_to_ownership_maps() -> None:
 def test_current_state_marks_readme_reorganization_as_completed() -> None:
     current_state = read(DOCS / "CURRENT_STATE.md")
 
-    assert "Phase 32: Dream Replay Boundary Integration Or Hard-Adversarial Remediation" in current_state
-    assert "Phase 31 added offline dream replay as a read-only consolidation layer." in current_state
+    assert "Phase 34: Hard-Adversarial Remediation Or Predictive-Memory Boundary Evaluation" in current_state
+    assert "Phase 33 added predictive memory as an expectation layer for review attention only." in current_state
     assert "README scope reorganization" not in current_state
 
 
@@ -78,5 +78,3 @@ def test_phase30_navigation_doc_defines_boundary() -> None:
     assert "documentation-only consolidation pass" in phase_doc
     assert "does not add runtime behavior" in phase_doc
     assert "Documentation organization is not validation." in phase_doc
-
-

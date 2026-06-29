@@ -38,7 +38,7 @@ def test_bundle_quality_is_linked_from_core_docs() -> None:
 def test_current_state_no_longer_lists_phase29_as_next() -> None:
     text = read("docs/CURRENT_STATE.md")
 
-    assert "Phase 32" in text
+    assert "Phase 34" in text
     assert "Review Bundle Quality Integration" not in text
 
 
@@ -47,4 +47,3 @@ def test_readme_lists_phase29_artifacts() -> None:
 
     assert "ADR-032-review-bundle-quality-integration.md" in text
     assert "test_phase29_review_bundle_quality.py" in text
-

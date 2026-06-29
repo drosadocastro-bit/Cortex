@@ -240,6 +240,11 @@ class ReviewInfluenceWarningType(str, Enum):
     BUNDLE_NOT_REASONING_INPUT = "bundle_not_reasoning_input"
     AUDIT_NOT_EVIDENCE = "audit_not_evidence"
     PROVENANCE_GAP_VISIBLE = "provenance_gap_visible"
+    DREAM_NOT_EVIDENCE = "dream_not_evidence"
+    DREAM_REPLAY_NOT_CONFIRMATION = "dream_replay_not_confirmation"
+    DREAM_RECOMMENDATION_NOT_MUTATION = "dream_recommendation_not_mutation"
+    DREAM_DUPLICATE_NOT_CORROBORATION = "dream_duplicate_not_corroboration"
+    DREAM_CONTRADICTION_NOT_RESOLUTION = "dream_contradiction_not_resolution"
 
 
 class LineageType(str, Enum):
@@ -426,6 +431,28 @@ class DreamWarningType(str, Enum):
     CONTRADICTION_NOT_RESOLUTION = "contradiction_not_resolution"
     RECOMMENDATION_NOT_MUTATION = "recommendation_not_mutation"
     MISSING_PROVENANCE_VISIBLE = "missing_provenance_visible"
+
+class PredictiveSignalType(str, Enum):
+    """Predictive-memory signals for review attention, not truth."""
+
+    EXPECTED_REVIEW_NEED = "expected_review_need"
+    PREDICTION_ERROR = "prediction_error"
+    SURPRISE = "surprise"
+    EXPECTED_MISSING_PROVENANCE = "expected_missing_provenance"
+    EXPECTED_CONTRADICTION = "expected_contradiction"
+    EXPECTED_LINEAGE_ECHO = "expected_lineage_echo"
+    EXPECTED_STALE_MEMORY = "expected_stale_memory"
+
+
+class PredictiveWarningType(str, Enum):
+    """Warnings that keep expectation separate from evidence and belief."""
+
+    EXPECTATION_NOT_TRUTH = "expectation_not_truth"
+    PREDICTION_NOT_EVIDENCE = "prediction_not_evidence"
+    SURPRISE_NOT_DISPROOF = "surprise_not_disproof"
+    RECURRENCE_NOT_CORROBORATION = "recurrence_not_corroboration"
+    EXPECTED_NOT_CONFIRMED = "expected_not_confirmed"
+    REVIEW_ATTENTION_ONLY = "review_attention_only"
 
 class AdversarialAttackVector(str, Enum):
     """Synthetic attack vectors against epistemic guardrails."""
@@ -2579,6 +2606,109 @@ class DreamReplayResult:
 
 
 @dataclass(slots=True)
+class ExpectationTrace:
+    """A memory-derived expectation about review needs, not future truth."""
+
+    trace_id: str
+    source_memory_ids: set[str] = field(default_factory=set)
+    signal_type: PredictiveSignalType | str = PredictiveSignalType.EXPECTED_REVIEW_NEED
+    expected_review_need: str = ""
+    expectation_strength: float = 0.0
+    rationale: list[str] = field(default_factory=list)
+    warning_flags: list[PredictiveWarningType | str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.signal_type, str):
+            self.signal_type = PredictiveSignalType(self.signal_type)
+        self.expectation_strength = max(0.0, min(1.0, self.expectation_strength))
+        self.warning_flags = [
+            PredictiveWarningType(flag) if isinstance(flag, str) else flag
+            for flag in self.warning_flags
+        ]
+
+
+@dataclass(slots=True)
+class PredictionCandidate:
+    """A possible next review target. Prediction is not evidence."""
+
+    candidate_id: str
+    target_id: str
+    target_type: str = "memory"
+    signal_type: PredictiveSignalType | str = PredictiveSignalType.EXPECTED_REVIEW_NEED
+    review_priority: float = 0.0
+    supporting_memory_ids: set[str] = field(default_factory=set)
+    rationale: list[str] = field(default_factory=list)
+    warning_flags: list[PredictiveWarningType | str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.signal_type, str):
+            self.signal_type = PredictiveSignalType(self.signal_type)
+        self.review_priority = max(0.0, min(1.0, self.review_priority))
+        self.warning_flags = [
+            PredictiveWarningType(flag) if isinstance(flag, str) else flag
+            for flag in self.warning_flags
+        ]
+
+
+@dataclass(slots=True)
+class PredictionError:
+    """A mismatch between expected review pattern and incoming state."""
+
+    expected_signal: PredictiveSignalType | str
+    observed_id: str
+    message: str
+    severity: float = 0.0
+    related_trace_ids: set[str] = field(default_factory=set)
+    warning_flags: list[PredictiveWarningType | str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if isinstance(self.expected_signal, str):
+            self.expected_signal = PredictiveSignalType(self.expected_signal)
+        self.severity = max(0.0, min(1.0, self.severity))
+        self.warning_flags = [
+            PredictiveWarningType(flag) if isinstance(flag, str) else flag
+            for flag in self.warning_flags
+        ]
+
+
+@dataclass(slots=True)
+class SurpriseSignal:
+    """Attention signal for unexpected review pressure, not disproof."""
+
+    signal_id: str
+    target_id: str
+    surprise_score: float = 0.0
+    reason: str = ""
+    related_trace_ids: set[str] = field(default_factory=set)
+    warning_flags: list[PredictiveWarningType | str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        self.surprise_score = max(0.0, min(1.0, self.surprise_score))
+        self.warning_flags = [
+            PredictiveWarningType(flag) if isinstance(flag, str) else flag
+            for flag in self.warning_flags
+        ]
+
+
+@dataclass(slots=True)
+class PredictiveMemoryResult:
+    """Deterministic expectation output for review attention only."""
+
+    expectation_traces: list[ExpectationTrace] = field(default_factory=list)
+    prediction_candidates: list[PredictionCandidate] = field(default_factory=list)
+    prediction_errors: list[PredictionError] = field(default_factory=list)
+    surprise_signals: list[SurpriseSignal] = field(default_factory=list)
+    warnings: list[PredictiveWarningType | str] = field(default_factory=list)
+    limitations: list[str] = field(default_factory=list)
+    mutated_state: bool = False
+
+    def __post_init__(self) -> None:
+        self.warnings = [
+            PredictiveWarningType(warning) if isinstance(warning, str) else warning
+            for warning in self.warnings
+        ]
+
+@dataclass(slots=True)
 class GraphNode:
     """A graph node for evidence-first investigative reasoning."""
 
@@ -2600,6 +2730,3 @@ class Contradiction:
     severity: float = 0.5
     resolved: bool = False
     created_at: datetime = field(default_factory=utc_now)
-
-
-

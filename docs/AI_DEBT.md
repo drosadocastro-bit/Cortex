@@ -56,17 +56,42 @@ Current mitigation:
 `DreamReplayResult` artifacts, consolidation notes, duplicate candidates,
 stale-memory signals, contradiction visibility, warnings, and recommendations
 without applying decay, merging memories, reactivating archival memories,
-creating evidence, confirming claims, or creating graph edges.
+creating evidence, confirming claims, or creating graph edges. Phase 32 adds
+`DreamInfluencePolicy`, `DreamReviewAdapter`, and `DreamBoundaryGuardrails` so
+dream artifacts can influence review visibility only through explicit warnings.
 
 Future trigger:
-Before connecting dream replay to persistence, review workflow, live inference,
-or automated scheduling, dream artifacts must remain typed internal cognitive
-artifacts with explicit provenance, limitations, and no automatic promotion.
+Before connecting dream replay to persistence, live inference, UI, or automated
+scheduling, dream artifacts must remain typed internal cognitive artifacts with
+explicit provenance, limitations, and no automatic promotion.
 
 Must not do:
 Do not treat dream replay, repeated replay, or consolidation recommendations as
 evidence, corroboration, claim support, contradiction resolution, or source
 trust.
+
+## Predictive Memory Debt
+
+Risk:
+Predictive review attention could be mistaken for truth prediction, expected
+evidence, or confirmation of likely narratives.
+
+Current mitigation:
+`PredictiveMemoryEngine` emits expectation traces, prediction candidates,
+prediction errors, and surprise signals as review-attention artifacts only.
+`ExpectationGuardrails` blocks evidence promotion and keeps warnings visible:
+expectation is not truth, prediction is not evidence, surprise is not disproof,
+and recurrence is not corroboration.
+
+Future trigger:
+Before connecting predictive memory to UI, persistence, live inference,
+automated scheduling, or external data streams, predictive artifacts must remain
+separate from evidence, claim confidence, graph support, and source trust.
+
+Must not do:
+Do not treat expected patterns, surprise signals, or predicted review needs as
+facts, confirmations, disproof, or independent corroboration.
+
 ## Provenance Debt
 
 Risk:
@@ -770,7 +795,3 @@ state.
 Must not do:
 Do not treat VLM descriptions as primary evidence without provenance and
 uncertainty labeling.
-
-
-
-

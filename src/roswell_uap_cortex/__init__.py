@@ -32,6 +32,7 @@ from roswell_uap_cortex.corroboration import CorroborationLayer
 from roswell_uap_cortex.discourse import DiscourseEngine
 from roswell_uap_cortex.discourse_guardrails import DiscourseGuardrails
 from roswell_uap_cortex.dream_replay import DreamReplayEngine
+from roswell_uap_cortex.dream_influence import DreamBoundaryGuardrails, DreamInfluencePolicy, DreamReviewAdapter
 from roswell_uap_cortex.demo_presentation import DemoPresentationBuilder
 from roswell_uap_cortex.demo_workspace import DemoWorkspaceBuilder
 from roswell_uap_cortex.demo_workspace_guardrails import DemoWorkspaceGuardrails
@@ -63,6 +64,7 @@ from roswell_uap_cortex.networkx_backend import NetworkXGraphBackend
 from roswell_uap_cortex.observation_classifier import ObservationClassifier
 from roswell_uap_cortex.presentation import PresentationBuilder
 from roswell_uap_cortex.presentation_guardrails import PresentationGuardrails
+from roswell_uap_cortex.predictive_memory import ExpectationGuardrails, PredictiveMemoryEngine, PredictiveReviewAdapter
 from roswell_uap_cortex.models import (
     ActivatedContext,
     AdversarialAttackVector,
@@ -145,6 +147,13 @@ from roswell_uap_cortex.models import (
     EvidenceQualitySummary,
     EvidenceQualityWarning,
     EvidenceQualityWarningType,
+    ExpectationTrace,
+    PredictionCandidate,
+    PredictionError,
+    PredictiveMemoryResult,
+    PredictiveSignalType,
+    PredictiveWarningType,
+    SurpriseSignal,
     EvidenceItem,
     EvidenceLineageRecord,
     DeferredItem,
@@ -385,6 +394,9 @@ __all__ = [
     "DiscourseWarning",
     "DiscourseWarningType",
     "DreamReplayEngine",
+    "DreamBoundaryGuardrails",
+    "DreamInfluencePolicy",
+    "DreamReviewAdapter",
     "DemoPresentation",
     "DemoPresentationBuilder",
     "DemoWorkspace",
@@ -408,6 +420,16 @@ __all__ = [
     "EmbeddingBackend",
     "EmbeddingVector",
     "EvidenceIndependenceInput",
+    "ExpectationGuardrails",
+    "ExpectationTrace",
+    "PredictionCandidate",
+    "PredictionError",
+    "PredictiveMemoryEngine",
+    "PredictiveMemoryResult",
+    "PredictiveReviewAdapter",
+    "PredictiveSignalType",
+    "PredictiveWarningType",
+    "SurpriseSignal",
     "EvidenceItem",
     "EvidenceLineageEngine",
     "EvidenceLineageRecord",
@@ -576,4 +598,3 @@ __all__ = [
     "WorkflowStageView",
     "utc_now",
 ]
-

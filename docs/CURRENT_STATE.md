@@ -1,9 +1,9 @@
 # Current State
 
-Last verified: 2026-06-27
+Last verified: 2026-06-29
 
 This document is a reorientation snapshot for Roswell UAP Cortex after the
-evidence-quality, review-integration, documentation-navigation, and dream-replay phases. It is not a roadmap, product claim, validation report, or assurance case.
+evidence-quality, review-integration, documentation-navigation, dream-replay, dream-boundary, and predictive-memory phases. It is not a roadmap, product claim, validation report, or assurance case.
 
 ## Health Check
 
@@ -15,7 +15,7 @@ python -m pytest
 
 Result:
 
-- `412 passed` before Phase 31 dream-replay updates
+- `453 passed` after Phase 33 predictive-memory updates
 
 ## What Cortex Can Do Now
 
@@ -27,6 +27,8 @@ raw input
 -> evidence / provenance / lineage
 -> evidence quality assessment
 -> offline memory consolidation / dream replay
+-> dream replay boundary integration
+-> predictive memory / expectation traces
 -> candidate claim extraction
 -> claim normalization
 -> claim evidence evaluation
@@ -79,6 +81,8 @@ The strongest parts of the framework are now:
 - claim/source review dockets
 - evidence-quality rubric and quality-aware review packaging
 - offline memory consolidation that recommends replay, duplicate review, stale-memory review, archival review, and contradiction review without mutating memories
+- dream-to-review influence that uses existing review contracts without evidence promotion
+- predictive-memory expectations that surface provenance, contradiction, recurrence, stale-memory, and surprise review needs
 - reality-boundary and recursive-inference protection
 - adversarial smoke tests, hard tests, calibration baselines, and documented
   limitations
@@ -93,7 +97,8 @@ The main watchpoints are:
   problem appears.
 - Review workflow objects are numerous and should not duplicate each other.
 - Evidence quality must remain record condition, not truth confidence.
-- Dream replay must remain recommendation-only and must not become evidence, corroboration, or truth amplification.
+- Dream replay must remain recommendation-only and must not become evidence, corroboration, truth amplification, or hidden review authority.
+- Predictive memory must remain review attention only; expectation is not truth and surprise is not disproof.
 - Review bundles now preserve evidence-quality summaries, but their quality
   sections must remain review context rather than findings.
 - Future UI work must consume presentation/review models without inventing
@@ -105,10 +110,10 @@ The main watchpoints are:
 
 Recommended next phase:
 
-**Phase 32: Dream Replay Boundary Integration Or Hard-Adversarial Remediation**
+**Phase 34: Hard-Adversarial Remediation Or Predictive-Memory Boundary Evaluation**
 
 Reason:
-Phase 31 added offline dream replay as a read-only consolidation layer. The next narrow step should either connect dream artifacts to review visibility with strict boundaries or remediate known hard-adversarial near misses before adding new cognitive surface area.
+Phase 33 added predictive memory as an expectation layer for review attention only. The next narrow step should either stress-test predictive-memory boundary behavior or remediate known hard-adversarial near misses before adding new cognitive surface area.
 
 Other reasonable candidates:
 
@@ -125,9 +130,3 @@ Before the next major expansion, keep this boundary:
 > Cortex may improve visibility, ordering, review context, and uncertainty
 > preservation. It must not convert those improvements into truth, authority,
 > safety, certification, or operational validity.
-
-
-
-
-
-

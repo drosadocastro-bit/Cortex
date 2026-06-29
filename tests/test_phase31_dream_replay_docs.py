@@ -62,4 +62,4 @@ def test_current_state_tracks_phase31_and_next_boundary() -> None:
 
     assert "offline memory consolidation / dream replay" in text
     assert "Dream replay must remain recommendation-only" in text
-    assert "Phase 32: Dream Replay Boundary Integration Or Hard-Adversarial Remediation" in text
+    assert "Phase 34: Hard-Adversarial Remediation Or Predictive-Memory Boundary Evaluation" in text

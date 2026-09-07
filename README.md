@@ -1,4 +1,4 @@
-# Roswell UAP Cortex
+# Cortex
 
 An experimental cognitive framework and epistemic research sandbox for uncertain,
 noisy, unstructured evidence domains.
